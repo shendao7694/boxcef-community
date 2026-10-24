@@ -1,18 +1,18 @@
-/* @path: src/style/index.css */
+
 [hidden] { display: none !important; }
 
-/* 整体布局靠左 */
+
 .home-layout {
   display: flex;
   width: 100%;
   max-width: 1600px;
   margin: 0;
   padding: 24px;
-  gap: 32px; /* 加大侧边栏与主内容的间距 */
+  gap: 32px; 
   align-items: flex-start;
 }
 
-/* 左侧导航：固定靠左，不可收缩，增加右侧隔断 */
+
 .sidebar-left {
   width: 220px;
   flex-shrink: 0;
@@ -23,7 +23,7 @@
   top: 88px;
   height: calc(100vh - 120px);
   
-  /* 新增：右侧隔断 */
+  
   border-right: 1px solid var(--border);
   padding-right: 24px;
 }
@@ -76,7 +76,7 @@
   border-color: var(--text);
 }
 
-/* 主内容区 */
+
 .main-content {
   flex: 1;
   min-width: 0;
@@ -85,7 +85,7 @@
   gap: 24px;
 }
 
-/* 顶部广告 */
+
 .ad-banner-top {
   position: relative;
   width: 100%;
@@ -107,7 +107,7 @@
 .ad-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,.5); border: none; cursor: pointer; padding: 0; }
 .ad-dot.active { background: #fff; transform: scale(1.15); }
 
-/* 三列网格 */
+
 .grid-cards {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -204,7 +204,7 @@
     flex-direction: row; 
     justify-content: space-between; 
     align-items: center; 
-    /* 移动端去掉右侧隔断，改为下方隔断 */
+    
     border-right: none;
     border-bottom: 1px solid var(--border);
     padding-right: 0;
@@ -225,9 +225,9 @@
   .search-wrap { width: 100%; }
 }
 
-/* 追加到 index.css 末尾 */
 
-/* 标签容器 */
+
+
 .tag {
   display: inline-flex;
   align-items: center;

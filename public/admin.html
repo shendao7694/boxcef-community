@@ -292,7 +292,7 @@
       </div>
     </section>
 
-    <section class="admin-card" data-panel="settings">
+        <section class="admin-card" data-panel="settings">
       <h2>globalSettings</h2>
       <form id="settings-form">
         <div class="form-grid">
@@ -319,8 +319,41 @@
             <label for="maxImageInDisc">maxImageInDisc（张，默认 20）</label>
             <input type="number" id="maxImageInDisc" min="1">
           </div>
+          <div class="input-group">
+            <label for="publishPostMax">publishPostMax（单人发帖上限）</label>
+            <input type="number" id="publishPostMax" min="1">
+          </div>
+          <div class="input-group">
+            <label for="publishBoxPlayMax">publishBoxPlayMax（单人作品上限）</label>
+            <input type="number" id="publishBoxPlayMax" min="1">
+          </div>
+          <div class="input-group">
+            <label for="publishPostCooling">publishPostCooling（发帖冷却/秒）</label>
+            <input type="number" id="publishPostCooling" min="0">
+          </div>
+          <div class="input-group">
+            <label for="publishBoxPlayCooling">publishBoxPlayCooling（作品冷却/秒）</label>
+            <input type="number" id="publishBoxPlayCooling" min="0">
+          </div>
         </div>
-        <button type="submit" class="btn" id="save-settings-btn">保存设置</button>
+
+        <hr style="margin: 24px 0; border: none; border-top: 1px solid var(--border);">
+
+        <div class="form-grid">
+          <div class="input-group">
+            <label>BoxPlay 全局开关</label>
+            <label class="checkbox-row">
+              <input type="checkbox" id="boxPlayStatus">
+              开启 BoxPlay 服务
+            </label>
+          </div>
+          <div class="input-group">
+            <label for="boxPlayVaildText">BoxPlay 关闭时的提示文字</label>
+            <input type="text" id="boxPlayVaildText">
+          </div>
+        </div>
+
+        <button type="submit" class="btn" id="save-settings-btn" style="margin-top: 16px;">保存设置</button>
       </form>
     </section>
 

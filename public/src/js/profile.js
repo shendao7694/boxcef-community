@@ -121,7 +121,7 @@ async function loadBoxplays() {
           });
           showToast('已删除');
           await loadBoxplays();
-          // 更新本地缓存的boxplays数量限制
+          
           const user = await fetchMe();
           if (user) current = user;
         } catch {}
@@ -194,7 +194,7 @@ async function init() {
   await loadBoxplays();
 }
 
-// 绑定编辑资料相关事件
+
 $('edit-btn').addEventListener('click', async () => {
   if (!current) return;
   pendingAvatarHash = null;
@@ -262,7 +262,7 @@ $('edit-form').addEventListener('submit', async (e) => {
   btn.textContent = '保存修改';
 });
 
-// 好友逻辑保持不变
+
 $('friends-btn').addEventListener('click', () => {
   $('friends-modal').hidden = false;
   switchTab('mutual');

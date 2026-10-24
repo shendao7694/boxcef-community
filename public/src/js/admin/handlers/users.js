@@ -16,7 +16,7 @@ export function openEdit(key) {
   $('e-description').value = u.description || '';
   $('e-avatar').value = u.avatar || 'COMMON:normal_avatar';
   
-  // limit 相关
+  
   $('e-max-upload').value = u.limit?.maxUploadSize ?? '';
   $('e-max-image').value = u.limit?.maxImageInDisc ?? '';
   $('e-publish-post-max').value = u.limit?.publishPostMax ?? '';
@@ -55,7 +55,7 @@ export function bindUsers() {
       avatar: $('e-avatar').value.trim()
     };
     
-    // 收集 limit 字段
+    
     patch.limit = {};
     const up = $('e-max-upload').value.trim();
     const img = $('e-max-image').value.trim();
@@ -97,7 +97,7 @@ export function bindUsers() {
     $('c-description').value = '';
     $('c-avatar').value = '';
     
-    // 清空 limit
+    
     $('c-max-upload').value = '';
     $('c-max-image').value = '';
     $('c-publish-post-max').value = '';
@@ -124,7 +124,7 @@ export function bindUsers() {
       avatar: $('c-avatar').value.trim()
     };
 
-    // 收集 limit 字段
+    
     payload.limit = {};
     const up = $('c-max-upload').value.trim();
     const img = $('c-max-image').value.trim();

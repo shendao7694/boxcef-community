@@ -16,7 +16,7 @@ import { switchView } from './handlers/nav.js';
 import { showToast } from './utils/toast.js';
 import { loadBoxplayList, bindBoxplay } from './handlers/boxplay.js';
 
-// 供 handlers 内部互相调用（避免循环依赖）
+
 window.__reloadAll = loadAll;
 window.__loadPosts = loadPosts;
 window.__gotoComments = gotoComments;
@@ -64,7 +64,7 @@ function gotoComments(pid) {
 }
 
 async function initAdmin() {
-  // 把 adminFetch 挂到 window，供 handlers 内部通过 window 调用（避免循环 import）
+  
   const { adminFetch } = await import('./state.js');
   window.__adminFetch = adminFetch;
   bindBoxplay();
@@ -83,7 +83,7 @@ async function initAdmin() {
   bindAds();
   bindTitles();
 
-  // 用户表格事件委托（需要跨模块调用，放这里统一绑定）
+  
   $('users-table').querySelector('tbody').addEventListener('click', async (e) => {
     const edit = e.target.closest('button[data-edit]');
     const del = e.target.closest('button[data-del]');

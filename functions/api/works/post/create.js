@@ -12,14 +12,14 @@ export async function onRequestPost({ request, env }) {
 
   const settings = await getSettings(env);
   const limit = readUserLimit(self.session, settings);
-  const now = Date.now(); // 修复：补充 now 的定义
+  const now = Date.now(); 
 
-  // 冷却检查
+  
   if (now - (self.session.lastPostTime || 0) < limit.publishPostCooling * 1000) {
     return fail(`发布过于频繁，请等待 ${limit.publishPostCooling} 秒`, 429);
   }
 
-  // 数量限制检查
+  
   self.session.posts = self.session.posts || [];
   if (self.session.posts.length >= limit.publishPostMax) {
     return fail(`你最多只能发布 ${limit.publishPostMax} 个帖子`, 400);

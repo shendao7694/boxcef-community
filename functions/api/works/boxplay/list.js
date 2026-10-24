@@ -2,7 +2,7 @@
 import { ok, fail } from '../../_libs/response.js';
 import { getWorks, getUserBySessionId, publicUser } from '../../_libs/works.js';
 import { loadSession } from '../../_libs/session.js';
-import { readBoxplay } from '../../_libs/boxplay.js'; // 修复了这里
+import { readBoxplay } from '../../_libs/boxplay.js'; 
 
 export async function onRequestGet({ request, env }) {
   const url = new URL(request.url);
@@ -16,7 +16,7 @@ export async function onRequestGet({ request, env }) {
     const id = url.searchParams.get('id');
     if (!id) return fail('缺少 id');
     const u = await getUserBySessionId(users, id);
-    // 如果查别人，不要展示 pending 的
+    
     const isSelf = self && self.key === id;
     const rawList = (u && u.boxplays) || [];
     for (const pid of rawList) {
@@ -53,7 +53,7 @@ export async function onRequestGet({ request, env }) {
     for (const pid of keys) {
       const p = await readBoxplay(works, pid);
       if (!p) continue;
-      // 首页只展示已通过的
+      
       if (p.status !== 'approved') continue;
 
       const writer = await getUserBySessionId(users, p.writer);

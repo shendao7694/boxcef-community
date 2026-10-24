@@ -24,7 +24,7 @@
   padding: 24px;
 }
 
-/* ---------- 进度条 ---------- */
+
 .disc-storage-row {
   display: flex;
   align-items: center;
@@ -52,12 +52,12 @@
 
 .disc-progress-fill {
   height: 100%;
-  background: var(--text-soft); /* 默认灰色，快满了可以改红 */
+  background: var(--text-soft); 
   border-radius: 4px;
   transition: width 0.3s ease;
 }
 
-/* ---------- 上传记录 ---------- */
+
 .disc-history-head {
   display: flex;
   justify-content: space-between;
@@ -102,7 +102,7 @@
 .disc-history-item .status.success { color: #22c55e; }
 .disc-history-item .status.fail { color: #ef4444; }
 
-/* ---------- 工具栏 ---------- */
+
 .disc-toolbar {
   display: flex;
   align-items: center;
@@ -196,7 +196,7 @@
   color: var(--text-soft);
 }
 
-/* 让工具栏里的图标和文字对齐 */
+
 .disc-toolbar-actions .btn {
   display: inline-flex;
   align-items: center;
@@ -207,7 +207,7 @@
   flex-shrink: 0;
 }
 
-/* ---------- 引用代码区 ---------- */
+
 .disc-ref-box {
   background: var(--bg-soft);
   border: 1px solid var(--border);
@@ -239,7 +239,7 @@
   outline: none;
 }
 
-/* ---------- 网格列表 ---------- */
+
 .disc-box {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));

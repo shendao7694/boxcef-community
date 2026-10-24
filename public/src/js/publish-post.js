@@ -69,7 +69,7 @@ document.querySelectorAll('.editor-toolbar button[data-insert]').forEach(btn => 
   });
 });
 
-// ---------- popups: color / long code / iframe ----------
+
 function closeEditorPops() {
   document.querySelectorAll('.editor-pop').forEach(p => p.remove());
   document.removeEventListener('mousedown', onDocMouseDown, true);
@@ -121,7 +121,7 @@ function popActions(parent, onOk) {
   row.append(cancel, ok);
 }
 
-// color picker
+
 const PALETTE = ['#e11d48', '#f97316', '#eab308', '#22c55e', '#10b981', '#06b6d4', '#3b82f6', '#6366f1',
   '#8b5cf6', '#ec4899', '#ef4444', '#84cc16', '#14b8a6', '#0ea5e9', '#a855f7', '#111827'];
 
@@ -148,7 +148,7 @@ $('color-btn').addEventListener('click', () => {
   });
 });
 
-// long code block
+
 const CODE_LANGS = [
   ['plaintext', '纯文本'], ['javascript', 'JavaScript'], ['typescript', 'TypeScript'],
   ['python', 'Python'], ['java', 'Java'], ['c', 'C'], ['cpp', 'C++'], ['csharp', 'C#'],
@@ -181,7 +181,7 @@ $('code-btn').addEventListener('click', () => {
   setTimeout(() => ta.focus(), 0);
 });
 
-// iframe embed
+
 $('iframe-btn').addEventListener('click', () => {
   const pop = openPop($('iframe-btn'), '嵌入网页 (iframe)');
   const urlRow = popRow(pop);
@@ -214,7 +214,7 @@ $('iframe-btn').addEventListener('click', () => {
   setTimeout(() => url.focus(), 0);
 });
 
-// ---------- 个人图盘插入 ----------
+
 $('disc-img-btn').addEventListener('click', () => {
   if (!me) {
     showToast('请先登录', 'error');
@@ -248,7 +248,7 @@ $('disc-img-btn').addEventListener('click', () => {
   pop.appendChild(grid);
 });
 
-// ---------- publish ----------
+
 $('publish-btn').addEventListener('click', async () => {
   const title = $('p-title').value.trim();
   const content = $('p-content').value;

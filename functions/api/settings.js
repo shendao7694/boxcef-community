@@ -7,11 +7,9 @@ import { readUserLimit } from './_libs/limit.js';
 export async function onRequestGet({ request, env }) {
   const settings = await getSettings(env);
   
-  // 默认返回全局配置
   let maxUploadSize = settings.maxUploadSize;
   let maxImageInDisc = settings.maxImageInDisc;
 
-  // 如果用户已登录，尝试获取用户个人的 limit
   const self = await loadSession(env, request);
   if (self) {
     const limit = readUserLimit(self.session, settings);
@@ -23,7 +21,9 @@ export async function onRequestGet({ request, env }) {
     settings: {
       registerNeedEmailVerity: !!settings.registerNeedEmailVerity,
       maxImageInDisc,
-      maxUploadSize
+      maxUploadSize,
+      boxPlayStatus: !!settings.boxPlayStatus,
+      boxPlayVaildText: settings.boxPlayVaildText
     }
   });
 }

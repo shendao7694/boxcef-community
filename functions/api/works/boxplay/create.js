@@ -15,14 +15,14 @@ export async function onRequestPost({ request, env }) {
   const limit = readUserLimit(self.session, settings);
   const now = Date.now();
 
-  // 冷却检查
+  
   if (now - (self.session.lastBoxPlayTime || 0) < limit.publishBoxPlayCooling * 1000) {
     return fail(`发布过于频繁，请等待 ${limit.publishBoxPlayCooling} 秒`, 429);
   }
 
-  // 数量限制检查
+  
   self.session.boxplays = self.session.boxplays || [];
-  // 这里判断逻辑：最多拥有 N 个
+  
   if (self.session.boxplays.length >= limit.publishBoxPlayMax) {
     return fail(`你最多只能发布 ${limit.publishBoxPlayMax} 个 BoxPlay 作品`, 400);
   }
@@ -43,7 +43,7 @@ export async function onRequestPost({ request, env }) {
     cover,
     playurl,
     writer: self.key,
-    status: 'pending', // pending, approved
+    status: 'pending', 
     comments: [],
     createdAt: now
   };

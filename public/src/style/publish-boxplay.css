@@ -1,4 +1,4 @@
-/* @path: src/style/publish-boxplay.css */
+
 [hidden] { display: none !important; }
 
 .publish-wrap {
@@ -31,7 +31,7 @@
 
 .publish-head h1 { font-size: 22px; font-weight: 800; }
 
-/* 输入框修正 */
+
 .input-group {
   display: flex;
   flex-direction: column;
@@ -67,10 +67,10 @@
   line-height: 1.6;
 }
 
-/* 封面选择框 */
+
 .cover-preview {
   width: 100%;
-  aspect-ratio: 16 / 9; /* 游戏通常的比例 */
+  aspect-ratio: 16 / 9; 
   max-height: 300px;
   border: 2px dashed var(--border);
   border-radius: 12px;
@@ -103,7 +103,7 @@
   inset: 0;
 }
 
-/* 模态框基础样式（复用） */
+
 .modal {
   position: fixed;
   inset: 0;
@@ -141,7 +141,7 @@
   margin-top: 16px;
 }
 
-/* 图盘网格 */
+
 .disc-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));

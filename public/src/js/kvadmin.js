@@ -12,7 +12,7 @@ let listComplete = true;
 let valueMode = 'text';
 let originalValue = '';
 
-/* ---------- auth ---------- */
+ 
 $('login-btn').addEventListener('click', () => {
   const t = $('admin-token').value.trim();
   if (!t) { showToast('请输入 token', 'error'); return; }
@@ -45,7 +45,7 @@ function showPanel() {
   $('panel-view').hidden = false;
 }
 
-/* ---------- binding tabs ---------- */
+ 
 document.querySelectorAll('.kv-tab').forEach(btn => {
   btn.addEventListener('click', () => switchBinding(btn.dataset.binding));
 });
@@ -62,7 +62,7 @@ function switchBinding(binding) {
   loadKeys(true);
 }
 
-/* ---------- list keys ---------- */
+ 
 $('refresh-btn').addEventListener('click', () => loadKeys(true));
 $('load-more-btn').addEventListener('click', () => loadKeys(false));
 
@@ -117,7 +117,7 @@ function renderKeyList() {
   }
 }
 
-/* ---------- editor ---------- */
+ 
 async function selectKey(key) {
   currentKey = key;
   $('edit-key').value = key;
@@ -208,7 +208,7 @@ $('delete-btn').addEventListener('click', async () => {
   } catch {}
 });
 
-/* ---------- value mode ---------- */
+ 
 document.querySelectorAll('.kv-value-tab').forEach(btn => {
   btn.addEventListener('click', () => {
     valueMode = btn.dataset.mode;
@@ -247,7 +247,7 @@ function applyValueMode() {
 }
 
 function tryDecodePreview(raw) {
-  // 尝试解析 JSON 并提取 base64 data 字段
+  
   try {
     const obj = JSON.parse(raw);
     if (obj && typeof obj.data === 'string') {
@@ -255,7 +255,7 @@ function tryDecodePreview(raw) {
       return header + previewBase64(obj.data);
     }
   } catch {}
-  // 直接当 base64 处理
+  
   return previewBase64(raw);
 }
 
@@ -270,7 +270,7 @@ function previewBase64(b64) {
 
 $('edit-value').addEventListener('input', updateMeta);
 
-/* ---------- init ---------- */
+ 
 if (adminToken) {
   $('admin-token').value = adminToken;
   showPanel();

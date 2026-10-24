@@ -60,7 +60,7 @@
   background: var(--border);
 }
 
-/* color picker popup */
+
 .editor-pop {
   position: absolute;
   z-index: 50;
@@ -137,7 +137,7 @@
   gap: 6px;
 }
 
-/* long code block popup */
+
 .editor-code-lang {
   display: flex;
   gap: 8px;
@@ -145,7 +145,7 @@
 
 .editor-code-lang select { flex: 1; }
 
-/* iframe popup preview hint */
+
 .editor-pop-hint {
   font-size: 11px;
   color: var(--text-soft);

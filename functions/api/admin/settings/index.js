@@ -34,6 +34,14 @@ export async function onRequestPost({ request, env }) {
   if (Array.isArray(body.pinnedPosts)) {
     patch.pinnedPosts = body.pinnedPosts.filter(x => typeof x === 'string');
   }
+  
+  
+  if (body.boxPlayStatus !== undefined) {
+    patch.boxPlayStatus = !!body.boxPlayStatus;
+  }
+  if (body.boxPlayVaildText !== undefined) {
+    patch.boxPlayVaildText = String(body.boxPlayVaildText);
+  }
 
   const settings = await setSettings(env, patch);
   return ok({ settings });

@@ -92,29 +92,7 @@ let itemData = {
         type: 1,
         maxstack: 64,
         block: 17,
-    },/*
-    12: {
-        name: "acacia_log",
-        usename: { chinese: "金合欢原木", english: "Acacia log" },
-        type: 1,
-        maxstack: 64,
-        block: 162,
-    },
-    13: {
-        name: "standing_sign",
-        usename: { chinese: "橡木告示牌", english: "Standing sign" },
-        type: 1,
-        maxstack: 64,
-        block: 63,
-    },
-    14: {
-        name: "ladder",
-        usename: { chinese: "梯子", english: "Ladder" },
-        type: 1,
-        maxstack: 64,
-        block: 65,
-    },
-    */
+    }, 
     15: {
         name: "reeds",
         usename: { chinese: "甘蔗", english: "Reeds" },
@@ -163,42 +141,7 @@ let itemData = {
         maxstack: 64,
         block: 7,
     },
-    /*
-    22: {
-        name: "gravel",
-        usename: { chinese: "砂砾", english: "gravel" },
-        type: 1,
-        maxstack: 64,
-        block: 13,
-    },
-    23: {
-        name: "oak_leaves",
-        usename: { chinese: "橡树树叶", english: "oak_leaves" },
-        type: 1,
-        maxstack: 64,
-        block: 18,
-    },
-    24: {
-        name: "glass",
-        usename: { chinese: "玻璃", english: "glass" },
-        type: 1,
-        maxstack: 64,
-        block: 20,
-    },
-    /*29: {
-        name: "tnt",
-        usename: { chinese: "TNT", english: "tnt" },
-        type: 1,
-        maxstack: 64,
-        block: 46,
-    },
-    30: {
-        name: "obsidian",
-        usename: { chinese: "黑耀石", english: "obsidian" },
-        type: 1,
-        maxstack: 64,
-        block: 49,
-    },*/
+     
     26: {
         name: "wool",
         usename: { chinese: "羊毛", english: "wool" },
@@ -255,161 +198,7 @@ let itemData = {
         type: 1,
         maxstack: 64,
         block: 61,
-    },/*
-    35: {
-        name: "ice",
-        usename: { chinese: "冰", english: "ice" },
-        type: 1,
-        maxstack: 64,
-        block: 79,
-    },
-    36: {
-        name: "snow",
-        usename: { chinese: "雪块", english: "snow" },
-        type: 1,
-        maxstack: 64,
-        block: 80,
-    },
-    37: {
-        name: "clay",
-        usename: { chinese: "黏土", english: "clay" },
-        type: 1,
-        maxstack: 64,
-        block: 82,
-    },
-    38: {
-        name: "pumpkin",
-        usename: { chinese: "南瓜", english: "pumpkin" },
-        type: 1,
-        maxstack: 64,
-        block: 86,
-    },
-    39: {
-        name: "Slime Block",
-        usename: { chinese: "黏液块", english: "Slime Block" },
-        type: 1,
-        maxstack: 64,
-        block: 165,
-    },
-    40: {
-        name: "sea_lantern",
-        usename: { chinese: "海晶灯", english: "sea_lantern" },
-        type: 1,
-        maxstack: 64,
-        block: 169,
-    },
-    41: {
-        name: "hay_block",
-        usename: { chinese: "干草捆", english: "hay_block" },
-        type: 1,
-        maxstack: 64,
-        block: 170,
-    },
-    43: {
-        name: "grass_path",
-        usename: { chinese: "草径", english: "grass_path" },
-        type: 1,
-        maxstack: 64,
-        block: 198,
-    },
-    44: {
-        name: "purpur_block",
-        usename: { chinese: "紫珀块", english: "purpur_block" },
-        type: 1,
-        maxstack: 64,
-        block: 201,
-    },
-    45: {
-        name: "undyed_shulker_box",
-        usename: { chinese: "潜影盒", english: "undyed_shulker_box" },
-        type: 1,
-        maxstack: 1,
-        block: 205,
-    },
-    46: {
-        name: "end_bricks",
-        usename: { chinese: "末地石砖", english: "end_bricks" },
-        type: 1,
-        maxstack: 64,
-        block: 206,
-    },
-    47: {
-        name: "magma",
-        usename: { chinese: "岩浆块", english: "magma" },
-        type: 1,
-        maxstack: 64,
-        block: 213,
-    },
-    48: {
-        name: "nether_wart_block",
-        usename: { chinese: "下届疣块", english: "nether_wart_block" },
-        type: 1,
-        maxstack: 64,
-        block: 214,
-    },
-    49: {
-        name: "nether_brick",
-        usename: { chinese: "下届砖块", english: "nether_brick" },
-        type: 1,
-        maxstack: 64,
-        block: 215,
-    },
-    50: {
-        name: "carved_pumpkin",
-        usename: { chinese: "雕刻南瓜", english: "carved_pumpkin" },
-        type: 1,
-        maxstack: 64,
-        block: -155,
-    },
-    51: {
-        name: "barrier",
-        usename: { chinese: "屏障", english: "barrier" },
-        type: 1,
-        maxstack: 64,
-        block: -161,
-    },
-    52: {
-        name: "smooth_stone",
-        usename: { chinese: "平滑石头", english: "smooth_stone" },
-        type: 1,
-        maxstack: 64,
-        block: -183,
-    },
-    53: {
-        name: "smithing_table",
-        usename: { chinese: "锻造台", english: "smithing_table" },
-        type: 1,
-        maxstack: 64,
-        block: -202,
-    },
-    54: {
-        name: "warped_wart_block",
-        usename: { chinese: "诡异疣块", english: "warped_wart_block" },
-        type: 1,
-        maxstack: 64,
-        block: -227,
-    },
-    55: {
-        name: "crimson_nylium",
-        usename: { chinese: "绯红菌岩", english: "crimson_nylium" },
-        type: 1,
-        maxstack: 64,
-        block: -232,
-    },
-    56: {
-        name: "basalt",
-        usename: { chinese: "玄武岩", english: "basalt" },
-        type: 1,
-        maxstack: 64,
-        block: -234,
-    },
-    57: {
-        name: "soul_soil",
-        usename: { chinese: "灵魂土", english: "soul_soil" },
-        type: 1,
-        maxstack: 64,
-        block: -236,
-    },*/
+    }, 
     42: {
         name: "coal_block",
         usename: { chinese: "煤炭块", english: "coal_block" },
@@ -431,54 +220,7 @@ let itemData = {
         maxstack: 64,
         block: -271,
     },
-    /*60: {
-        name: "blackstone",
-        usename: { chinese: "黑石", english: "blackstone" },
-        type: 1,
-        maxstack: 64,
-        block: -273,
-    },
-    61: {
-        name: "polished_blackstone_bricks",
-        usename: { chinese: "磨制黑石砖", english: "polished_blackstone_bricks" },
-        type: 1,
-        maxstack: 64,
-        block: -274,
-    },
-    62: {
-        name: "powder_snow",
-        usename: { chinese: "细雪", english: "powder_snow" },
-        type: 1,
-        maxstack: 64,
-        block: -306,
-    },
-    63: {
-        name: "deepslate",
-        usename: { chinese: "深板岩", english: "deepslate" },
-        type: 1,
-        maxstack: 64,
-        block: -378,
-    },
-    64: {
-        name: "cherry_leaves",
-        usename: { chinese: "樱花树叶", english: "cherry_leaves" },
-        type: 1,
-        maxstack: 64,
-        block: -548,
-    },
-    65: {
-        name: "air",
-        usename: { chinese: "空气", english: "air" },
-        type: 1,
-        maxstack: 64,
-        block: -158,
-    },
-    66: {
-        name: "error",
-        usename: { chinese: "错误", english: "error" },
-        type: 0,
-        maxstack: Infinity,
-    },*/
+     
     67: {
         name: "apple",
         usename: { chinese: "苹果", english: "Apple" },
@@ -610,36 +352,7 @@ let itemData = {
         type: 1,
         maxstack: 64,
         block: 129
-    },/*
-    115: {
-        name: "copper_ore",
-        usename: { chinese: "铜矿", english: "Copper ore" },
-        type: 1,
-        maxstack: 64,
-        block: 547
-    },
-    116: {
-        name: "nether_gold_ore",
-        usename: { chinese: "下界金矿", english: "Nether gold ore" },
-        type: 1,
-        maxstack: 64,
-        block: 555
-    },
-    117: {
-        name: "nether_quartz_ore",
-        usename: { chinese: "下界石英矿", english: "Nether quartz ore" },
-        type: 1,
-        maxstack: 64,
-        block: 25
-    },
-    
-    119: {
-        name: "amethyst_cluster",
-        usename: { chinese: "紫水晶簇", english: "Amethyst cluster" },
-        type: 1,
-        maxstack: 64,
-        block: 74
-    },*/
+    }, 
     120: {
         name: "coal",
         usename: { chinese: "煤炭", english: "Coal" },
@@ -683,100 +396,7 @@ let itemData = {
         type: 5,
         maxstack: 64
     },
-    /*127: {
-        name: "copper_ingot",
-        usename: { chinese: "铜锭", english: "Copper ingot" },
-        type: 5,
-        maxstack: 64
-    },
-    128: {
-        name: "gold_nugget",
-        usename: { chinese: "金粒", english: "Gold nugget" },
-        type: 5,
-        maxstack: 64
-    },
-    129: {
-        name: "iron_nugget",
-        usename: { chinese: "铁粒", english: "Iron nugget" },
-        type: 5,
-        maxstack: 64
-    },
-    157: {
-        name: "raw_copper",
-        usename: { chinese: "粗铜", english: "Raw Copper" },
-        type: 1,
-        maxstack: 64,
-        block: 15
-    },
-    130: {
-        name: "copper_nugget",
-        usename: { chinese: "铜粒", english: "Copper nugget" },
-        type: 5,
-        maxstack: 64
-    },
-    131: {
-        name: "nether_quartz",
-        usename: { chinese: "下界石英", english: "Nether quartz" },
-        type: 5,
-        maxstack: 64
-    },
-    132: {
-        name: "netherite_scrap",
-        usename: { chinese: "下界之星碎片", english: "Netherite scrap" },
-        type: 5,
-        maxstack: 64
-    },
-    154: {
-        name: "copper_shovel",
-        usename: { chinese: "铜锹", english: "Copper Shovel" },
-        type: 2,
-        dig_speed: 5,
-        dig_level: 3,
-        dig_type: 2,
-        enchantType:"tool",
-        durability: 190,
-        maxstack: 1,
-    },
-    147: {
-        name: "copper_sword",
-        usename: { chinese: "铜剑", english: "Copper Sword" },
-        type: 2,
-        damage:6,
-        restTime:0.5,
-        dig_type: null,
-        enchantType:"sword",
-        durability: 190,
-        maxstack: 1,
-    },
-    107: {
-        name: "copper_pickaxe",
-        usename: { chinese: "铜镐", english: "Copper Pickaxe" },
-        type: 2,
-        dig_speed: 5,
-        dig_level: 3,
-        dig_type: 0,
-        enchantType:"tool",
-        durability: 190,
-        maxstack: 1,
-    },
-    133: {
-        name: "amethyst_shard",
-        usename: { chinese: "紫水晶碎片", english: "Amethyst shard" },
-        type: 5,
-        maxstack: 64
-    },140: {
-        name: "copper_axe",
-        usename: { chinese: "铜斧", english: "Copper Axe" },
-        type: 2,
-        dig_speed: 5,
-        dig_level: 3,
-        damage:6,
-        restTime:1,
-        dig_type: 1,
-        enchantType:"tool",
-        durability: 190,
-        maxstack: 1,
-    },*/
+     
     134: {
         name: "wooden_axe",
         usename: { chinese: "木斧", english: "Wooden Axe" },

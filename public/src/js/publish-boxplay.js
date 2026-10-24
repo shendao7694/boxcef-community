@@ -35,7 +35,7 @@ $('cover-preview').addEventListener('click', () => {
       const imgEl = $('cover-img');
       const textEl = $('cover-text');
       
-      // 核心修复：强行设置样式
+      
       imgEl.src = `/api/data/assets/${hash}`;
       imgEl.style.display = 'block'; 
       textEl.style.display = 'none';

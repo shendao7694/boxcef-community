@@ -26,8 +26,8 @@ function base58Encode(bytes) {
 export async function ipfsHash(bytes) {
   const digest = new Uint8Array(await crypto.subtle.digest('SHA-256', bytes));
   const multihash = new Uint8Array(2 + digest.length);
-  multihash[0] = 0x12; // sha2-256
-  multihash[1] = 0x20; // length 32
+  multihash[0] = 0x12; 
+  multihash[1] = 0x20; 
   multihash.set(digest, 2);
   return base58Encode(multihash);
 }

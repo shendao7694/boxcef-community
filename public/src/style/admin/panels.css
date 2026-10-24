@@ -1,6 +1,6 @@
-/* @path: src/style/admin/panels.css */
 
-/* ---------- comments / advice 共用作者单元格（含头像尺寸约束） ---------- */
+
+
 .cmt-author {
   display: inline-flex;
   align-items: center;
@@ -24,14 +24,14 @@
   margin-right: 4px;
 }
 
-/* ---------- comments ---------- */
+
 #comments-table td.cmt-content {
   max-width: 360px;
   white-space: normal;
   word-break: break-word;
 }
 
-/* ---------- advice ---------- */
+
 .advice-badge {
   display: inline-block;
   padding: 2px 8px;
@@ -44,7 +44,7 @@
 .advice-badge.status-accepted { background: #22c55e22; color: #15803d; border-color: #22c55e; }
 .advice-badge.status-rejected { background: #ff4d4d22; color: #b91c1c; border-color: #ff4d4d; }
 
-/* ---------- ads / titles（ad-item 复用） ---------- */
+
 .ad-list {
   display: flex;
   flex-direction: column;
@@ -137,7 +137,7 @@
   background: var(--card);
 }
 
-/* ---------- disc modal 内部 ---------- */
+
 .disc-box {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
@@ -190,7 +190,7 @@
   cursor: pointer;
 }
 
-/* ---------- user-title modal 内部 ---------- */
+
 .user-title-list {
   display: flex;
   flex-direction: column;

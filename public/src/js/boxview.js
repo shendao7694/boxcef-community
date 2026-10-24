@@ -137,14 +137,14 @@ function renderComment(c, idx, titles) {
   const actions = document.createElement('div');
   actions.className = 'comment-actions';
 
-  // 点赞
+  
   const likeBtn = document.createElement('button');
   likeBtn.textContent = `${c.like || 0} 赞${c.liked ? ' · 已赞' : ''}`;
   likeBtn.classList.toggle('active', !!c.liked);
   likeBtn.addEventListener('click', () => likeComment(idx, c.liked ? 'unlikeComment' : 'likeComment'));
   actions.appendChild(likeBtn);
 
-  // 回复
+  
   if (isLoggedIn) {
     const replyBtn = document.createElement('button');
     replyBtn.textContent = '回复';
@@ -152,7 +152,7 @@ function renderComment(c, idx, titles) {
     actions.appendChild(replyBtn);
   }
 
-  // 删除
+  
   if (isLoggedIn && (c.from === me?.sessionKey || isAuthor)) {
     const del = document.createElement('button');
     del.textContent = '删除';
@@ -160,7 +160,7 @@ function renderComment(c, idx, titles) {
     actions.appendChild(del);
   }
 
-  // 贴主置顶
+  
   if (isAuthor) {
     const pinBtn = document.createElement('button');
     pinBtn.className = 'pin-btn';
@@ -171,7 +171,7 @@ function renderComment(c, idx, titles) {
 
   wrap.appendChild(actions);
 
-  // 子回复渲染
+  
   if (c.reply && c.reply.length) {
     const replyList = document.createElement('div');
     replyList.className = 'reply-list';

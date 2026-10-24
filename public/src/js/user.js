@@ -171,7 +171,7 @@ async function loadBoxplays() {
 
     box.innerHTML = '';
     for (const b of list) {
-      // 别人看只能看到已通过的（后端已做过滤，这里防个万一）
+      
       if (b.status !== 'approved') continue;
 
       const item = document.createElement('a');

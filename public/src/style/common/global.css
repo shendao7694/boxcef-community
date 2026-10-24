@@ -188,7 +188,7 @@ button { font-family: inherit; }
 
 [hidden] { display: none !important; }
 
-/* ===== Avatar dropdown ===== */
+
 .nav-avatar-wrap { position: relative; }
 
 .nav-avatar-btn {
@@ -279,7 +279,7 @@ button { font-family: inherit; }
   white-space: nowrap;
 }
 
-/* ---------- nav mobile adaptation ---------- */
+
 .theme-toggle,
 .nav-avatar-btn {
   flex-shrink: 0;
@@ -331,7 +331,7 @@ button { font-family: inherit; }
     flex-shrink: 0;
   }
 
-  /* 关键修复：脱离 .nav-actions 的 overflow 约束 */
+  
   .nav-avatar-wrap {
     position: static;
   }

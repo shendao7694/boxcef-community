@@ -9,7 +9,7 @@
   min-height: calc(100vh - 73px);
 }
 
-/* ---------- left side ---------- */
+
 .kv-side {
   border-right: 1px solid var(--border);
   background: var(--card);
@@ -91,7 +91,7 @@
 
 .kv-count { font-size: 12px; color: var(--text-soft); }
 
-/* ---------- right side ---------- */
+
 .kv-main {
   display: flex;
   flex-direction: column;
@@ -245,7 +245,7 @@
     padding: 6px 8px;
   }
 
-  /* editor */
+  
   .kv-main {
     padding: 10px;
     gap: 8px;

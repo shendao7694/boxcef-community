@@ -59,7 +59,7 @@ function renderCard(item, titles) {
   const descText = isBox ? (item.description || '暂无简介') : (item.preview || '');
   const titleText = isBox ? item.title : (item.title || '无标题');
 
-  // 渲染置顶标签
+  
   const pinHtml = item.pinned 
     ? `<span class="tag pin-tag">${SVG_PIN}置顶</span>` 
     : '';
@@ -108,14 +108,14 @@ async function loadFeed() {
 
     allData = [...postData, ...boxData];
     
-    // 核心修复：置顶帖永远排在最前面，剩下的再按热度或时间排
+    
     allData.sort((a, b) => {
-      // 1. 置顶优先（仅针对帖子，BoxPlay 暂时没写置顶逻辑，如果有需要可以加上）
+      
       const aPin = a.pinned ? 1 : 0;
       const bPin = b.pinned ? 1 : 0;
       if (aPin !== bPin) return bPin - aPin;
 
-      // 2. 都没有置顶或都有置顶，看分类
+      
       if (currentTab === 'recommend') {
         return calcScore(b) - calcScore(a);
       } else {
@@ -163,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 广告加载
+  
   const AD_INTERVAL = 5000;
   let adTimer = null;
   let adIndex = 0;

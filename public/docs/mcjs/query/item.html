@@ -44,12 +44,12 @@
 
     function getItemAttrs(item) {
         const attrs = [];
-        if (item.type === 2) { // 工具/武器
+        if (item.type === 2) { 
             if (item.damage) attrs.push(`伤害:${item.damage}`);
             if (item.dig_speed) attrs.push(`挖掘:${item.dig_speed}`);
             if (item.dig_level) attrs.push(`等级:${item.dig_level}`);
             if (item.durability) attrs.push(`耐久:${item.durability}`);
-        } else if (item.type === 3) { // 装备
+        } else if (item.type === 3) { 
             if (item.armorValue) attrs.push(`护甲:${item.armorValue}`);
             if (item.knockbackResistance) attrs.push(`抗击退:${item.knockbackResistance}`);
             if (item.durability) attrs.push(`耐久:${item.durability}`);

@@ -43,7 +43,7 @@ export async function writePost(works, id, data) {
 }
 
 export async function getUserBySessionId(serviceOrEnv, sessionKey) {
-  // 兼容旧调用：传进来的是 Service KV；这里优先尝试 Users
+  
   const users = serviceOrEnv && typeof serviceOrEnv.get === 'function'
     ? serviceOrEnv
     : null;

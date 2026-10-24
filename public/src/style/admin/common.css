@@ -1,6 +1,6 @@
-/* @path: src/style/admin/common.css */
 
-/* ---------- row actions ---------- */
+
+
 .row-actions { display: flex; gap: 8px; }
 
 .row-actions button {
@@ -19,7 +19,7 @@
 .row-actions button:disabled { opacity: 0.4; cursor: not-allowed; }
 .row-actions button:disabled:hover { border-color: var(--border); color: var(--text); }
 
-/* ---------- empty ---------- */
+
 .empty {
   padding: 24px;
   text-align: center;
@@ -27,7 +27,7 @@
   font-size: 13px;
 }
 
-/* ---------- btn ---------- */
+
 .btn-danger {
   background: transparent;
   color: #ff4d4d;
@@ -46,7 +46,7 @@
   flex-wrap: wrap;
 }
 
-/* ---------- input ---------- */
+
 .search-input {
   padding: 8px 12px;
   border: 1px solid var(--border);
@@ -86,7 +86,7 @@
   accent-color: var(--accent);
 }
 
-/* ---------- modal 外壳 ---------- */
+
 .modal {
   position: fixed;
   inset: 0;

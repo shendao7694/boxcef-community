@@ -3,58 +3,53 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
- 
-<meta name="description" content="BOXCEF 是一个社区平台，你可以在这里发布帖子、分享作品，并与他人交流。">
-<meta name="keywords" content="BOXCEF">
-<title>游玩作品</title>
-<link rel="stylesheet" href="./src/style/common/global.css">
-<link rel="stylesheet" href="./src/style/common/toast.css">
+<title>作品游玩</title>
 <link rel="icon" type="image/png" href="./assets/favicon.png">
+<link rel="stylesheet" href="./src/style/common/global.css">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { height: 100vh; display: flex; flex-direction: column; overflow: hidden; background: var(--bg); }
   
-  /* 整体页面结构，让 iframe 撑满 nav 下方的区域 */
-  body { height: 100vh; display: flex; flex-direction: column; overflow: hidden; background: #000; }
-  .iframe-wrapper { flex: 1; width: 100%; position: relative; }
-  iframe { width: 100%; height: 100%; border: none; display: block; background: var(--bg-soft); }
+  .main-container { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; }
+  
+  .error-layer {
+    display: none; 
+    color: var(--text);
+    font-size: 24px; font-weight: 800;
+    text-align: center; padding: 20px;
+    z-index: 5;
+  }
 
-  /* 左侧悬浮收缩栏 - 已适配主题变量 */
+  .loading-layer {
+    display: flex; 
+    color: var(--text-soft);
+    font-size: 16px;
+    z-index: 5;
+  }
+
+  /* 悬浮侧边栏 */
   .sidebar {
     position: absolute; left: 0; top: 0; bottom: 0; width: 60px;
-    background: var(--card);
-    backdrop-filter: blur(8px);
+    background: var(--card); backdrop-filter: blur(8px);
     display: flex; flex-direction: column; gap: 10px; padding-top: 20px; align-items: center;
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s;
-    transform: translateX(-56px); /* 收起留 4px 触发区 */
-    z-index: 100;
-    border-right: 1px solid var(--border);
-    box-shadow: 4px 0 12px rgba(0,0,0,0.1);
+    transform: translateX(-56px); z-index: 100;
+    border-right: 1px solid var(--border); box-shadow: 4px 0 12px rgba(0,0,0,0.1);
   }
-  
-  /* 鼠标悬停展开 */
   .sidebar:hover { transform: translateX(0); }
+  .sidebar::after { content: ''; position: absolute; right: -8px; top: 0; bottom: 0; width: 8px; }
   
-  /* 边缘触发区，防止鼠标移过去的时候没触发 */
-  .sidebar::after {
-    content: ''; position: absolute; right: -8px; top: 0; bottom: 0; width: 8px;
-  }
-
   .sidebar-btn {
     width: 40px; height: 40px; border-radius: 8px;
     background: transparent; border: none; color: var(--text-soft);
     font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center;
     transition: background 0.2s, color 0.2s;
   }
-  
-  .sidebar-btn:hover {
-    background: var(--bg-soft);
-    color: var(--text);
-  }
+  .sidebar-btn:hover { background: var(--bg-soft); color: var(--text); }
 </style>
 </head>
 <body>
-  <!-- 标准 Nav -->
-  <nav class="nav" style="position: relative; z-index: 10;">
+  <nav class="nav">
     <a class="nav-brand" href="/">BOXCEF</a>
     <div class="nav-actions">
       <button id="theme-toggle" class="theme-toggle" aria-label="切换主题">
@@ -64,8 +59,7 @@
     </div>
   </nav>
 
-  <div class="iframe-wrapper">
-    <!-- 侧边悬浮栏 -->
+  <div class="main-container">
     <div class="sidebar">
       <button class="sidebar-btn" onclick="exitGame()" title="返回详情">
         <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
@@ -75,30 +69,54 @@
       </button>
     </div>
 
-    <iframe id="game-frame" allowfullscreen></iframe>
+    <div id="error-layer" class="error-layer"></div>
+    <div id="loading-layer" class="loading-layer">正在跳转...</div>
   </div>
 
   <script type="module" src="./src/js/common/theme.js"></script>
   <script type="module" src="./src/js/common/nav.js"></script>
   <script>
     const boxId = new URLSearchParams(location.search).get('id');
-    const frame = document.getElementById('game-frame');
+    const errorLayer = document.getElementById('error-layer');
+    const loadingLayer = document.getElementById('loading-layer');
 
-    if (boxId) {
-      fetch(`/api/works/boxplay/get?id=${boxId}`)
-        .then(r => r.json())
-        .then(d => {
-          if (d.success && d.boxplay && d.boxplay.playurl) {
-            frame.src = d.boxplay.playurl;
-          } else {
-            alert('获取游玩链接失败，作品可能审核中或不存在');
-            location.href = '/';
+    async function init() {
+      if (!boxId) {
+        errorLayer.textContent = '缺少作品 ID';
+        errorLayer.style.display = 'block';
+        loadingLayer.style.display = 'none';
+        return;
+      }
+
+      try {
+        const resSettings = await fetch('/api/settings');
+        const dataSettings = await resSettings.json();
+        
+        if (dataSettings.success && dataSettings.settings) {
+          if (dataSettings.settings.boxPlayStatus === false) {
+            const text = dataSettings.settings.boxPlayVaildText || 'BoxPlay 服务暂时关闭';
+            errorLayer.textContent = text;
+            errorLayer.style.display = 'block';
+            loadingLayer.style.display = 'none';
+            return; 
           }
-        })
-        .catch(() => alert('网络错误'));
-    } else {
-      alert('缺少参数');
-      location.href = '/';
+        }
+
+        const resPlay = await fetch(`/api/works/boxplay/get?id=${boxId}`);
+        const dataPlay = await resPlay.json();
+        
+        if (dataPlay.success && dataPlay.boxplay && dataPlay.boxplay.playurl) {
+          location.href = dataPlay.boxplay.playurl;
+        } else {
+          errorLayer.textContent = '获取游玩链接失败';
+          errorLayer.style.display = 'block';
+          loadingLayer.style.display = 'none';
+        }
+      } catch (err) {
+        errorLayer.textContent = '网络错误';
+        errorLayer.style.display = 'block';
+        loadingLayer.style.display = 'none';
+      }
     }
 
     function exitGame() {
@@ -117,6 +135,8 @@
         if (document.exitFullscreen) document.exitFullscreen();
       }
     }
+
+    init();
   </script>
 </body>
 </html>

@@ -15,5 +15,5 @@ export { bindTitles, loadTitles } from './titles.js';
 export { bindBoxplay, loadBoxplayList } from './boxplay.js';
 
 export function bindAllHandlers() {
-  // 这个函数在 main.js 里按需调用各 bind，顺序无关
+  
 }

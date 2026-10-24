@@ -3,8 +3,8 @@ import { ok, fail } from '../../_libs/response.js';
 import { verifyAdmin } from '../../_libs/admin.js';
 import { getWorks, readPost, writePost } from '../../_libs/post.js';
 
-// POST /api/admin/comment-delete { id, index, replyIndex? }
-// replyIndex omitted -> delete the whole comment; otherwise delete that reply
+
+
 export async function onRequestPost({ request, env }) {
   if (!verifyAdmin(request, env)) return fail('无权限', 401);
 

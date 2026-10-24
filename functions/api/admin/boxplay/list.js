@@ -37,7 +37,7 @@ export async function onRequestGet({ request, env }) {
     });
   }
 
-  // 按照待审核优先，然后按时间倒序
+  
   out.sort((a, b) => {
     if (a.status === 'pending' && b.status !== 'pending') return -1;
     if (a.status !== 'pending' && b.status === 'pending') return 1;
