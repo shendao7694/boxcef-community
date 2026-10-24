@@ -1,0 +1,16 @@
+.auth-extra {
+  text-align: right;
+  margin-top: -6px;
+  margin-bottom: 16px;
+  font-size: 13px;
+}
+
+.auth-extra a {
+  color: var(--text-soft);
+  transition: var(--transition);
+}
+
+.auth-extra a:hover {
+  color: var(--text);
+  text-decoration: underline;
+}

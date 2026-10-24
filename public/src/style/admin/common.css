@@ -1,0 +1,130 @@
+/* @path: src/style/admin/common.css */
+
+/* ---------- row actions ---------- */
+.row-actions { display: flex; gap: 8px; }
+
+.row-actions button {
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 12px;
+  transition: var(--transition);
+}
+
+.row-actions button:hover { border-color: var(--text); }
+.row-actions button.danger:hover { border-color: #ff4d4d; color: #ff4d4d; }
+.row-actions button:disabled { opacity: 0.4; cursor: not-allowed; }
+.row-actions button:disabled:hover { border-color: var(--border); color: var(--text); }
+
+/* ---------- empty ---------- */
+.empty {
+  padding: 24px;
+  text-align: center;
+  color: var(--text-soft);
+  font-size: 13px;
+}
+
+/* ---------- btn ---------- */
+.btn-danger {
+  background: transparent;
+  color: #ff4d4d;
+  border-color: #ff4d4d;
+}
+
+.btn-danger:hover {
+  background: #ff4d4d;
+  color: #ffffff;
+  opacity: 1;
+}
+
+.danger-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* ---------- input ---------- */
+.search-input {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  border-radius: 8px;
+  outline: none;
+  font-size: 13px;
+  min-width: 220px;
+}
+
+.search-input:focus { border-color: var(--text); }
+
+.mono-input {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  width: 100%;
+  resize: vertical;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card);
+}
+
+.checkbox-row input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+}
+
+/* ---------- modal 外壳 ---------- */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 20px;
+}
+
+.modal-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow);
+}
+
+.modal-card h2 {
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 20px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.modal-lg {
+  width: min(760px, 94vw);
+  max-height: 88vh;
+  overflow-y: auto;
+}

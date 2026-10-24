@@ -1,0 +1,103 @@
+[hidden] { display: none !important; }
+
+.oauth-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background: var(--bg-soft);
+}
+
+.oauth-card {
+  width: 100%;
+  max-width: 480px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.oauth-app {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.oauth-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  background: var(--bg-soft);
+  flex-shrink: 0;
+}
+
+.oauth-app-label { font-size: 12px; color: var(--text-soft); }
+.oauth-app-name { font-size: 16px; font-weight: 800; }
+
+.oauth-section-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-soft);
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.oauth-user-name { font-size: 15px; font-weight: 700; }
+.oauth-user-email { font-size: 13px; color: var(--text-soft); }
+
+.oauth-scopes {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.oauth-scopes li {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-soft);
+}
+
+.oauth-scopes code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  color: var(--text-soft);
+}
+
+.oauth-uri {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  word-break: break-all;
+  padding: 10px 12px;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  background: var(--bg-soft);
+  color: var(--text-soft);
+}
+
+.oauth-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.oauth-actions .btn { min-width: 100px; }
+
+.oauth-card h1 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
+.oauth-card .subtitle { font-size: 14px; color: var(--text-soft); }

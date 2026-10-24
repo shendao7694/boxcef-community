@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 
+<meta name="description" content="BOXCEF 是一个社区平台，你可以在这里发布帖子、分享作品，并与他人交流。">
+<meta name="keywords" content="BOXCEF">
+<title>Admin Page</title>
+<link rel="stylesheet" href="./src/style/common/global.css">
+<link rel="stylesheet" href="./src/style/common/toast.css">
+<link rel="stylesheet" href="./src/style/admin/style.css">
+<link rel="icon" type="image/png" href="./assets/favicon.png">
+</head>
+<body>
+<nav class="nav">
+  <a class="nav-brand" href="/">BOXCEF</a>
+  <div class="nav-actions">
+    <button id="refresh-btn" class="btn btn-ghost" hidden>刷新</button>
+    <button id="logout-btn" class="btn btn-ghost" hidden>退出管理</button>
+    <button id="theme-toggle" class="theme-toggle" aria-label="切换主题">
+      <svg id="sun-icon" class="icon" viewBox="0 0 24 24"><path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z"/></svg>
+      <svg id="moon-icon" class="icon" viewBox="0 0 24 24" style="display:none"><path d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.7-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z"/></svg>
+    </button>
+  </div>
+</nav>
+
+<div id="login-view" class="auth-wrap">
+  <div class="auth-card">
+    <h1>管理员登录</h1>
+    <p class="subtitle">请输入 Admin Token</p>
+    <div class="input-group">
+      <label for="admin-token">Admin Token</label>
+      <input type="password" id="admin-token" autocomplete="off" placeholder="Bearer token">
+    </div>
+    <button class="btn" style="width:100%" id="admin-login-btn">进入</button>
+  </div>
+</div>
+
+<main id="panel-view" class="admin-wrap" hidden>
+  <aside class="admin-side">
+    <div class="admin-group">
+      <button type="button" class="admin-group-head">
+        <span class="admin-group-title">
+          <svg class="icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M6 2h8.5L20 7.5V22H6V2zm8 1.7V8h4.3L14 3.7zM8 11h8v1.6H8V11zm0 4h8v1.6H8V15zm0 4h5v1.6H8V19z"/></svg>
+          内容管理
+        </span>
+        <svg class="chevron" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+      </button>
+      <div class="admin-group-body">
+        <button type="button" class="admin-nav-item active" data-view="posts">帖子管理</button>
+        <button type="button" class="admin-nav-item" data-view="comments">评论管理</button>
+        <button type="button" class="admin-nav-item" data-view="boxplay">作品审核</button>
+        <button type="button" class="admin-nav-item" data-view="ads">广告管理</button>
+        <button type="button" class="admin-nav-item" data-view="titles">头衔管理</button>
+      </div>
+    </div>
+
+    <div class="admin-group">
+      <button type="button" class="admin-group-head">
+        <span class="admin-group-title">
+          <svg class="icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 12a4 4 0 100-8 4 4 0 000 8zm0 2c-4.42 0-8 2.24-8 5v2h16v-2c0-2.76-3.58-5-8-5z"/></svg>
+          用户与权限
+        </span>
+        <svg class="chevron" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+      </button>
+      <div class="admin-group-body">
+        <button type="button" class="admin-nav-item" data-view="users">用户列表</button>
+        <button type="button" class="admin-nav-item" data-view="verifications">邮箱验证码</button>
+        <button type="button" class="admin-nav-item" data-view="advice">建议管理</button>
+      </div>
+    </div>
+
+    <div class="admin-group">
+      <button type="button" class="admin-group-head">
+        <span class="admin-group-title">
+          <svg class="icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M4 5a2 2 0 012-2h12a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm2 0v9h12V5H6zm0 11v3h5v-3H6zm7 0v3h5v-3h-5z"/></svg>
+          存储管理
+        </span>
+        <svg class="chevron" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+      </button>
+      <div class="admin-group-body">
+        <button type="button" class="admin-nav-item" data-view="assets">图片资源</button>
+      </div>
+    </div>
+
+    <div class="admin-group">
+      <button type="button" class="admin-group-head">
+        <span class="admin-group-title">
+          <svg class="icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19.14 12.94a7.07 7.07 0 000-1.88l2.03-1.58a.5.5 0 00.12-.64l-1.92-3.32a.5.5 0 00-.61-.22l-2.39.96a7.03 7.03 0 00-1.62-.94l-.36-2.54a.5.5 0 00-.5-.42h-3.84a.5.5 0 00-.5.42l-.36 2.54c-.58.24-1.13.55-1.62.94l-2.39-.96a.5.5 0 00-.61.22L2.65 8.84a.5.5 0 00.12.64l2.03 1.58a7.07 7.07 0 000 1.88l-2.03 1.58a.5.5 0 00-.12.64l1.92 3.32c.13.23.4.32.61.22l2.39-.96c.49.39 1.04.7 1.62.94l.36 2.54c.04.24.25.42.5.42h3.84c.25 0 .46-.18.5-.42l.36-2.54c.58-.24 1.13-.55 1.62-.94l2.39.96c.21.1.48.01.61-.22l1.92-3.32a.5.5 0 00-.12-.64l-2.03-1.58zM12 15.5A3.5 3.5 0 1112 8.5a3.5 3.5 0 010 7z"/></svg>
+          系统
+        </span>
+        <svg class="chevron" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+      </button>
+      <div class="admin-group-body">
+        <button type="button" class="admin-nav-item" data-view="settings">全局设置</button>
+        <button type="button" class="admin-nav-item" data-view="danger">危险操作</button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="admin-main">
+    <section class="admin-card" data-panel="boxplay">
+      <div class="card-head">
+        <h2>作品审核 <span id="boxplay-count" class="count">0</span></h2>
+      </div>
+      <div class="table-wrap">
+        <table id="boxplay-table">
+          <thead>
+            <tr>
+              <th>封面</th>
+              <th>标题</th>
+              <th>作者</th>
+              <th>游玩链接</th>
+              <th>状态</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="admin-card" data-panel="titles">
+      <div class="card-head">
+        <h2>头衔 <span id="title-count" class="count">0</span></h2>
+        <div class="card-head-actions">
+          <button class="btn btn-ghost" id="title-add-btn">新建头衔</button>
+        </div>
+      </div>
+      <div id="title-list" class="ad-list"></div>
+    </section>
+
+    <section class="admin-card" data-panel="posts">
+      <div class="card-head">
+        <h2>帖子 <span id="post-count" class="count">0</span></h2>
+        <div class="card-head-actions">
+          <input type="text" id="post-search" class="search-input" placeholder="搜索标题 / 作者">
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table id="posts-table">
+          <thead>
+            <tr>
+              <th>id</th>
+              <th>标题</th>
+              <th>作者</th>
+              <th>赞</th>
+              <th>评论数</th>
+              <th>创建时间</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="admin-card" data-panel="advice">
+      <div class="card-head">
+        <h2>建议 <span id="advice-count" class="count">0</span></h2>
+        <div class="card-head-actions">
+          <select id="advice-filter" class="search-input">
+            <option value="">全部</option>
+            <option value="pending">待处理</option>
+            <option value="accepted">已接受</option>
+            <option value="rejected">已拒绝</option>
+          </select>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table id="advice-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>用户</th>
+              <th>内容</th>
+              <th>状态</th>
+              <th>时间</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="admin-card" data-panel="comments">
+      <div class="card-head">
+        <h2>评论管理</h2>
+        <div class="card-head-actions">
+          <select id="comment-post-select" class="search-input">
+            <option value="">选择帖子…</option>
+          </select>
+        </div>
+      </div>
+      <div id="comments-empty" class="empty-text" style="padding: 20px 0;">请选择一个帖子查看其评论</div>
+      <div class="table-wrap" id="comments-wrap" hidden>
+        <table id="comments-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>作者</th>
+              <th>内容</th>
+              <th>回复数</th>
+              <th>赞</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="admin-card" data-panel="ads">
+      <div class="card-head">
+        <h2>广告 <span id="ad-count" class="count">0</span></h2>
+        <div class="card-head-actions">
+          <button class="btn btn-ghost" id="ad-add-btn">添加广告</button>
+        </div>
+      </div>
+      <div id="ad-list" class="ad-list"></div>
+    </section>
+
+    <section class="admin-card" data-panel="users">
+      <div class="card-head">
+        <h2>用户 <span id="user-count" class="count">0</span></h2>
+        <div class="card-head-actions">
+          <button class="btn btn-ghost" id="add-user-btn">添加用户</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table id="users-table">
+          <thead>
+            <tr>
+              <th>头像</th>
+              <th>name</th>
+              <th>nickname</th>
+              <th>email</th>
+              <th>group</th>
+              <th>limit</th>
+              <th>lastLogin</th>
+              <th>IP</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="admin-card" data-panel="assets">
+      <div class="card-head">
+        <h2>资源 <span id="asset-count" class="count">0</span></h2>
+        <div class="card-head-actions">
+          <button class="btn btn-ghost" id="upload-asset-btn">上传文件</button>
+          <input type="file" id="asset-input" hidden>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table id="assets-table">
+          <thead>
+            <tr>
+              <th>hash / key</th>
+              <th>type</th>
+              <th>size</th>
+              <th>date</th>
+              <th>预览</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="admin-card" data-panel="verifications">
+      <h2>验证码 <span id="verification-count" class="count">0</span></h2>
+      <div class="table-wrap">
+        <table id="verifications-table">
+          <thead>
+            <tr>
+              <th>key</th>
+              <th>purpose</th>
+              <th>code</th>
+              <th>expire</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="admin-card" data-panel="settings">
+      <h2>globalSettings</h2>
+      <form id="settings-form">
+        <div class="form-grid">
+          <div class="input-group">
+            <label for="tokenValidTime">tokenValidTime（分钟）</label>
+            <input type="number" id="tokenValidTime" min="1">
+          </div>
+          <div class="input-group">
+            <label>registerNeedEmailVerity</label>
+            <label class="checkbox-row">
+              <input type="checkbox" id="registerNeedEmailVerity">
+              开启邮箱验证
+            </label>
+          </div>
+          <div class="input-group">
+            <label for="maxUploadSize">maxUploadSize（KB，默认 100）</label>
+            <input type="number" id="maxUploadSize" min="1">
+          </div>
+          <div class="input-group">
+            <label for="buildUserIdxTime">buildUserIdxTime（小时，默认 168）</label>
+            <input type="number" id="buildUserIdxTime" min="1">
+          </div>
+          <div class="input-group">
+            <label for="maxImageInDisc">maxImageInDisc（张，默认 20）</label>
+            <input type="number" id="maxImageInDisc" min="1">
+          </div>
+        </div>
+        <button type="submit" class="btn" id="save-settings-btn">保存设置</button>
+      </form>
+    </section>
+
+    <section class="admin-card" data-panel="danger">
+      <h2>危险操作</h2>
+      <p class="subtitle">这些操作不可逆，请谨慎执行。</p>
+      <div class="danger-row">
+        <button class="btn btn-ghost" id="rebuild-idx-btn">重建用户索引</button>
+        <button class="btn btn-ghost" id="reset-btn">重置 KV（保留用户）</button>
+        <button class="btn btn-danger" id="purge-btn">清空所有用户数据</button>
+      </div>
+    </section>
+  </div>
+</main>
+
+<div id="edit-modal" class="modal" hidden>
+  <div class="modal-card">
+    <h2>编辑用户</h2>
+    <form id="edit-form" novalidate>
+      <div class="input-group">
+        <label for="e-name">name</label>
+        <input type="text" id="e-name">
+      </div>
+      <div class="input-group">
+        <label for="e-nickname">nickname</label>
+        <input type="text" id="e-nickname">
+      </div>
+      <div class="input-group">
+        <label for="e-email">email</label>
+        <input type="email" id="e-email">
+      </div>
+      <div class="input-group">
+        <label for="e-group">group</label>
+        <input type="text" id="e-group">
+      </div>
+      <div class="input-group">
+        <label for="e-description">description</label>
+        <textarea id="e-description" rows="3"></textarea>
+      </div>
+      <div class="input-group">
+        <label for="e-avatar">avatar（hash 或 COMMON:normal_avatar）</label>
+        <input type="text" id="e-avatar">
+      </div>
+      <div class="input-group">
+        <label for="e-max-upload">limit.maxUploadSize（KB，留空继承全局）</label>
+        <input type="number" id="e-max-upload" min="1">
+      </div>
+      <div class="input-group">
+        <label for="e-max-image">limit.maxImageInDisc（张，留空继承全局）</label>
+        <input type="number" id="e-max-image" min="1">
+      </div>
+      <div class="input-group">
+        <label for="e-publish-post-max">publishPostMax（单人发帖上限）</label>
+        <input type="number" id="e-publish-post-max" min="1">
+      </div>
+      <div class="input-group">
+        <label for="e-publish-box-max">publishBoxPlayMax（单人作品上限）</label>
+        <input type="number" id="e-publish-box-max" min="1">
+      </div>
+      <div class="input-group">
+        <label for="e-publish-post-cool">publishPostCooling（发帖冷却/秒）</label>
+        <input type="number" id="e-publish-post-cool" min="0">
+      </div>
+      <div class="input-group">
+        <label for="e-publish-box-cool">publishBoxPlayCooling（作品冷却/秒）</label>
+        <input type="number" id="e-publish-box-cool" min="0">
+      </div>
+      <div class="input-group">
+        <label for="e-password">新密码（留空不改；改 name/email 时必须填）</label>
+        <input type="password" id="e-password" autocomplete="new-password">
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="e-cancel">取消</button>
+        <button type="submit" class="btn" id="e-save">保存</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="title-modal" class="modal" hidden>
+  <div class="modal-card">
+    <h2 id="title-modal-title">新建头衔</h2>
+    <form id="title-form" novalidate>
+      <input type="hidden" id="t-id">
+      <div class="input-group">
+        <label for="t-name">名称</label>
+        <input type="text" id="t-name" maxlength="20">
+      </div>
+      <div class="input-group">
+        <label for="t-bg-type">背景类型</label>
+        <select id="t-bg-type">
+          <option value="color">颜色</option>
+          <option value="image">图片（assets hash）</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label for="t-bg-data">背景值</label>
+        <input type="text" id="t-bg-data" placeholder="#000000 或 Qm...">
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="t-cancel">取消</button>
+        <button type="submit" class="btn" id="t-save">保存</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="user-title-modal" class="modal" hidden>
+  <div class="modal-card modal-lg">
+    <h2>管理头衔 · <span id="user-title-name"></span></h2>
+    <input type="hidden" id="user-title-key">
+    <div id="user-title-list" class="user-title-list"></div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-ghost" id="ut-cancel">取消</button>
+      <button type="button" class="btn" id="ut-save">保存</button>
+    </div>
+  </div>
+</div>
+
+<div id="disc-modal" class="modal" hidden>
+  <div class="modal-card modal-lg">
+    <h2>管理图盘 · <span id="disc-user-name"></span></h2>
+    <input type="hidden" id="disc-user-key">
+    <div id="disc-admin-list" class="disc-box" style="max-height: 400px; overflow-y: auto; padding: 4px;"></div>
+    <div class="modal-actions" style="justify-content: space-between; margin-top: 20px;">
+      <button type="button" class="btn btn-danger" id="disc-admin-delete-btn" style="display: none;">删除选中</button>
+      <button type="button" class="btn btn-ghost" id="disc-admin-cancel">关闭</button>
+    </div>
+  </div>
+</div>
+
+<div id="ad-modal" class="modal" hidden>
+  <div class="modal-card modal-lg">
+    <h2 id="ad-modal-title">编辑广告</h2>
+    <form id="ad-form" novalidate>
+      <input type="hidden" id="ad-index">
+      <div class="input-group">
+        <label for="ad-image">背景图 hash（可选，来自 Community-Assets）</label>
+        <input type="text" id="ad-image" placeholder="COMMUNITY:normal_avatar 或 64 位 hash">
+      </div>
+      <div class="input-group">
+        <label for="ad-text">文字（支持 Markdown）</label>
+        <textarea id="ad-text" class="mono-input" rows="6"></textarea>
+      </div>
+      <div class="input-group">
+        <label for="ad-link">跳转链接（留空为不可点击）</label>
+        <input type="text" id="ad-link" placeholder="https://example.com">
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="ad-cancel">取消</button>
+        <button type="submit" class="btn" id="ad-save">保存</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="create-modal" class="modal" hidden>
+  <div class="modal-card">
+    <h2>添加用户</h2>
+    <form id="create-form" novalidate>
+      <div class="input-group">
+        <label for="c-name">name *</label>
+        <input type="text" id="c-name">
+      </div>
+      <div class="input-group">
+        <label for="c-nickname">nickname</label>
+        <input type="text" id="c-nickname">
+      </div>
+      <div class="input-group">
+        <label for="c-email">email *</label>
+        <input type="email" id="c-email">
+      </div>
+      <div class="input-group">
+        <label for="c-password">password *</label>
+        <input type="password" id="c-password" autocomplete="new-password">
+      </div>
+      <div class="input-group">
+        <label for="c-group">group</label>
+        <input type="text" id="c-group" placeholder="user">
+      </div>
+      <div class="input-group">
+        <label for="c-description">description</label>
+        <textarea id="c-description" rows="3"></textarea>
+      </div>
+      <div class="input-group">
+        <label for="c-avatar">avatar（留空为默认头像）</label>
+        <input type="text" id="c-avatar" placeholder="COMMON:normal_avatar">
+      </div>
+      <div class="input-group">
+        <label for="c-max-upload">limit.maxUploadSize（KB，留空继承全局）</label>
+        <input type="number" id="c-max-upload" min="1">
+      </div>
+      <div class="input-group">
+        <label for="c-max-image">limit.maxImageInDisc（张，留空继承全局）</label>
+        <input type="number" id="c-max-image" min="1">
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="c-cancel">取消</button>
+        <button type="submit" class="btn" id="c-save">创建</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="verify-modal" class="modal" hidden>
+  <div class="modal-card">
+    <h2>编辑验证码</h2>
+    <form id="verify-form" novalidate>
+      <div class="input-group">
+        <label for="v-key">key</label>
+        <input type="text" id="v-key" disabled>
+      </div>
+      <div class="input-group">
+        <label for="v-code">code</label>
+        <input type="text" id="v-code" maxlength="8">
+      </div>
+      <div class="input-group">
+        <label for="v-expire">expire（时间戳，毫秒）</label>
+        <input type="number" id="v-expire">
+      </div>
+      <div class="input-group">
+        <label for="v-ttl">剩余 TTL（秒，可留空）</label>
+        <input type="number" id="v-ttl" min="60">
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="v-cancel">取消</button>
+        <button type="submit" class="btn" id="v-save">保存</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="post-edit-modal" class="modal" hidden>
+  <div class="modal-card modal-lg">
+    <h2>编辑帖子</h2>
+    <form id="post-edit-form" novalidate>
+      <input type="hidden" id="pe-id">
+      <div class="input-group">
+        <label for="pe-title">标题（留空为无标题）</label>
+        <input type="text" id="pe-title" maxlength="100">
+      </div>
+      <div class="input-group">
+        <label for="pe-content">内容（支持 Markdown / 长代码 / iframe 嵌入）</label>
+        <textarea id="pe-content" class="mono-input" rows="16"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="pe-cancel">取消</button>
+        <button type="submit" class="btn" id="pe-save">保存修改</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script type="module" src="./src/js/common/theme.js"></script>
+<script type="module" src="./src/js/admin/main.js"></script>
+</body>
+</html>

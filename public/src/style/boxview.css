@@ -1,0 +1,100 @@
+/* @path: src/style/boxview.css */
+[hidden] { display: none !important; }
+
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 20px;
+  width: 100%;
+}
+
+.boxview-layout {
+  display: flex;
+  gap: 24px;
+  width: 100%;
+}
+
+.bv-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.bv-cover {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  object-fit: cover;
+  display: block;
+  aspect-ratio: 4 / 3;
+  background: var(--bg-soft);
+}
+
+.bv-right {
+  width: 320px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.bv-box {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.bv-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.bv-author img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.bv-title {
+  font-size: 20px;
+  font-weight: 800;
+  margin-top: 12px;
+}
+
+.bv-desc {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text);
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.start-btn {
+  width: 100%;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.comments-wrap {
+  width: 100%;
+  margin-top: 24px;
+}
+
+.comments {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+
+@media (max-width: 860px) {
+  .boxview-layout {
+    flex-direction: column;
+  }
+  .bv-right {
+    width: 100%;
+  }
+}

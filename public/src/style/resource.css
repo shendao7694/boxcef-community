@@ -1,0 +1,138 @@
+[hidden] { display: none !important; }
+
+.resource-wrap {
+  flex: 1;
+  max-width: 860px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px 20px 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.resource-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.resource-head h1 {
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.res-search {
+  flex: 1;
+  max-width: 360px;
+  min-width: 200px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  border-radius: 8px;
+  outline: none;
+  font-size: 14px;
+}
+
+.res-search:focus { border-color: var(--text); }
+
+.tree {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow);
+  padding: 12px 16px;
+}
+
+.tree-group {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.tree-group .tree-group {
+  padding-left: 20px;
+  border-left: 1px dashed var(--border);
+  margin-left: 8px;
+}
+
+.tree-item {
+  padding: 2px 0;
+}
+
+.tree-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 6px 8px;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: var(--transition);
+}
+
+.tree-toggle:hover { background: var(--bg-soft); }
+
+.tree-caret {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+  fill: currentColor;
+}
+
+.tree-item.open > .tree-toggle .tree-caret {
+  transform: rotate(90deg);
+}
+
+.tree-item:not(.open) > .tree-group {
+  display: none;
+}
+
+.tree-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px 6px 26px;
+  color: var(--text-soft);
+  font-size: 14px;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: var(--transition);
+  word-break: break-all;
+}
+
+.tree-link:hover {
+  color: var(--text);
+  background: var(--bg-soft);
+  text-decoration: underline;
+}
+
+.tree-link .icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  fill: currentColor;
+  opacity: .7;
+}
+
+.tree-empty {
+  padding: 32px 16px;
+  text-align: center;
+  color: var(--text-soft);
+  font-size: 14px;
+}
+
+@media (max-width: 640px) {
+  .resource-head { flex-direction: column; align-items: stretch; }
+  .res-search { max-width: none; }
+}

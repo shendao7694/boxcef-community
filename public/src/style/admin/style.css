@@ -1,0 +1,6 @@
+/* @path: src/style/admin/main.css */
+@import './base.css';
+@import './nav.css';
+@import './common.css';
+@import './panels.css';
+@import './adapt/main.css';

@@ -1,0 +1,4 @@
+/* @path: src/style/admin/adapt/main.css */
+@import './tablet.css';
+@import './mobile.css';
+@import './small.css';

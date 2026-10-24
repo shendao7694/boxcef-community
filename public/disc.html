@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 
+<meta name="description" content="BOXCEF 是一个社区平台，你可以在这里发布帖子、分享作品，并与他人交流。">
+<meta name="keywords" content="BOXCEF">
+<title>我的图盘</title>
+<link rel="stylesheet" href="./src/style/common/global.css">
+<link rel="stylesheet" href="./src/style/common/toast.css">
+<link rel="stylesheet" href="./src/style/disc.css">
+<link rel="icon" type="image/png" href="./assets/favicon.png">
+</head>
+<body>
+<nav class="nav">
+  <a class="nav-brand" href="/">BOXCEF</a>
+  <div class="nav-actions">
+    <a class="btn btn-ghost" href="/profile.html">返回个人主页</a>
+    <button id="theme-toggle" class="theme-toggle" aria-label="切换主题">
+      <svg id="sun-icon" class="icon" viewBox="0 0 24 24"><path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z"/></svg>
+      <svg id="moon-icon" class="icon" viewBox="0 0 24 24" style="display:none"><path d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.7-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z"/></svg>
+    </button>
+  </div>
+</nav>
+
+<main class="disc-wrap">
+  <div class="disc-container">
+    
+    <!-- 空间概览 -->
+     <section class="disc-section">
+      <div class="disc-storage-row">
+        <div class="disc-storage-info">
+          <h2>已使用张数</h2>
+          <span id="disc-count-text">0 / 20</span>
+        </div>
+        <button class="btn" id="disc-upload-btn">
+          <svg class="icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+          上传图片
+        </button>
+        <input type="file" id="disc-file-input" accept="image/*" multiple hidden>
+      </div>
+      <div class="disc-progress-bar" style="margin-top: 12px;">
+        <div class="disc-progress-fill" id="disc-space-fill" style="width: 0%;"></div>
+      </div>
+    </section>
+
+    <!-- 上传记录 -->
+    <section class="disc-section" id="disc-history-section" hidden>
+      <div class="disc-history-head">
+        <h2>上传记录</h2>
+        <span id="disc-history-text">共 0 张，已上传 0 张，失败 0 张</span>
+      </div>
+      <div class="disc-progress-bar" style="margin-top: 8px; height: 4px;">
+        <div class="disc-progress-fill" id="disc-history-fill" style="width: 0%; background: #ff4d4d;"></div>
+      </div>
+      <div id="disc-history-list" class="disc-history-list"></div>
+    </section>
+
+    <!-- 图片列表区 -->
+    <section class="disc-section">
+      <div class="disc-toolbar">
+        <div class="disc-tabs">
+          <button class="disc-tab active">可用图片</button>
+        </div>
+        <div class="disc-toolbar-actions">
+          <label class="disc-checkbox-label">
+            <input type="checkbox" id="disc-select-all"> 全选
+          </label>
+          <span id="disc-selected-count" class="disc-count">已选 0 张</span>
+          <button class="btn btn-danger btn-sm" id="disc-delete-btn" disabled>
+            <svg class="icon" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+            删除
+          </button>
+        </div>
+      </div>
+
+      <!-- 引用代码区 -->
+      <div class="disc-ref-box" id="disc-ref-box" hidden>
+        <h3>图片引用</h3>
+        <div class="disc-ref-row">
+          <input type="text" id="disc-ref-input" readonly class="disc-ref-input">
+          <button class="btn btn-ghost" id="disc-copy-btn">复制引用</button>
+          <a class="btn btn-ghost" href="/publish-post.html" target="_blank">去发帖</a>
+        </div>
+      </div>
+
+      <div class="disc-box" id="disc-box">
+        <div class="empty-text">加载中...</div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<script type="module" src="./src/js/common/theme.js"></script>
+<script type="module" src="./src/js/common/nav.js"></script>
+<script type="module" src="./src/js/disc.js"></script>
+</body>
+</html>

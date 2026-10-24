@@ -1,0 +1,63 @@
+[
+  {
+    "id": "content",
+    "title": "游戏内容",
+    "type": "folder",
+    "open":true,
+    "children": [
+      { "id": "intro", "title": "游戏简介", "file": "intro.md", "type": "leaf" },
+      { "id": "survival-guide", "title": "生存指南", "file": "survival.md", "type": "leaf" }
+    ]
+  },
+  {
+    "id": "commands",
+    "title": "指令",
+    "type": "folder",
+    "open":true,
+    "children": [
+      { "id": "commands-full", "title": "指令大全", "file": "command/main.md", "type": "leaf" },
+      { "id": "give-format", "title": "命令给予规范", "file": "command/give-format.md", "type": "leaf" },
+      { "id": "ct-format", "title": "颜色字体规范(.ct)", "file": "command/ct-format.md", "type": "leaf" }
+    ]
+  },
+  {
+    "id": "query",
+    "title": "查询",
+    "type": "folder",
+    "open":true,
+    "children": [
+      { "id": "item-query", "title": "物品查询", "file": "query/item.html", "type": "leaf" },
+      { "id": "recipe-query", "title": "配方查询", "file": "query/recipe.html", "type": "leaf" }
+    ]
+  },
+  {
+    "id": "nether",
+    "title": "世界维度",
+    "type": "folder",
+    "open":true,
+    "children": [
+      { "id": "nether-page", "title": "[下界]Nether", "file": "nether.md", "type": "leaf" }
+    ]
+  },
+  {
+    "id": "modding",
+    "title": "模组开发",
+    "type": "folder",
+    "open":true,
+    "children": [
+      { "id": "mod-intro", "title": "模组编写与使用", "file": "modding/intro.md", "type": "leaf" },
+      {
+        "id": "mod-api",
+        "title": "接口",
+        "type": "folder",
+        "open":true,
+        "children": [
+          { "id": "mod-system", "title": "System", "file": "modding/system.md", "type": "leaf" },
+          { "id": "mod-debug", "title": "Debug", "file": "modding/debug.md", "type": "leaf" },
+          { "id": "mod-minecraftdata", "title": "Data", "file": "modding/minecraftdata.md", "type": "leaf" }
+        ]
+      },
+      { "id": "mod-supplement", "title": "补充说明", "file": "modding/supplement.md", "type": "leaf" }
+    ]
+  }
+]

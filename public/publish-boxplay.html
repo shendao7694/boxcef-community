@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>发布作品</title>
+<meta name="description" content="BOXCEF 是一个社区平台，你可以在这里发布帖子、分享作品，并与他人交流。">
+<link rel="stylesheet" href="./src/style/common/global.css">
+<link rel="stylesheet" href="./src/style/common/toast.css">
+<link rel="stylesheet" href="./src/style/publish-boxplay.css">
+<link rel="icon" type="image/png" href="./assets/favicon.png">
+</head>
+<body>
+<nav class="nav">
+  <a class="nav-brand" href="/">BOXCEF</a>
+  <div class="nav-actions">
+    <button id="theme-toggle" class="theme-toggle" aria-label="切换主题">
+      <svg id="sun-icon" class="icon" viewBox="0 0 24 24"><path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z"/></svg>
+      <svg id="moon-icon" class="icon" viewBox="0 0 24 24" style="display:none"><path d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.7-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z"/></svg>
+    </button>
+  </div>
+</nav>
+
+<main class="publish-wrap">
+  <section class="publish-card">
+    <div class="publish-head">
+      <h1>发布 BoxPlay 作品</h1>
+      <button class="btn" id="publish-btn">提交审核</button>
+    </div>
+
+    <div class="input-group">
+      <label for="b-title">作品名称</label>
+      <input type="text" id="b-title" maxlength="50" placeholder="给作品起个名字">
+    </div>
+
+    <div class="input-group">
+      <label for="b-url">游玩链接 (iframe 地址)</label>
+      <input type="text" id="b-url" placeholder="https://...">
+    </div>
+
+    <div class="input-group">
+      <label for="b-desc">简介</label>
+      <textarea id="b-desc" rows="5" maxlength="2000" placeholder="描述一下这个作品..."></textarea>
+    </div>
+
+    <div class="input-group">
+      <label>封面（从个人图盘选择）</label>
+      <div id="cover-preview" class="cover-preview">
+        <span id="cover-text" class="cover-text">点击选择封面</span>
+        <img id="cover-img" src="" alt="封面预览" style="display: none;">
+      </div>
+      <input type="hidden" id="b-cover">
+    </div>
+  </section>
+</main>
+
+<!-- 图盘选择模态框 -->
+<div id="disc-modal" class="modal" hidden>
+  <div class="modal-card modal-lg">
+    <h2>选择封面</h2>
+    <div id="disc-list" class="disc-grid"></div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-ghost" id="disc-cancel">取消</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="./src/js/common/theme.js"></script>
+<script type="module" src="./src/js/common/nav.js"></script>
+<script type="module" src="./src/js/publish-boxplay.js"></script>
+</body>
+</html>

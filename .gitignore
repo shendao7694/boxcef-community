@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.wrangler/
+.server/
+wrangler.toml
+
+public/assets/*
+!public/assets/favicon.png

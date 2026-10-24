@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft JS Edition Wiki</title>
+    <link rel="stylesheet" href="public/style.css">
+    <link rel="icon" href="public/icon.png" type="image/png">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
+</head>
+<body>
+    <div class="background-container">
+        <img src="public/backGround.webp" alt="background" class="background-image">
+        <div class="background-overlay"></div>
+    </div>
+
+    <div class="wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1>Minecraft JS Edition</h1>
+                <div style="margin-top: 20px;">
+                <a href="/?page=nav" style="display: inline-block; padding: 4px 12px; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px; font-size: 14px;">
+                    返回主页(Boxcef Communitys)
+                </a>
+            </div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="tree-view" id="sidebar-tree">
+                    
+                </div>
+            </nav>
+        </aside>
+
+        <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+        <main class="main-content">
+            <div class="theme-toggle-wrapper">
+                <button class="theme-toggle-btn" id="theme-toggle">🌙</button>
+            </div>
+            <button class="menu-toggle" id="menu-toggle">
+                <span></span><span></span><span></span>
+            </button>
+
+            <div id="content-container" class="section">
+                <h2>正在加载 Wiki...</h2>
+            </div>
+
+            <div class="back-to-top" id="back-to-top"></div>
+        </main>
+    </div>
+
+    <script type="module" src="public/items.js"></script>
+    <script type="module" src="public/wiki.js" defer></script>
+</body>
+</html>

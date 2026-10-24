@@ -1,0 +1,30 @@
+{
+  "name": "web",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx wrangler pages dev ./public/ --local",
+    "deploy": "npm run build && npx wrangler pages deploy ./dist/",
+    "build": "node ./scripts/build.js",
+    "build:vite": "vite build",
+    "build:dev": "vite",
+    "server": "node ./server/cli.js",
+    "server2": "npx wrangler pages dev ./dist/ --local",
+    "archive": "node ./scripts/archive.js",
+    "tree": "node ./scripts/tree.js"
+  },
+  "type": "module",
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "copy-webpack-plugin": "^14.0.0",
+    "vite": "^8.2.1"
+  },
+  "devDependencies": {
+    "glob": "^13.0.6",
+    "html-webpack-plugin": "^5.6.8",
+    "webpack-cli": "^7.2.2",
+    "wrangler": "^4.152.0"
+  }
+}

@@ -1,0 +1,95 @@
+<h2>配方查询系统</h2>
+<div class="search-box" style="margin-bottom: 20px;">
+    <input type="text" id="recipeSearchInput" class="search-input" placeholder="输入物品名称或材料查询...">
+    <button id="recipeSearchBtn" class="search-button">查询配方</button>
+</div>
+<div id="recipeSearchResults" class="search-results" style="max-height: 400px; overflow-y: auto; margin-bottom: 20px;"></div>
+
+<div class="info-box">
+    <h3>配方列表</h3>
+    <div class="table-wrapper">
+        <table class="item-table" id="recipeTable">
+            <thead><tr><th>配方ID</th><th>合成物品</th><th>数量</th><th>合成网格</th></tr></thead>
+            <tbody id="recipeTableBody"></tbody>
+        </table>
+    </div>
+    <div class="pagination" id="recipePagination">
+        <button class="pagination-btn" id="recipePrevPage">上一页</button>
+        <span class="pagination-info" id="recipePageInfo">第 1 页</span>
+        <button class="pagination-btn" id="recipeNextPage">下一页</button>
+    </div>
+</div>
+
+<script>
+(function() {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+
+    function init() {
+        if (!window.itemData || !window.recipts) {
+            document.getElementById('recipeTableBody').innerHTML = '<tr><td colspan="4" style="color:var(--text-muted);text-align:center;padding:20px;">游戏数据未加载，请刷新页面</td></tr>';
+            return;
+        }
+        initRecipeTable(window.recipts);
+        setupRecipeSearch(window.recipts);
+    }
+
+    function getItemTypeName(type) { return ['普通','方块','工具','装备','食物/药水','材料'][type] || '未知'; }
+
+    function initRecipeTable(recipts) {
+        const tbody = document.getElementById('recipeTableBody');
+        if (!tbody) return;
+        const recipes = Object.entries(recipts);
+        let currentPage = 1;
+        const perPage = 15;
+
+        function render() {
+            const start = (currentPage - 1) * perPage;
+            const end = start + perPage;
+            tbody.innerHTML = recipes.slice(start, end).map(([id, r]) => `
+                <tr>
+                    <td>${id}</td>
+                    <td>${r.newItem}</td>
+                    <td>${r.num}</td>
+                    <td style="font-family:monospace;font-size:12px;line-height:1.4;">
+                        ${r.material.map(row => row.map(m => m === '无' ? '⬜' : m).join(' ')).join('<br>')}
+                    </td>
+                </tr>
+            `).join('');
+            document.getElementById('recipePageInfo').textContent = `第 ${currentPage} 页 / 共 ${Math.ceil(recipes.length / perPage)} 页`;
+            document.getElementById('recipePrevPage').disabled = currentPage === 1;
+            document.getElementById('recipeNextPage').disabled = currentPage >= Math.ceil(recipes.length / perPage);
+        }
+
+        document.getElementById('recipePrevPage').onclick = () => { if(currentPage > 1) { currentPage--; render(); } };
+        document.getElementById('recipeNextPage').onclick = () => { if(currentPage < Math.ceil(recipes.length / perPage)) { currentPage++; render(); } };
+        render();
+    }
+
+    function setupRecipeSearch(recipts) {
+        const input = document.getElementById('recipeSearchInput');
+        const btn = document.getElementById('recipeSearchBtn');
+        const results = document.getElementById('recipeSearchResults');
+
+        function search() {
+            const kw = input.value.trim().toLowerCase();
+            if (!kw) { results.innerHTML = ''; return; }
+            const res = Object.entries(recipts).filter(([id, r]) => 
+                r.newItem.toLowerCase().includes(kw) || r.material.flat().some(m => m.toLowerCase().includes(kw))
+            );
+            if (!res.length) { results.innerHTML = '<p style="padding:10px;color:var(--text-muted);">未找到匹配的配方</p>'; return; }
+            results.innerHTML = `<p style="padding:10px;font-weight:bold;">找到 ${res.length} 个配方：</p>` + 
+                res.map(([id, r]) => `<div style="background:var(--hover-bg);margin:8px 0;padding:12px;border-radius:8px;">
+                    <h5 style="margin:0 0 8px;color:var(--link-color);">合成: ${r.newItem} ×${r.num}</h5>
+                    <div style="font-size:13px;">${r.material.map(row => `<div style="display:flex;gap:4px;margin:2px 0;">${row.map(m => `<span style="background:var(--code-bg);padding:2px 6px;border-radius:4px;">${m==='无'?'⬜':m}</span>`).join('')}</div>`).join('')}</div>
+                </div>`).join('');
+        }
+
+        btn.onclick = search;
+        input.onkeypress = (e) => { if(e.key === 'Enter') search(); };
+    }
+})();
+</script>

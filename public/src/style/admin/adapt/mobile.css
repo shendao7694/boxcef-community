@@ -1,0 +1,149 @@
+/* @path: src/style/admin/adapt/mobile.css */
+@media (max-width: 640px) {
+  .admin-wrap {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .admin-side {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .admin-group {
+    flex: 0 0 auto;
+    min-width: 0;
+  }
+
+  .admin-group-head {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .admin-group-body {
+    padding: 4px 6px 8px;
+  }
+
+  .admin-nav-item {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .admin-card {
+    padding: 14px 12px;
+    border-radius: 10px;
+  }
+
+  .admin-card h2 {
+    font-size: 16px;
+    margin-bottom: 14px;
+  }
+
+  .card-head {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .card-head-actions {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .search-input {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -12px;
+    padding: 0 12px;
+  }
+
+  table {
+    font-size: 12px;
+    min-width: 520px;
+  }
+
+  th, td {
+    padding: 8px 10px;
+  }
+
+  .row-actions {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .row-actions button {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+
+  .modal {
+    padding: 12px;
+    align-items: flex-start;
+  }
+
+  .modal-card {
+    padding: 20px 16px;
+    max-width: none;
+    width: 100%;
+    max-height: 92vh;
+    margin-top: 20px;
+  }
+
+  .modal-lg {
+    width: 100%;
+    max-width: none;
+  }
+
+  .modal-actions {
+    flex-direction: column-reverse;
+  }
+
+  .modal-actions .btn {
+    width: 100%;
+  }
+
+  .danger-row {
+    flex-direction: column;
+  }
+
+  .danger-row .btn {
+    width: 100%;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .ad-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .ad-item-preview {
+    width: 100%;
+    height: 100px;
+  }
+
+  .ad-item-actions {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+
+  .user-title-list {
+    max-height: 40vh;
+  }
+
+  .user-title-row {
+    padding: 8px 10px;
+    gap: 8px;
+  }
+}

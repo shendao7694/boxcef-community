@@ -1,0 +1,7 @@
+.code-row {
+  display: flex;
+  gap: 10px;
+}
+
+.code-row input { flex: 1; }
+.code-row .btn { white-space: nowrap; padding: 12px 18px; }

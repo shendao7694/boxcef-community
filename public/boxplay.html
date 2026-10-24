@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 
+<meta name="description" content="BOXCEF 是一个社区平台，你可以在这里发布帖子、分享作品，并与他人交流。">
+<meta name="keywords" content="BOXCEF">
+<title>游玩作品</title>
+<link rel="stylesheet" href="./src/style/common/global.css">
+<link rel="stylesheet" href="./src/style/common/toast.css">
+<link rel="icon" type="image/png" href="./assets/favicon.png">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  /* 整体页面结构，让 iframe 撑满 nav 下方的区域 */
+  body { height: 100vh; display: flex; flex-direction: column; overflow: hidden; background: #000; }
+  .iframe-wrapper { flex: 1; width: 100%; position: relative; }
+  iframe { width: 100%; height: 100%; border: none; display: block; background: var(--bg-soft); }
+
+  /* 左侧悬浮收缩栏 - 已适配主题变量 */
+  .sidebar {
+    position: absolute; left: 0; top: 0; bottom: 0; width: 60px;
+    background: var(--card);
+    backdrop-filter: blur(8px);
+    display: flex; flex-direction: column; gap: 10px; padding-top: 20px; align-items: center;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s;
+    transform: translateX(-56px); /* 收起留 4px 触发区 */
+    z-index: 100;
+    border-right: 1px solid var(--border);
+    box-shadow: 4px 0 12px rgba(0,0,0,0.1);
+  }
+  
+  /* 鼠标悬停展开 */
+  .sidebar:hover { transform: translateX(0); }
+  
+  /* 边缘触发区，防止鼠标移过去的时候没触发 */
+  .sidebar::after {
+    content: ''; position: absolute; right: -8px; top: 0; bottom: 0; width: 8px;
+  }
+
+  .sidebar-btn {
+    width: 40px; height: 40px; border-radius: 8px;
+    background: transparent; border: none; color: var(--text-soft);
+    font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s, color 0.2s;
+  }
+  
+  .sidebar-btn:hover {
+    background: var(--bg-soft);
+    color: var(--text);
+  }
+</style>
+</head>
+<body>
+  <!-- 标准 Nav -->
+  <nav class="nav" style="position: relative; z-index: 10;">
+    <a class="nav-brand" href="/">BOXCEF</a>
+    <div class="nav-actions">
+      <button id="theme-toggle" class="theme-toggle" aria-label="切换主题">
+        <svg id="sun-icon" class="icon" viewBox="0 0 24 24"><path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z"/></svg>
+        <svg id="moon-icon" class="icon" viewBox="0 0 24 24" style="display:none"><path d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.7-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <div class="iframe-wrapper">
+    <!-- 侧边悬浮栏 -->
+    <div class="sidebar">
+      <button class="sidebar-btn" onclick="exitGame()" title="返回详情">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+      <button class="sidebar-btn" onclick="toggleFullscreen()" title="全屏">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+      </button>
+    </div>
+
+    <iframe id="game-frame" allowfullscreen></iframe>
+  </div>
+
+  <script type="module" src="./src/js/common/theme.js"></script>
+  <script type="module" src="./src/js/common/nav.js"></script>
+  <script>
+    const boxId = new URLSearchParams(location.search).get('id');
+    const frame = document.getElementById('game-frame');
+
+    if (boxId) {
+      fetch(`/api/works/boxplay/get?id=${boxId}`)
+        .then(r => r.json())
+        .then(d => {
+          if (d.success && d.boxplay && d.boxplay.playurl) {
+            frame.src = d.boxplay.playurl;
+          } else {
+            alert('获取游玩链接失败，作品可能审核中或不存在');
+            location.href = '/';
+          }
+        })
+        .catch(() => alert('网络错误'));
+    } else {
+      alert('缺少参数');
+      location.href = '/';
+    }
+
+    function exitGame() {
+      if (boxId) location.href = `/boxview.html?id=${boxId}`;
+      else location.href = '/';
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        const el = document.documentElement;
+        if (el.requestFullscreen) el.requestFullscreen();
+        else if (el.mozRequestFullScreen) el.mozRequestFullScreen();
+        else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+        else if (el.msRequestFullscreen) el.msRequestFullscreen();
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+      }
+    }
+  </script>
+</body>
+</html>

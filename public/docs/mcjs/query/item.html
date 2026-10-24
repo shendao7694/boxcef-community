@@ -1,0 +1,144 @@
+<h2>物品查询系统</h2>
+<div class="search-box" style="margin-bottom: 20px;">
+    <input type="text" id="itemSearchInput" class="search-input" placeholder="输入物品ID或名称查询...">
+    <button id="itemSearchBtn" class="search-button">查询物品</button>
+</div>
+<div id="itemSearchResults" class="search-results" style="max-height: 400px; overflow-y: auto; margin-bottom: 20px;"></div>
+<div class="info-box">
+    <h3>物品列表</h3>
+    <div class="table-wrapper">
+        <table class="item-table" id="itemTable">
+            <thead><tr><th>ID</th><th>英文ID</th><th>中文名称</th><th>类型</th><th>最大堆叠</th><th>属性</th></tr></thead>
+            <tbody id="itemTableBody"></tbody>
+        </table>
+    </div>
+    <div class="pagination" id="itemPagination">
+        <button class="pagination-btn" id="itemPrevPage">上一页</button>
+        <span class="pagination-info" id="itemPageInfo">第 1 页</span>
+        <button class="pagination-btn" id="itemNextPage">下一页</button>
+    </div>
+</div>
+
+<script>
+(function() {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+
+    function init() {
+        const itemData = window.itemData;
+        if (!itemData) {
+            const tbody = document.getElementById('itemTableBody');
+            if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:20px;">游戏数据未加载，请刷新页面</td></tr>';
+            return;
+        }
+        initItemTable(itemData);
+        setupItemSearch(itemData);
+    }
+
+    function getItemTypeName(type) {
+        return {0:'普通物品', 1:'方块', 2:'工具', 3:'装备', 4:'食物/药水', 5:'材料'}[type] || '未知';
+    }
+
+    function getItemAttrs(item) {
+        const attrs = [];
+        if (item.type === 2) { // 工具/武器
+            if (item.damage) attrs.push(`伤害:${item.damage}`);
+            if (item.dig_speed) attrs.push(`挖掘:${item.dig_speed}`);
+            if (item.dig_level) attrs.push(`等级:${item.dig_level}`);
+            if (item.durability) attrs.push(`耐久:${item.durability}`);
+        } else if (item.type === 3) { // 装备
+            if (item.armorValue) attrs.push(`护甲:${item.armorValue}`);
+            if (item.knockbackResistance) attrs.push(`抗击退:${item.knockbackResistance}`);
+            if (item.durability) attrs.push(`耐久:${item.durability}`);
+        } else if (item.type === 4) {
+            attrs.push('食物/药水');
+        }
+        return attrs.join(', ') || '无';
+    }
+
+    function initItemTable(itemData) {
+        const tbody = document.getElementById('itemTableBody');
+        if (!tbody) return;
+
+        const items = Object.entries(itemData).sort((a, b) => Number(a[0]) - Number(b[0]));
+        let currentPage = 1;
+        const perPage = 20;
+
+        function render() {
+            const start = (currentPage - 1) * perPage;
+            const end = start + perPage;
+            const pageData = items.slice(start, end);
+
+            tbody.innerHTML = pageData.map(([id, item]) => `
+                <tr>
+                    <td>${id}</td>
+                    <td style="font-family:monospace;">${item.name?.trim()}</td>
+                    <td>${item.usename?.chinese?.trim() || item.name?.trim()}</td>
+                    <td>${getItemTypeName(item.type)}</td>
+                    <td>${item.maxstack}</td>
+                    <td style="font-size:0.9em;color:var(--text-secondary);">${getItemAttrs(item)}</td>
+                </tr>
+            `).join('');
+
+            const totalPages = Math.ceil(items.length / perPage);
+            document.getElementById('itemPageInfo').textContent = `第 ${currentPage} 页 / 共 ${totalPages} 页`;
+            document.getElementById('itemPrevPage').disabled = currentPage === 1;
+            document.getElementById('itemNextPage').disabled = currentPage >= totalPages;
+        }
+
+        document.getElementById('itemPrevPage').onclick = () => { if(currentPage > 1) { currentPage--; render(); } };
+        document.getElementById('itemNextPage').onclick = () => { if(currentPage < Math.ceil(items.length / perPage)) { currentPage++; render(); } };
+        render();
+    }
+
+    function setupItemSearch(itemData) {
+        const input = document.getElementById('itemSearchInput');
+        const btn = document.getElementById('itemSearchBtn');
+        const results = document.getElementById('itemSearchResults');
+        if (!input || !btn || !results) return;
+
+        function search() {
+            const kw = input.value.trim().toLowerCase();
+            if (!kw) { results.innerHTML = ''; return; }
+
+            const matches = Object.entries(itemData).filter(([id, item]) => {
+                return id.includes(kw) ||
+                       item.name?.toLowerCase().includes(kw) ||
+                       item.usename?.chinese?.includes(kw) ||
+                       item.usename?.english?.toLowerCase().includes(kw);
+            });
+
+            if (!matches.length) {
+                results.innerHTML = '<p style="padding:10px;color:var(--text-muted);">未找到匹配的物品</p>';
+                return;
+            }
+
+            results.innerHTML = `
+                <p style="padding:10px;font-weight:bold;">找到 ${matches.length} 个物品：</p>
+                <div class="table-wrapper">
+                    <table class="item-table">
+                        <thead><tr><th>ID</th><th>英文ID</th><th>中文名称</th><th>类型</th><th>最大堆叠</th></tr></thead>
+                        <tbody>
+                            ${matches.map(([id, item]) => `
+                                <tr>
+                                    <td>${id}</td>
+                                    <td style="font-family:monospace;">${item.name?.trim()}</td>
+                                    <td>${item.usename?.chinese?.trim() || item.name?.trim()}</td>
+                                    <td>${getItemTypeName(item.type)}</td>
+                                    <td>${item.maxstack}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        btn.onclick = search;
+        input.onkeypress = (e) => { if(e.key === 'Enter') search(); };
+    }
+})();
+</script>

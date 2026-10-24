@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 
+<meta name="description" content="BOXCEF 是一个社区平台，你可以在这里发布帖子、分享作品，并与他人交流。">
+<meta name="keywords" content="BOXCEF">
+<title>注册</title>
+<link rel="stylesheet" href="./src/style/common/global.css">
+<link rel="stylesheet" href="./src/style/common/toast.css">
+<link rel="stylesheet" href="./src/style/register.css">
+<link rel="icon" type="image/png" href="./assets/favicon.png">
+</head>
+<body>
+<nav class="nav">
+  <a class="nav-brand" href="/">BOXCEF</a>
+  <div class="nav-actions">
+    <button id="theme-toggle" class="theme-toggle" aria-label="切换主题">
+      <svg id="sun-icon" class="icon" viewBox="0 0 24 24"><path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z"/></svg>
+      <svg id="moon-icon" class="icon" viewBox="0 0 24 24" style="display:none"><path d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.7-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z"/></svg>
+    </button>
+  </div>
+</nav>
+
+<main class="auth-wrap">
+  <div class="auth-card">
+    <h1>注册</h1>
+    <p class="subtitle">创建你的账号，加入Boxcef社区</p>
+    <form id="register-form" novalidate>
+      <div class="input-group">
+        <label for="name">用户名（登录用）</label>
+        <input type="text" id="name" autocomplete="username" required>
+      </div>
+      <div class="input-group">
+        <label for="nickname">昵称（可选，可随时修改）</label>
+        <input type="text" id="nickname" autocomplete="nickname">
+      </div>
+      <div class="input-group">
+        <label for="email">邮箱</label>
+        <input type="email" id="email" autocomplete="email" required>
+      </div>
+      <div class="input-group" id="code-group">
+        <label for="code">邮箱验证码</label>
+        <div class="code-row">
+          <input type="text" id="code" maxlength="6" autocomplete="one-time-code">
+          <button type="button" class="btn btn-ghost" id="send-code-btn">发送验证码</button>
+        </div>
+      </div>
+      <div class="input-group">
+        <label for="password">密码</label>
+        <input type="password" id="password" autocomplete="new-password" required>
+      </div>
+      <div class="input-group">
+        <label for="confirmPassword">确认密码</label>
+        <input type="password" id="confirmPassword" autocomplete="new-password" required>
+      </div>
+      <label class="agree-row">
+        <input type="checkbox" id="agree-rule">
+        <span>我已阅读并同意 <a href="/rule.html" target="_blank" rel="noopener">《社区规范》</a></span>
+      </label>
+      <button type="submit" class="btn" style="width:100%" id="submit-btn">注册</button>
+    </form>
+    <div class="auth-footer">
+      已有账号？<a href="/login.html">去登录</a>
+    </div>
+    <script>
+      (function () {
+        const uri = new URLSearchParams(location.search).get('uri');
+        if (!uri) return;
+        const goLogin = document.getElementById('go-login');
+        if (goLogin) goLogin.href = `/login.html?uri=${encodeURIComponent(uri)}`;
+      })();
+    </script>
+  </div>
+</main>
+
+<script type="module" src="./src/js/common/theme.js"></script>
+<script type="module" src="./src/js/common/nav.js"></script>
+<script type="module" src="./src/js/register.js"></script>
+</body>
+</html>

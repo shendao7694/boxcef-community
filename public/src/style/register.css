@@ -1,0 +1,48 @@
+.code-row {
+  display: flex;
+  gap: 10px;
+}
+
+.code-row input { flex: 1; }
+
+.code-row .btn {
+  white-space: nowrap;
+  padding: 12px 18px;
+  flex-shrink: 0;
+}
+
+.code-row .btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.agree-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 18px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-soft);
+  cursor: pointer;
+  user-select: none;
+}
+
+.agree-row input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.agree-row a {
+  color: var(--text);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.agree-row a:hover {
+  opacity: 0.75;
+}
