@@ -1,6 +1,7 @@
 // @path: api/data/social/follow.js
 import { ok, fail } from '../../_libs/response.js';
 import { loadSession } from '../../_libs/session.js';
+import { pushMessage, buildFrom } from '../../_libs/message.js';
 
 function readSocial(s) {
   const so = s && s.social;
@@ -64,6 +65,11 @@ export async function onRequestPost({ request, env }) {
 
   await users.put(self.key, JSON.stringify(self.session));
   await users.put(target, JSON.stringify(targetSession));
+
+  const fromInfo = await buildFrom(users, self.key);
+  await pushMessage(env, target, action === 'follow' ? 6 : 7, {
+    ...fromInfo, createdAt: Date.now(), text: ''
+  });
 
   return ok({
     isFollowing: selfSocial.following.includes(target),

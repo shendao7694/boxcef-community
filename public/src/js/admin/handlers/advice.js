@@ -17,9 +17,22 @@ export async function handleAdviceAction(index, action) {
   } catch {}
 }
 
+function openReplyAdvice(index) {
+  $('reply-target-type').value = 'advice';
+  $('reply-target-id').value = String(index);
+  $('reply-modal-title').textContent = '回复建议提交者';
+  $('reply-text').value = '';
+  $('reply-modal').hidden = false;
+}
+
 export function bindAdvice() {
   $('advice-table').querySelector('tbody').addEventListener('click', (e) => {
     const btn = e.target.closest('button[data-adv]');
+    const reply = e.target.closest('button[data-adv-reply]');
+    if (reply && !reply.disabled) {
+      openReplyAdvice(Number(reply.dataset.advReply));
+      return;
+    }
     if (!btn) return;
     handleAdviceAction(Number(btn.dataset.adv), btn.dataset.act);
   });

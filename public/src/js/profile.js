@@ -97,6 +97,9 @@ async function loadBoxplays() {
       let statusText = '待审核', statusColor = '#f59e0b';
       if (b.status === 'approved') { statusText = '已通过'; statusColor = '#22c55e'; }
       if (b.status === 'rejected') { statusText = '已拒绝'; statusColor = '#ff4d4d'; }
+      
+      // 计算评论数
+      const commentCount = (b.comments || []).length;
 
       item.innerHTML = `
         <div class="post-item-main">
@@ -106,9 +109,10 @@ async function loadBoxplays() {
           </div>
           <div class="post-item-preview">${escapeHtml(b.description || '')}</div>
         </div>
-        <div class="post-item-meta">
+        <div class="post-item-meta" style="display: flex; align-items: center; gap: 14px;">
+          <span>${commentCount} 评论</span>
           <span>${new Date(b.createdAt).toLocaleDateString()}</span>
-          <button class="btn btn-danger btn-sm" data-del="${b.id}" style="padding: 4px 10px; font-size: 12px; border-radius: 6px;">删除/撤销</button>
+          <button class="btn btn-danger btn-sm" data-del="${b.id}" style="padding: 4px 10px; font-size: 12px; border-radius: 6px; margin-left: 8px;">删除/撤销</button>
         </div>
       `;
       
@@ -194,7 +198,6 @@ async function init() {
   await loadBoxplays();
 }
 
-
 $('edit-btn').addEventListener('click', async () => {
   if (!current) return;
   pendingAvatarHash = null;
@@ -261,7 +264,6 @@ $('edit-form').addEventListener('submit', async (e) => {
   btn.disabled = false;
   btn.textContent = '保存修改';
 });
-
 
 $('friends-btn').addEventListener('click', () => {
   $('friends-modal').hidden = false;

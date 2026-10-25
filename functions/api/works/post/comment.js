@@ -5,6 +5,7 @@ import {
   b64encode, getWorks, readPost, writePost,
   getUserBySessionId, publicUser, safeDecode
 } from '../../_libs/works.js';
+import { pushMessage, buildFrom } from '../../_libs/message.js';
 
 export async function onRequestPost({ request, env }) {
   const self = await loadSession(env, request);
@@ -31,6 +32,13 @@ export async function onRequestPost({ request, env }) {
       like: 0,
       likedBy: []
     });
+    if (post.writer !== self.key) {
+      const fromInfo = await buildFrom(users, self.key);
+      await pushMessage(env, post.writer, 0, {
+        ...fromInfo, postId: id, target: 'post', createdAt: Date.now(),
+        text: String(content).slice(0, 5000)
+      });
+    }
   } else if (action === 'reply') {
     if (!content || typeof index !== 'number') return fail('参数错误');
     const c = post.comments[index];
@@ -42,6 +50,13 @@ export async function onRequestPost({ request, env }) {
       like: 0,
       likedBy: []
     });
+    if (c.from !== self.key) {
+      const fromInfo = await buildFrom(users, self.key);
+      await pushMessage(env, c.from, 4, {
+        ...fromInfo, postId: id, target: 'post', commentIndex: index, createdAt: Date.now(),
+        text: String(content).slice(0, 5000)
+      });
+    }
   } else if (action === 'delete') {
     if (typeof index !== 'number') return fail('参数错误');
     const c = post.comments[index];
@@ -63,6 +78,13 @@ export async function onRequestPost({ request, env }) {
     if (!c.likedBy.includes(self.key)) {
       c.likedBy.push(self.key);
       c.like = c.likedBy.length;
+      if (c.from !== self.key) {
+        const fromInfo = await buildFrom(users, self.key);
+        await pushMessage(env, c.from, 5, {
+          ...fromInfo, postId: id, target: 'post', commentIndex: index, createdAt: Date.now(),
+          text: safeDecode(c.content).slice(0, 5000)
+        });
+      }
     }
   } else if (action === 'unlikeComment') {
     if (typeof index !== 'number') return fail('参数错误');

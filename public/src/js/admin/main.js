@@ -16,7 +16,6 @@ import { switchView } from './handlers/nav.js';
 import { showToast } from './utils/toast.js';
 import { loadBoxplayList, bindBoxplay } from './handlers/boxplay.js';
 
-
 window.__reloadAll = loadAll;
 window.__loadPosts = loadPosts;
 window.__gotoComments = gotoComments;
@@ -63,8 +62,39 @@ function gotoComments(pid) {
   loadComments(pid);
 }
 
+function bindReplyModal() {
+  const cancel = $('reply-cancel');
+  if (cancel) {
+    cancel.addEventListener('click', () => { $('reply-modal').hidden = true; });
+  }
+
+  const form = $('reply-form');
+  if (!form) return;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const type = $('reply-target-type').value;
+    const id = $('reply-target-id').value;
+    const text = $('reply-text').value.trim();
+    if (!text) { showToast('回复内容不能为空', 'error'); return; }
+
+    const url = type === 'boxplay' ? '/api/admin/boxplay/reply' : '/api/admin/advice/reply';
+    const body = type === 'boxplay' ? { id, text } : { index: Number(id), text };
+
+    const btn = $('reply-save');
+    btn.disabled = true;
+    btn.textContent = '发送中...';
+    try {
+      await window.__adminFetch(url, { method: 'POST', body });
+      showToast('已回复');
+      $('reply-modal').hidden = true;
+    } catch {}
+    btn.disabled = false;
+    btn.textContent = '发送';
+  });
+}
+
 async function initAdmin() {
-  
   const { adminFetch } = await import('./state.js');
   window.__adminFetch = adminFetch;
   bindBoxplay();
@@ -82,8 +112,8 @@ async function initAdmin() {
   bindUserIdxRebuild();
   bindAds();
   bindTitles();
+  bindReplyModal();
 
-  
   $('users-table').querySelector('tbody').addEventListener('click', async (e) => {
     const edit = e.target.closest('button[data-edit]');
     const del = e.target.closest('button[data-del]');

@@ -18,7 +18,7 @@ export function renderBoxplayList(items) {
     const author = w
       ? `<span class="cmt-author">${avatarImg(w.avatar)}${escapeHtml(w.nickname || w.name)}</span>`
       : '未知';
-    
+
     let statusText = '待审核', statusCls = 'status-pending';
     if (b.status === 'approved') { statusText = '已通过'; statusCls = 'status-accepted'; }
     if (b.status === 'rejected') { statusText = '已拒绝'; statusCls = 'status-rejected'; }
@@ -33,6 +33,7 @@ export function renderBoxplayList(items) {
       <td class="row-actions">
         <button data-bp-id="${b.id}" data-bp-act="approve" ${b.status === 'approved' ? 'disabled' : ''}>通过</button>
         <button data-bp-id="${b.id}" data-bp-act="reject" ${b.status === 'rejected' ? 'disabled' : ''}>拒绝</button>
+        <button data-bp-reply="${b.id}" ${b.status === 'pending' ? 'disabled' : ''}>回复</button>
         <button class="danger" data-bp-id="${b.id}" data-bp-act="delete">删除</button>
       </td>
     `;

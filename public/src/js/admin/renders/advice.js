@@ -29,6 +29,7 @@ export function renderAdvice() {
     const author = u
       ? `<span class="cmt-author">${avatarImg(u.avatar)}${escapeHtml(u.nickname || u.name || '未知')}</span>`
       : '<span style="color:var(--text-soft)">未知</span>';
+    const canReply = a.status === 'accepted' || a.status === 'rejected';
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td class="mono">${a.idx}</td>
@@ -40,6 +41,7 @@ export function renderAdvice() {
         <button data-adv="${a.idx}" data-act="accept">接受</button>
         <button data-adv="${a.idx}" data-act="reject">拒绝</button>
         <button data-adv="${a.idx}" data-act="pending">重置</button>
+        <button data-adv-reply="${a.idx}" ${canReply ? '' : 'disabled'}>回复</button>
         <button class="danger" data-adv="${a.idx}" data-act="delete">删除</button>
       </td>
     `;

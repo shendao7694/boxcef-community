@@ -15,6 +15,7 @@ export async function onRequestGet({ request, env }) {
 
   await ensureUserLimit(env, found.session, found.key);
 
+  const unreadCount = (found.session.messages || []).filter(m => !m.read).length;
   const { password, ...safe } = found.session;
-  return ok({ user: { ...safe, sessionKey: found.key } });
+  return ok({ user: { ...safe, sessionKey: found.key, unreadCount } });
 }

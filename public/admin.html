@@ -292,7 +292,7 @@
       </div>
     </section>
 
-        <section class="admin-card" data-panel="settings">
+    <section class="admin-card" data-panel="settings">
       <h2>globalSettings</h2>
       <form id="settings-form">
         <div class="form-grid">
@@ -550,6 +550,22 @@
         <label for="c-max-image">limit.maxImageInDisc（张，留空继承全局）</label>
         <input type="number" id="c-max-image" min="1">
       </div>
+      <div class="input-group">
+        <label for="c-publish-post-max">publishPostMax（单人发帖上限）</label>
+        <input type="number" id="c-publish-post-max" min="1">
+      </div>
+      <div class="input-group">
+        <label for="c-publish-box-max">publishBoxPlayMax（单人作品上限）</label>
+        <input type="number" id="c-publish-box-max" min="1">
+      </div>
+      <div class="input-group">
+        <label for="c-publish-post-cool">publishPostCooling（发帖冷却/秒）</label>
+        <input type="number" id="c-publish-post-cool" min="0">
+      </div>
+      <div class="input-group">
+        <label for="c-publish-box-cool">publishBoxPlayCooling（作品冷却/秒）</label>
+        <input type="number" id="c-publish-box-cool" min="0">
+      </div>
       <div class="modal-actions">
         <button type="button" class="btn btn-ghost" id="c-cancel">取消</button>
         <button type="submit" class="btn" id="c-save">创建</button>
@@ -581,6 +597,24 @@
       <div class="modal-actions">
         <button type="button" class="btn btn-ghost" id="v-cancel">取消</button>
         <button type="submit" class="btn" id="v-save">保存</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="reply-modal" class="modal" hidden>
+  <div class="modal-card">
+    <h2 id="reply-modal-title">回复用户</h2>
+    <form id="reply-form" novalidate>
+      <input type="hidden" id="reply-target-type">
+      <input type="hidden" id="reply-target-id">
+      <div class="input-group">
+        <label for="reply-text">回复内容（将作为消息发送给用户）</label>
+        <textarea id="reply-text" rows="6" class="mono-input"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="reply-cancel">取消</button>
+        <button type="submit" class="btn" id="reply-save">发送</button>
       </div>
     </form>
   </div>

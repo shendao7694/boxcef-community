@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "npx wrangler pages dev ./public/ --local",
-    "deploy": "npm run build && npx wrangler pages deploy ./dist/",
+    "deploy": "npm run build && npx wrangler pages deploy ./dist/ --branch=production",
     "build": "node ./scripts/build.js",
     "build:vite": "vite build",
     "build:dev": "vite",

@@ -12,9 +12,22 @@ export async function loadBoxplayList() {
   }
 }
 
+function openReplyBoxplay(id) {
+  $('reply-target-type').value = 'boxplay';
+  $('reply-target-id').value = id;
+  $('reply-modal-title').textContent = '回复作品作者';
+  $('reply-text').value = '';
+  $('reply-modal').hidden = false;
+}
+
 export function bindBoxplay() {
   $('boxplay-table').querySelector('tbody').addEventListener('click', async (e) => {
     const btn = e.target.closest('button[data-bp-id]');
+    const reply = e.target.closest('button[data-bp-reply]');
+    if (reply && !reply.disabled) {
+      openReplyBoxplay(reply.dataset.bpReply);
+      return;
+    }
     if (!btn || btn.disabled) return;
     const id = btn.dataset.bpId;
     const act = btn.dataset.bpAct;
