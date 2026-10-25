@@ -85,6 +85,7 @@
   padding: 32px;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .posts-title {
@@ -93,12 +94,27 @@
   margin-bottom: 16px;
 }
 
+/* 修改这里：限制高度并允许内部滚动 */
 .posts-box {
-  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 12px;
   min-height: 320px;
+  max-height: 500px; /* 超过此高度出现滚动条 */
+  overflow-y: auto;  /* 允许纵向滚动 */
+  padding-right: 4px; /* 给滚动条留一点空间 */
+}
+
+/* 给滚动条做一点美化（可选） */
+.posts-box::-webkit-scrollbar {
+  width: 6px;
+}
+.posts-box::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+.posts-box::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .post-item {
@@ -113,6 +129,7 @@
   text-decoration: none;
   color: var(--text);
   transition: var(--transition);
+  flex-shrink: 0; /* 防止被压扁 */
 }
 
 .post-item:hover {
@@ -155,6 +172,7 @@
   font-size: 12px;
   color: var(--text-soft);
   flex-shrink: 0;
+  align-items: center;
 }
 
 .empty-text { color: var(--text-soft); font-size: 14px; }
@@ -305,12 +323,6 @@
   font-size: 13px;
 }
 
-@media (max-width: 720px) {
-  .profile-card { grid-template-columns: 1fr; }
-  .profile-side { border-right: none; border-bottom: 1px solid var(--border); }
-  .profile-main { padding: 24px 20px; }
-}
-
 .title-picker {
   display: flex;
   flex-wrap: wrap;
@@ -387,4 +399,11 @@
   display: flex;
   gap: 8px;
   margin-bottom: 24px;
+}
+
+/* 修复了这里：原代码是 min-width，导致移动端反而会触发这个样式 */
+@media (max-width: 720px) {
+  .profile-card { grid-template-columns: 1fr; }
+  .profile-side { border-right: none; border-bottom: 1px solid var(--border); }
+  .profile-main { padding: 24px 20px; }
 }
