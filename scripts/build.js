@@ -59,6 +59,8 @@ function main() {
   copyDir(path.join(PUBLIC_DIR, 'docs'), path.join(DIST_DIR, 'docs'));
   copyDir(path.join(PUBLIC_DIR, 'assets'), path.join(DIST_DIR, 'assets'));
 
+  copyFile(path.join(PUBLIC_DIR, 'sitemap.xml'), path.join(DIST_DIR, 'sitemap.xml'));
+  
   const ms = Date.now() - start;
   log(`done in ${ms}ms`);
 }
