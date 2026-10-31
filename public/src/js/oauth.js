@@ -18,7 +18,7 @@ const params = new URLSearchParams(location.search);
 const uri = params.get('uri') || '';
 const scopeRaw = params.get('scope') || '';
 const appName = params.get('name') || '';
-const appIcon = params.get('icon') || '/favicon.png';
+const appIcon = params.get('icon') || '/assets/favicon.png';
 
 let scopes = [];
 let currentUser = null;

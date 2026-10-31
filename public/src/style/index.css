@@ -244,3 +244,153 @@
   color: var(--accent-text);
   border: 1px solid var(--accent);
 }
+
+.cat-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  overflow: hidden;
+}
+
+.cat-filter[hidden] {
+  display: none;
+}
+
+.cat-filter-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.cat-filter-toggle:hover {
+  color: var(--accent);
+}
+
+.cat-filter-chevron {
+  color: var(--text-soft);
+  transition: transform 0.2s ease;
+}
+
+.cat-filter.collapsed .cat-filter-chevron {
+  transform: rotate(-90deg);
+}
+
+.cat-filter-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 0 12px 12px;
+}
+
+.cat-filter.collapsed .cat-filter-body {
+  display: none;
+}
+
+.cat-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cat-group[hidden] {
+  display: none;
+}
+
+.cat-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-soft);
+  letter-spacing: 1px;
+}
+
+.cat-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.cat-chip {
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text-soft);
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.cat-chip:hover {
+  border-color: var(--text);
+  color: var(--text);
+}
+
+.cat-chip.active {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+
+.cat-match {
+  display: flex;
+  gap: 6px;
+}
+
+.cat-match[hidden] {
+  display: none;
+}
+
+.cat-match-btn {
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text-soft);
+  border-radius: var(--radius);
+  padding: 3px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.cat-match-btn.active {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin-top: -6px;
+}
+
+.card-tags span {
+  font-size: 12px;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.card-type-badge {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--text);
+  color: var(--bg);
+  white-space: nowrap;
+}

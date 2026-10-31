@@ -3,6 +3,7 @@ import { ok, fail } from '../../_libs/response.js';
 import { loadSession } from '../../_libs/session.js';
 import { getWorks } from '../../_libs/works.js';
 import { readBoxplay, boxplayKey } from '../../_libs/boxplay.js';
+import { getBoxplayIdx, saveBoxplayIdx, removeFromIdx } from '../../_libs/postIdx.js';
 
 export async function onRequestPost({ request, env }) {
   const self = await loadSession(env, request);
@@ -19,6 +20,10 @@ export async function onRequestPost({ request, env }) {
   if (p.writer !== self.key) return fail('无权限', 403);
 
   await works.delete(boxplayKey(id));
+
+  const idx = await getBoxplayIdx(env['Community-Service']);
+  removeFromIdx(idx, id);
+  await saveBoxplayIdx(env['Community-Service'], idx);
 
   self.session.boxplays = (self.session.boxplays || []).filter(x => x !== id);
   await env['Community-Users'].put(self.key, JSON.stringify(self.session));

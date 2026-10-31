@@ -1,8 +1,9 @@
 // @path: api/works/boxplay/get.js
 import { ok, fail } from '../../_libs/response.js';
-import { getWorks, getUserBySessionId, publicUser, safeDecode } from '../../_libs/works.js';
+import { getWorks, getUsersMap, publicUser, safeDecode } from '../../_libs/works.js';
 import { loadSession } from '../../_libs/session.js';
 import { readBoxplay } from '../../_libs/boxplay.js';
+import { boxplayTypeOf } from '../../_libs/postIdx.js';
 
 export async function onRequestGet({ request, env }) {
   const id = new URL(request.url).searchParams.get('id');
@@ -17,18 +18,22 @@ export async function onRequestGet({ request, env }) {
   }
 
   const users = env['Community-Users'];
-  const writer = await getUserBySessionId(users, p.writer);
 
-  // 组装评论数据，解码内容并获取作者信息
+  const authorKeys = [p.writer];
+  for (const c of p.comments || []) {
+    authorKeys.push(c.from);
+    for (const r of c.reply || []) authorKeys.push(r.from);
+  }
+  const userMap = await getUsersMap(users, authorKeys);
+
   const comments = [];
   for (let i = 0; i < (p.comments || []).length; i++) {
     const c = p.comments[i];
-    const cAuthor = await getUserBySessionId(users, c.from);
+    const cAuthor = userMap.get(c.from);
     const reply = [];
-    
     for (let j = 0; j < (c.reply || []).length; j++) {
       const r = c.reply[j];
-      const rAuthor = await getUserBySessionId(users, r.from);
+      const rAuthor = userMap.get(r.from);
       reply.push({
         idx: j,
         from: r.from,
@@ -39,7 +44,6 @@ export async function onRequestGet({ request, env }) {
         isOP: r.from === p.writer
       });
     }
-    
     comments.push({
       idx: i,
       from: c.from,
@@ -52,9 +56,9 @@ export async function onRequestGet({ request, env }) {
       reply
     });
   }
-  
-  // 置顶评论排前面
   comments.sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
+
+  const writer = userMap.get(p.writer);
 
   return ok({
     boxplay: {
@@ -64,6 +68,7 @@ export async function onRequestGet({ request, env }) {
       cover: p.cover,
       playurl: p.playurl,
       writer: p.writer,
+      type: boxplayTypeOf(p),
       writerInfo: writer ? publicUser(writer, p.writer) : null,
       status: p.status,
       createdAt: p.createdAt,

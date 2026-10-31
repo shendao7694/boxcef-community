@@ -3,7 +3,7 @@ import { ok, fail } from '../../_libs/response.js';
 import { loadSession } from '../../_libs/session.js';
 import {
   b64encode, getWorks, readPost, writePost,
-  getUserBySessionId, publicUser, safeDecode
+  getUsersMap, publicUser, safeDecode
 } from '../../_libs/works.js';
 import { pushMessage, buildFrom } from '../../_libs/message.js';
 
@@ -121,14 +121,21 @@ export async function onRequestPost({ request, env }) {
 
   await writePost(works, id, post);
 
+  const authorKeys = [post.writer];
+  for (const c of post.comments) {
+    authorKeys.push(c.from);
+    for (const r of c.reply || []) authorKeys.push(r.from);
+  }
+  const userMap = await getUsersMap(users, authorKeys);
+
   const out = [];
   for (let i = 0; i < post.comments.length; i++) {
     const c = post.comments[i];
-    const ca = await getUserBySessionId(users, c.from);
+    const ca = userMap.get(c.from);
     const reply = [];
     for (let j = 0; j < (c.reply || []).length; j++) {
       const r = c.reply[j];
-      const ra = await getUserBySessionId(users, r.from);
+      const ra = userMap.get(r.from);
       reply.push({
         idx: j,
         from: r.from,

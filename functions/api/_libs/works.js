@@ -53,6 +53,30 @@ export async function getUserBySessionId(serviceOrEnv, sessionKey) {
   try { return JSON.parse(raw); } catch { return null; }
 }
 
+export async function mapLimit(items, limit, fn) {
+  const out = new Array(items.length);
+  let next = 0;
+  const workers = Array.from({ length: Math.min(limit, items.length) }, async () => {
+    while (next < items.length) {
+      const index = next++;
+      out[index] = await fn(items[index], index);
+    }
+  });
+  await Promise.all(workers);
+  return out;
+}
+
+export async function getUsersMap(usersKv, keys) {
+  const unique = [...new Set((keys || []).filter(Boolean))];
+  const raws = await mapLimit(unique, 10, k => usersKv.get(k));
+  const map = new Map();
+  for (let i = 0; i < unique.length; i++) {
+    if (!raws[i]) continue;
+    try { map.set(unique[i], JSON.parse(raws[i])); } catch {}
+  }
+  return map;
+}
+
 export function publicUser(s, key) {
   return {
     key,

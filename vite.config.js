@@ -8,7 +8,6 @@ const __dirname = path.dirname(__filename);
 const inputDir = './public'
 const outputDir = './dist'
 const InputResult = {};
-const generateUUID = () => crypto.randomUUID ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => (c === 'x' ? Math.random() * 16 : Math.random() * 4 + 8) | 0).toString(16);
 const InputHandles = {
   404: '404.html',
   index: 'index.html',
@@ -44,21 +43,18 @@ export default defineConfig({
     outDir: path.resolve(__dirname, outputDir),
     emptyOutDir: true,
     minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+      },
+    },
     rollupOptions: {
       input: InputResult,
       output: {
-        entryFileNames: (chunkInfo) => {
-          const name = chunkInfo.name;
-          return `_static/chunks/page/${name}.[hash].js`;
-        },
-        manualChunks(src) {
-          if (src.includes('node_modules')) {
-            return 'vendor';
-          }
-        },
-        entryFileNames: (chunkInfo) => `_static/chunks/page/${generateUUID()}.[hash].js`,
-        chunkFileNames: (chunkInfo) => `_static/chunks/${generateUUID()}.[hash].js`,
-        assetFileNames: (assetInfo) => `_resource/assets/${generateUUID()}.[hash].[ext]`,
+        entryFileNames: '_static/chunks/page/[name].[hash].js',
+        chunkFileNames: '_static/chunks/[name].[hash].js',
+        assetFileNames: '_resource/assets/[name].[hash].[ext]',
       },
     },
     assetsDir: 'assets',

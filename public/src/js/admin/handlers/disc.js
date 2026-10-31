@@ -37,7 +37,7 @@ export async function openUserDisc(key) {
       const item = document.createElement('div');
       item.className = 'disc-item';
       item.innerHTML = `
-        <img src="/api/data/assets/${hash}" alt="">
+        <img loading="lazy" decoding="async" src="/api/data/assets/${hash}" alt="">
         <div class="disc-check"><input type="checkbox" data-hash="${hash}"></div>
       `;
 

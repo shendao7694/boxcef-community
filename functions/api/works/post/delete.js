@@ -3,6 +3,7 @@ import { ok, fail } from '../../_libs/response.js';
 import { loadSession } from '../../_libs/session.js';
 import { getSettings, setSettings } from '../../_libs/settings.js';
 import { getWorks, postKey, readPost } from '../../_libs/works.js';
+import { getPostIdx, savePostIdx, removeFromIdx } from '../../_libs/postIdx.js';
 
 export async function onRequestPost({ request, env }) {
   const self = await loadSession(env, request);
@@ -15,12 +16,17 @@ export async function onRequestPost({ request, env }) {
 
   const works = getWorks(env);
   const users = env['Community-Users'];
+  const service = env['Community-Service'];
 
   const post = await readPost(works, id);
   if (!post) return fail('帖子不存在', 404);
   if (post.writer !== self.key) return fail('无权限', 403);
 
   await works.delete(postKey(id));
+
+  const idx = await getPostIdx(service);
+  removeFromIdx(idx, id);
+  await savePostIdx(service, idx);
 
   const me = self.session;
   me.posts = (me.posts || []).filter(x => x !== id);

@@ -4,6 +4,7 @@ import { verifyAdmin } from '../../_libs/admin.js';
 import { getWorks } from '../../_libs/works.js';
 import { readBoxplay, writeBoxplay } from '../../_libs/boxplay.js';
 import { pushMessage } from '../../_libs/message.js';
+import { getBoxplayIdx, saveBoxplayIdx, removeFromIdx } from '../../_libs/postIdx.js';
 
 export async function onRequestPost({ request, env }) {
   if (!verifyAdmin(request, env)) return fail('无权限', 401);
@@ -19,6 +20,10 @@ export async function onRequestPost({ request, env }) {
 
   if (action === 'delete') {
     await works.delete(`boxplay:${id}`);
+    const service = env['Community-Service'];
+    const idx = await getBoxplayIdx(service);
+    removeFromIdx(idx, id);
+    await saveBoxplayIdx(service, idx);
     const raw = await env['Community-Users'].get(p.writer);
     if (raw) {
       const u = JSON.parse(raw);

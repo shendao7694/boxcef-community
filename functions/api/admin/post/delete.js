@@ -3,6 +3,7 @@ import { ok, fail } from '../../_libs/response.js';
 import { verifyAdmin } from '../../_libs/admin.js';
 import { getSettings, setSettings } from '../../_libs/settings.js';
 import { postKey, readPost } from '../../_libs/post.js';
+import { getPostIdx, savePostIdx, removeFromIdx } from '../../_libs/postIdx.js';
 
 export async function onRequestPost({ request, env }) {
   if (!verifyAdmin(request, env)) return fail('无权限', 401);
@@ -14,11 +15,16 @@ export async function onRequestPost({ request, env }) {
 
   const works = env['Community-Works'];
   const users = env['Community-Users'];
+  const service = env['Community-Service'];
 
   const post = await readPost(works, id);
   if (!post) return fail('帖子不存在', 404);
 
   await works.delete(postKey(id));
+
+  const idx = await getPostIdx(service);
+  removeFromIdx(idx, id);
+  await savePostIdx(service, idx);
 
   const writerRaw = await users.get(post.writer);
   if (writerRaw) {

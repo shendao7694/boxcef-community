@@ -1,8 +1,19 @@
 // @path: src/js/admin/handlers/verifications.js
 import {
-  $, state, adminFetch, editingVerifyKey, setEditingVerifyKey
+  $, state, adminFetch, editingVerifyKey, setEditingVerifyKey, setState
 } from '../state.js';
+import { renderVerifications } from '../renders/verifications.js';
 import { showToast } from '../utils/toast.js';
+
+export async function loadVerifications() {
+  try {
+    const data = await adminFetch('/api/admin/dashboard?section=verifications');
+    setState({ ...state, verifications: data.verifications || [] });
+  } catch {
+    setState({ ...state, verifications: [] });
+  }
+  renderVerifications();
+}
 
 export function openVerifyEdit(key) {
   const v = state.verifications.find(x => x.key === key);

@@ -59,7 +59,7 @@ async function renderDisc() {
     item.className = 'disc-item';
     item.dataset.hash = hash;
     item.innerHTML = `
-      <img src="/api/data/assets/${hash}" alt="image">
+      <img loading="lazy" decoding="async" src="/api/data/assets/${hash}" alt="image">
       <div class="disc-check"><input type="checkbox" data-hash="${hash}"></div>
     `;
     

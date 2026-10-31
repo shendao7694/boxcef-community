@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+<script>try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
  
@@ -12,7 +13,7 @@
 <link rel="stylesheet" href="./src/style/post/style.css">
 <link rel="stylesheet" href="./src/style/boxview.css">
 <link rel="icon" type="image/png" href="./assets/favicon.png">
-<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
 </head>
 <body>
 <nav class="nav">
@@ -28,12 +29,12 @@
 <main class="page-container">
   <div class="boxview-layout" id="main-layout" hidden>
     <div class="bv-left">
-      <img id="bv-cover" class="bv-cover" src="" alt="cover">
+      <img id="bv-cover" class="bv-cover" decoding="async" src="" alt="cover">
     </div>
     <div class="bv-right">
       <div class="bv-box">
         <div class="bv-author">
-          <img id="bv-avatar" src="" alt="">
+          <img id="bv-avatar" decoding="async" src="" alt="">
           <div>
             <div id="bv-author-name" style="font-weight:700;"></div>
             <div id="bv-time" style="font-size:12px; color:var(--text-soft);"></div>

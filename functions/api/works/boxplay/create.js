@@ -3,9 +3,10 @@ import { sha256 } from '../../_libs/crypto.js';
 import { ok, fail } from '../../_libs/response.js';
 import { loadSession } from '../../_libs/session.js';
 import { getWorks } from '../../_libs/works.js';
-import { writeBoxplay } from '../../_libs/boxplay.js';
+import { readBoxplay, writeBoxplay } from '../../_libs/boxplay.js';
 import { getSettings } from '../../_libs/settings.js';
 import { readUserLimit } from '../../_libs/limit.js';
+import { sanitizeBoxplayType, getBoxplayIdx, saveBoxplayIdx, addToIdx } from '../../_libs/postIdx.js';
 
 export async function onRequestPost({ request, env }) {
   const self = await loadSession(env, request);
@@ -29,26 +30,33 @@ export async function onRequestPost({ request, env }) {
 
   let body = {};
   try { body = await request.json(); } catch {}
-  const { title, description, cover, playurl } = body || {};
+  const { title, description, cover, playurl, type } = body || {};
 
   if (!title || !cover || !playurl) return fail('标题、封面和链接不能为空');
   if (!/^https?:\/\//.test(playurl)) return fail('游玩链接格式不正确');
 
   const works = getWorks(env);
+  const service = env['Community-Service'];
   const id = await sha256(self.key + now + title);
-  
+  const boxType = sanitizeBoxplayType(type);
+
   const payload = {
     title: title.slice(0, 50),
     description: (description || '').slice(0, 2000),
     cover,
     playurl,
     writer: self.key,
-    status: 'pending', 
+    type: boxType,
+    status: 'pending',
     comments: [],
     createdAt: now
   };
 
   await writeBoxplay(works, id, payload);
+
+  const idx = await getBoxplayIdx(service);
+  addToIdx(idx, id, [boxType]);
+  await saveBoxplayIdx(service, idx);
 
   self.session.boxplays.push(id);
   self.session.lastBoxPlayTime = now;

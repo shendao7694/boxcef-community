@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+<script>try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="BOXCEF 是一个社区平台，你可以在这里发布帖子、分享作品，并与他人交流。">
@@ -38,6 +39,26 @@
     <div class="search-wrap">
       <input type="text" id="search-input" class="search-input" placeholder="搜索当前分类...">
     </div>
+    <div class="cat-filter" id="cat-filter" hidden>
+      <button type="button" class="cat-filter-toggle" id="cat-filter-toggle">
+        <span>分类筛选</span>
+        <svg class="cat-filter-chevron" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+      </button>
+      <div class="cat-filter-body" id="cat-filter-body">
+        <div class="cat-group" id="cat-group-post" hidden>
+          <div class="cat-label">帖子分类</div>
+          <div class="cat-chips" id="cat-chips-post"></div>
+          <div class="cat-match" id="cat-match" hidden>
+            <button type="button" class="cat-match-btn active" data-match="any">任一匹配</button>
+            <button type="button" class="cat-match-btn" data-match="all">全部匹配</button>
+          </div>
+        </div>
+        <div class="cat-group" id="cat-group-box" hidden>
+          <div class="cat-label">作品分类</div>
+          <div class="cat-chips" id="cat-chips-box"></div>
+        </div>
+      </div>
+    </div>
   </aside>
 
   
@@ -56,7 +77,7 @@
   </main>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
 <script type="module" src="./src/js/common/theme.js"></script>
 <script type="module" src="./src/js/common/nav.js"></script>
 <script type="module" src="./src/js/index.js"></script>

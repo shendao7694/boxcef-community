@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+<script>try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="BOXCEF 是一个社区平台，你可以在这里发布帖子、分享作品，并与他人交流。">
@@ -28,7 +29,7 @@
   <section class="profile-card">
     <div class="profile-side">
       <div class="avatar-box">
-        <img id="avatar-img" alt="avatar">
+        <img id="avatar-img" decoding="async" alt="avatar">
       </div>
       <button id="edit-btn" class="btn btn-ghost" style="width:100%">编辑资料</button>
 
@@ -71,7 +72,7 @@
 
     <div class="edit-avatar-row">
       <div class="edit-avatar-box">
-        <img id="edit-avatar-preview" alt="avatar">
+        <img id="edit-avatar-preview" decoding="async" alt="avatar">
       </div>
       <div class="edit-avatar-actions">
         <button type="button" class="btn btn-ghost" id="edit-upload-btn">更换头像</button>

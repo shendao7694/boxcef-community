@@ -32,7 +32,7 @@ export function avatarSrc(avatar) {
 export function avatarImg(avatar, className = '', alt = '') {
   const src = avatarSrc(avatar);
   const cls = className ? ` class="${className}"` : '';
-  return `<img src="${src}"${cls} alt="${alt}" onerror="this.onerror=null;this.src='${DEFAULT_AVATAR_URL}'">`;
+  return `<img loading="lazy" decoding="async" src="${src}"${cls} alt="${alt}" onerror="this.onerror=null;this.src='${DEFAULT_AVATAR_URL}'">`;
 }
 
 export function limitText(limit) {

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+<script>try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="BOXCEF 是一个社区平台，你可以在这里发布帖子、分享作品，并与他人交流。">
@@ -9,7 +10,7 @@
 <link rel="stylesheet" href="./src/style/common/global.css">
 <link rel="stylesheet" href="./src/style/common/toast.css">
 <link rel="stylesheet" href="./src/style/publish-post.css">
-<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
 <link rel="icon" type="image/png" href="./assets/favicon.png">
 </head>
 <body>
@@ -33,6 +34,11 @@
     <div class="input-group">
       <label for="p-title">标题</label>
       <input type="text" id="p-title" maxlength="100" placeholder="可选">
+    </div>
+
+    <div class="input-group">
+      <label>分类（可多选，最多 5 个）</label>
+      <div id="tag-picker" class="tag-picker"></div>
     </div>
 
     <div class="editor-toolbar">

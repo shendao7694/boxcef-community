@@ -1,8 +1,8 @@
 // @path: src/js/profile.js
 import { request } from '../js/common/api.js';
 import { showToast } from '../js/common/toast.js';
-import { fetchMe, avatarUrl } from '../js/common/auth.js';
-import { getTitle, renderTitleTag } from '../js/common/title.js';
+import { fetchMe, avatarUrl, invalidateMe } from '../js/common/auth.js';
+import { getTitles, renderTitleTag } from '../js/common/title.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -19,8 +19,11 @@ function escapeHtml(str) {
 async function renderUser(user) {
   $('avatar-img').src = avatarUrl(user.avatar);
 
-  const tagInfo = user.title?.choose ? await getTitle(user.title.choose) : null;
-  const tagHtml = tagInfo ? renderTitleTag(user.title, { [user.title.choose]: tagInfo }) : '';
+  let tagHtml = '';
+  if (user.title?.choose) {
+    const titles = await getTitles([user.title.choose]);
+    tagHtml = renderTitleTag(user.title, titles);
+  }
 
   $('meta-name').innerHTML = `${escapeHtml(user.name)}${tagHtml}`;
   $('meta-nickname').textContent = user.nickname || '';
@@ -60,6 +63,8 @@ function renderPosts(posts) {
 
 async function loadPosts() {
   if (!current || !current.sessionKey) return;
+  const box = $('posts-box');
+  if (box) box.innerHTML = '<div class="empty-text">加载中...</div>';
   try {
     const data = await request(
       `/api/works/post/list?type=user&id=${encodeURIComponent(current.sessionKey)}`,
@@ -76,7 +81,8 @@ async function loadBoxplays() {
   if (!current || !current.sessionKey) return;
   const box = $('boxplays-box');
   if (!box) return;
-  
+  box.innerHTML = '<div class="empty-text">加载中...</div>';
+
   try {
     const data = await request(
       `/api/works/boxplay/list?type=user&id=${encodeURIComponent(current.sessionKey)}`,
@@ -154,8 +160,10 @@ async function renderTitlePicker() {
   none.addEventListener('click', () => chooseTitle(''));
   box.appendChild(none);
 
+  const titleMap = own.length ? await getTitles(own) : {};
+
   for (const id of own) {
-    const info = await getTitle(id);
+    const info = titleMap[id];
     if (!info) continue;
     const btn = document.createElement('button');
     btn.type = 'button';
@@ -193,9 +201,7 @@ async function init() {
   const user = await fetchMe();
   if (!user) { location.href = '/login.html'; return; }
   current = user;
-  await renderUser(user);
-  await loadPosts();
-  await loadBoxplays();
+  await Promise.all([renderUser(user), loadPosts(), loadBoxplays()]);
 }
 
 $('edit-btn').addEventListener('click', async () => {
@@ -256,6 +262,7 @@ $('edit-form').addEventListener('submit', async (e) => {
     });
     current = { ...current, ...user };
     if (pendingAvatarHash) current.avatar = pendingAvatarHash;
+    invalidateMe();
     await renderUser(current);
     showToast('已保存');
     $('edit-modal').hidden = true;
@@ -311,7 +318,7 @@ async function loadList(type, q = '') {
     const item = document.createElement('div');
     item.className = 'friend-item';
     item.innerHTML = `
-      <img src="${avatarUrl(u.avatar)}" alt="">
+      <img loading="lazy" decoding="async" src="${avatarUrl(u.avatar)}" alt="">
       <div class="grow">
         <div class="name">${escapeHtml(u.nickname || u.name)}</div>
         <div class="sub">@${escapeHtml(u.name)}</div>

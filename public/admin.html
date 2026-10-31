@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+<script>try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
  
@@ -51,6 +52,7 @@
         <button type="button" class="admin-nav-item active" data-view="posts">帖子管理</button>
         <button type="button" class="admin-nav-item" data-view="comments">评论管理</button>
         <button type="button" class="admin-nav-item" data-view="boxplay">作品审核</button>
+        <button type="button" class="admin-nav-item" data-view="tags">标签管理</button>
         <button type="button" class="admin-nav-item" data-view="ads">广告管理</button>
         <button type="button" class="admin-nav-item" data-view="titles">头衔管理</button>
       </div>
@@ -103,6 +105,11 @@
     <section class="admin-card" data-panel="boxplay">
       <div class="card-head">
         <h2>作品审核 <span id="boxplay-count" class="count">0</span></h2>
+        <div class="card-head-actions">
+          <select id="bp-cat-filter" class="search-input">
+            <option value="">全部分类</option>
+          </select>
+        </div>
       </div>
       <div class="table-wrap">
         <table id="boxplay-table">
@@ -110,6 +117,7 @@
             <tr>
               <th>封面</th>
               <th>标题</th>
+              <th>分类</th>
               <th>作者</th>
               <th>游玩链接</th>
               <th>状态</th>
@@ -135,6 +143,9 @@
       <div class="card-head">
         <h2>帖子 <span id="post-count" class="count">0</span></h2>
         <div class="card-head-actions">
+          <select id="post-cat-filter" class="search-input">
+            <option value="">全部分类</option>
+          </select>
           <input type="text" id="post-search" class="search-input" placeholder="搜索标题 / 作者">
         </div>
       </div>
@@ -144,6 +155,7 @@
             <tr>
               <th>id</th>
               <th>标题</th>
+              <th>分类</th>
               <th>作者</th>
               <th>赞</th>
               <th>评论数</th>
@@ -153,6 +165,29 @@
           </thead>
           <tbody></tbody>
         </table>
+      </div>
+    </section>
+
+    <section class="admin-card" data-panel="tags">
+      <div class="card-head">
+        <h2>标签管理</h2>
+      </div>
+      <p class="panel-tip">帖子分类 = 固定分类 + 自定义标签。删除自定义标签后，已有帖子仍会保留该标签显示。</p>
+      <div class="tag-dict">
+        <div class="tag-dict-head">
+          <span class="cat-label">帖子标签字典</span>
+          <div class="tag-dict-add">
+            <input type="text" id="tag-dict-input" maxlength="12" placeholder="新标签，最长 12 字">
+            <button class="btn btn-ghost btn-sm" id="tag-dict-add-btn">添加</button>
+          </div>
+        </div>
+        <div id="tag-dict-list" class="tag-dict-list"></div>
+      </div>
+      <div class="tag-dict" style="margin-top:16px">
+        <div class="tag-dict-head">
+          <span class="cat-label">作品分类（固定，不可修改）</span>
+        </div>
+        <div id="bp-type-readonly" class="tag-dict-list"></div>
       </div>
     </section>
 
@@ -362,6 +397,7 @@
       <p class="subtitle">这些操作不可逆，请谨慎执行。</p>
       <div class="danger-row">
         <button class="btn btn-ghost" id="rebuild-idx-btn">重建用户索引</button>
+        <button class="btn btn-ghost" id="rebuild-postidx-btn">重建帖子/作品索引</button>
         <button class="btn btn-ghost" id="reset-btn">重置 KV（保留用户）</button>
         <button class="btn btn-danger" id="purge-btn">清空所有用户数据</button>
       </div>
@@ -633,11 +669,27 @@
         <label for="pe-content">内容（支持 Markdown / 长代码 / iframe 嵌入）</label>
         <textarea id="pe-content" class="mono-input" rows="16"></textarea>
       </div>
+      <div class="input-group">
+        <label>分类（可多选，最多 5 个）</label>
+        <div id="pe-tags" class="tag-picker"></div>
+      </div>
       <div class="modal-actions">
         <button type="button" class="btn btn-ghost" id="pe-cancel">取消</button>
         <button type="submit" class="btn" id="pe-save">保存修改</button>
       </div>
     </form>
+  </div>
+</div>
+
+<div id="bp-type-modal" class="modal" hidden>
+  <div class="modal-card">
+    <h2>修改作品分类 · <span id="bpt-name"></span></h2>
+    <input type="hidden" id="bpt-id">
+    <div id="bpt-list" class="bpt-list"></div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-ghost" id="bpt-cancel">取消</button>
+      <button type="button" class="btn" id="bpt-save">保存</button>
+    </div>
   </div>
 </div>
 

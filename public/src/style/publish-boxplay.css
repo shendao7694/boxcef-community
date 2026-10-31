@@ -169,3 +169,19 @@
   object-fit: cover;
   display: block;
 }
+.b-type-select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--text);
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.b-type-select:focus {
+  outline: none;
+  border-color: var(--text);
+}

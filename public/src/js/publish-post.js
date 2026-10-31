@@ -2,11 +2,39 @@
 import { request, getToken } from './common/api.js';
 import { showToast } from './common/toast.js';
 import { fetchMe } from './common/auth.js';
+import { getTagInfo } from './common/tags.js';
 
 const $ = (id) => document.getElementById(id);
 
 let mode = 'edit';
 let me = null;
+
+const selectedTags = new Set();
+const MAX_TAGS = 5;
+
+async function initTagPicker() {
+  const info = await getTagInfo();
+  const box = $('tag-picker');
+  if (!box || !info.postTags.length) return;
+  for (const tag of info.postTags) {
+    const chip = document.createElement('button');
+    chip.type = 'button';
+    chip.className = 'tag-picker-chip';
+    chip.textContent = tag;
+    chip.addEventListener('click', () => {
+      if (selectedTags.has(tag)) {
+        selectedTags.delete(tag);
+        chip.classList.remove('active');
+      } else if (selectedTags.size < MAX_TAGS) {
+        selectedTags.add(tag);
+        chip.classList.add('active');
+      } else {
+        showToast(`最多选择 ${MAX_TAGS} 个分类`, 'error');
+      }
+    });
+    box.appendChild(chip);
+  }
+}
 
 function escapeHtml(str) {
   return String(str ?? '').replace(/[&<>"']/g, c => ({
@@ -263,7 +291,7 @@ $('publish-btn').addEventListener('click', async () => {
     const { id } = await request('/api/works/post/create', {
       method: 'POST',
       auth: true,
-      body: { title, content }
+      body: { title, content, type: [...selectedTags] }
     });
     showToast('发布成功');
     setTimeout(() => { location.href = `/post.html?id=${id}`; }, 600);
@@ -276,4 +304,5 @@ $('publish-btn').addEventListener('click', async () => {
   if (!getToken()) { location.href = '/login.html'; return; }
   me = await fetchMe();
   if (!me) { location.href = '/login.html'; }
+  initTagPicker();
 })();

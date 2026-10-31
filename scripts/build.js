@@ -19,13 +19,22 @@ function run(cmd) {
   execSync(cmd, { stdio: 'inherit', cwd: ROOT });
 }
 
-function copyDir(src, dest) {
+const EXCLUDED_ASSETS = new Set([
+  'pane.exe',
+  'persky-1.0.jar',
+  'MC.zip',
+  'MCA.zip',
+  'MCJSA.zip',
+  '中文命令行.zip',
+]);
+
+function copyDir(src, dest, filter) {
   if (!fs.existsSync(src)) {
     log(`skip (not found): ${path.relative(ROOT, src)}`);
     return;
   }
   fs.mkdirSync(path.dirname(dest), { recursive: true });
-  fs.cpSync(src, dest, { recursive: true });
+  fs.cpSync(src, dest, { recursive: true, filter });
   log(`copied dir: ${path.relative(ROOT, src)} → ${path.relative(ROOT, dest)}`);
 }
 
@@ -57,9 +66,12 @@ function main() {
   log('vite build done, copying static files...');
 
   copyDir(path.join(PUBLIC_DIR, 'docs'), path.join(DIST_DIR, 'docs'));
-  copyDir(path.join(PUBLIC_DIR, 'assets'), path.join(DIST_DIR, 'assets'));
+  copyDir(path.join(PUBLIC_DIR, 'assets'), path.join(DIST_DIR, 'assets'), (src) => {
+    return !EXCLUDED_ASSETS.has(path.basename(src));
+  });
 
   copyFile(path.join(PUBLIC_DIR, 'sitemap.xml'), path.join(DIST_DIR, 'sitemap.xml'));
+  copyFile(path.join(PUBLIC_DIR, '_headers'), path.join(DIST_DIR, '_headers'));
   
   const ms = Date.now() - start;
   log(`done in ${ms}ms`);

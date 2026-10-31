@@ -3,6 +3,16 @@ import { $, state, adminFetch, setState } from '../state.js';
 import { renderAdvice } from '../renders/advice.js';
 import { showToast } from '../utils/toast.js';
 
+export async function loadAdvice() {
+  try {
+    const data = await adminFetch('/api/admin/advice/list');
+    setState({ ...state, advice: data.advice || [] });
+  } catch {
+    setState({ ...state, advice: [] });
+  }
+  renderAdvice();
+}
+
 export async function handleAdviceAction(index, action) {
   if (action === 'delete' && !confirm('确认删除该建议？')) return;
   try {
@@ -11,9 +21,7 @@ export async function handleAdviceAction(index, action) {
       body: { index, action }
     });
     showToast('已操作');
-    const adviceData = await adminFetch('/api/admin/advice/list');
-    setState({ ...state, advice: adviceData.advice || [] });
-    renderAdvice();
+    await loadAdvice();
   } catch {}
 }
 

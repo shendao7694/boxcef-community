@@ -2,7 +2,7 @@
 import { ok, fail } from '../../_libs/response.js';
 import { loadSession } from '../../_libs/session.js';
 import {
-  b64encode, getWorks, getUserBySessionId, publicUser, safeDecode
+  b64encode, getWorks, getUsersMap, publicUser, safeDecode
 } from '../../_libs/works.js';
 import { readBoxplay, writeBoxplay } from '../../_libs/boxplay.js';
 import { pushMessage, buildFrom } from '../../_libs/message.js';
@@ -121,14 +121,21 @@ export async function onRequestPost({ request, env }) {
 
   await writeBoxplay(works, id, p);
 
+  const authorKeys = [p.writer];
+  for (const c of p.comments) {
+    authorKeys.push(c.from);
+    for (const r of c.reply || []) authorKeys.push(r.from);
+  }
+  const userMap = await getUsersMap(users, authorKeys);
+
   const out = [];
   for (let i = 0; i < p.comments.length; i++) {
     const c = p.comments[i];
-    const ca = await getUserBySessionId(users, c.from);
+    const ca = userMap.get(c.from);
     const reply = [];
     for (let j = 0; j < (c.reply || []).length; j++) {
       const r = c.reply[j];
-      const ra = await getUserBySessionId(users, r.from);
+      const ra = userMap.get(r.from);
       reply.push({
         idx: j,
         from: r.from,

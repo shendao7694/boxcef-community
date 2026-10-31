@@ -15,7 +15,7 @@ export function renderAssets() {
     const isImage = a.type && a.type.startsWith('image/');
     const isText = a.type && a.type.startsWith('text/');
     const preview = isImage
-      ? `<img class="asset-preview" src="/api/data/assets/${a.key}" alt="">`
+      ? `<img class="asset-preview" loading="lazy" decoding="async" src="/api/data/assets/${a.key}" alt="">`
       : (isText ? `<a href="/api/data/assets/${a.key}" target="_blank" rel="noopener">查看</a>` : '-');
     const tr = document.createElement('tr');
     tr.innerHTML = `

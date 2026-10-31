@@ -1,6 +1,17 @@
 // @path: src/js/admin/handlers/assets.js
-import { $, adminFetch } from '../state.js';
+import { $, state, setState, adminFetch } from '../state.js';
+import { renderAssets } from '../renders/assets.js';
 import { showToast } from '../utils/toast.js';
+
+export async function loadAssets() {
+  try {
+    const data = await adminFetch('/api/admin/dashboard?section=assets');
+    setState({ ...state, assets: data.assets || [] });
+  } catch {
+    setState({ ...state, assets: [] });
+  }
+  renderAssets();
+}
 
 export async function deleteAsset(key) {
   if (!confirm(`确认删除资源 ${key}？`)) return;

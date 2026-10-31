@@ -302,3 +302,30 @@
   object-fit: cover;
   display: block;
 }
+.tag-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag-picker-chip {
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text-soft);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.tag-picker-chip:hover {
+  border-color: var(--text);
+  color: var(--text);
+}
+
+.tag-picker-chip.active {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}

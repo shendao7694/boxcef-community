@@ -1,6 +1,15 @@
 // @path: src/js/admin/handlers/settings.js
-import { $, state, adminFetch } from '../state.js';
+import { $, state, setState, adminFetch } from '../state.js';
+import { renderSettings } from '../renders/settings.js';
 import { showToast } from '../utils/toast.js';
+
+export async function loadSettings() {
+  try {
+    const data = await adminFetch('/api/admin/dashboard?section=settings');
+    setState({ ...state, settings: data.settings || {} });
+  } catch {}
+  renderSettings();
+}
 
 export function bindSettings() {
   $('settings-form').addEventListener('submit', async (e) => {

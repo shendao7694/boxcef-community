@@ -24,7 +24,7 @@ export function setEditingKey(k) { editingKey = k; }
 export function setEditingVerifyKey(k) { editingVerifyKey = k; }
 export function setCurrentView(v) { currentView = v; }
 
-export function adminFetch(path, { method = 'GET', body, isForm = false } = {}) {
+export function adminFetch(path, { method = 'GET', body, isForm = false, silent = false } = {}) {
   const headers = { Authorization: `Bearer ${adminToken}` };
   if (!isForm && body !== undefined) headers['Content-Type'] = 'application/json';
 
@@ -36,13 +36,13 @@ export function adminFetch(path, { method = 'GET', body, isForm = false } = {}) 
     let data = {};
     try { data = await res.json(); } catch {}
     if (!res.ok) {
-      showToast(data.error || '请求失败', 'error');
+      if (!silent) showToast(data.error || '请求失败', 'error');
       throw new Error(data.error || 'fail');
     }
     return data;
   }).catch((err) => {
     if (err.message === 'fail' || err.message === 'network') throw err;
-    showToast('网络错误', 'error');
+    if (!silent) showToast('网络错误', 'error');
     throw err;
   });
 }

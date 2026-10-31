@@ -1,8 +1,19 @@
 // @path: src/js/admin/handlers/users.js
 import {
-  $, state, adminFetch, editingKey, setEditingKey
+  $, state, adminFetch, editingKey, setEditingKey, setState
 } from '../state.js';
+import { renderUsers } from '../renders/users.js';
 import { showToast } from '../utils/toast.js';
+
+export async function loadUsers() {
+  try {
+    const data = await adminFetch('/api/admin/dashboard?section=users');
+    setState({ ...state, users: data.users || [] });
+  } catch {
+    setState({ ...state, users: [] });
+  }
+  await renderUsers();
+}
 
 export function openEdit(key) {
   const u = state.users.find(x => x.key === key);

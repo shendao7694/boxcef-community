@@ -1,7 +1,8 @@
 // @path: api/works/post/get.js
 import { ok, fail } from '../../_libs/response.js';
 import { loadSession } from '../../_libs/session.js';
-import { getWorks, readPost, getUserBySessionId, publicUser, safeDecode } from '../../_libs/works.js';
+import { getWorks, readPost, getUsersMap, publicUser, safeDecode } from '../../_libs/works.js';
+import { postTypesOf } from '../../_libs/postIdx.js';
 
 export async function onRequestGet({ request, env }) {
   const url = new URL(request.url);
@@ -11,22 +12,26 @@ export async function onRequestGet({ request, env }) {
   const works = getWorks(env);
   const users = env['Community-Users'];
 
-  const post = await readPost(works, id);
+  const [post, self] = await Promise.all([readPost(works, id), loadSession(env, request)]);
   if (!post) return fail('帖子不存在', 404);
 
-  const self = await loadSession(env, request);
   const likedBy = post.likedBy || [];
 
-  const writer = await getUserBySessionId(users, post.writer);
+  const authorKeys = [post.writer];
+  for (const c of post.comments || []) {
+    authorKeys.push(c.from);
+    for (const r of c.reply || []) authorKeys.push(r.from);
+  }
+  const userMap = await getUsersMap(users, authorKeys);
 
   const comments = [];
   for (let i = 0; i < (post.comments || []).length; i++) {
     const c = post.comments[i];
-    const cAuthor = await getUserBySessionId(users, c.from);
+    const cAuthor = userMap.get(c.from);
     const reply = [];
     for (let j = 0; j < (c.reply || []).length; j++) {
       const r = c.reply[j];
-      const rAuthor = await getUserBySessionId(users, r.from);
+      const rAuthor = userMap.get(r.from);
       reply.push({
         idx: j,
         from: r.from,
@@ -51,12 +56,15 @@ export async function onRequestGet({ request, env }) {
   }
   comments.sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
 
+  const writer = userMap.get(post.writer);
+
   return ok({
     post: {
       id,
       title: post.title || '',
       content: safeDecode(post.data),
       writer: post.writer,
+      type: postTypesOf(post),
       writerInfo: writer ? publicUser(writer, post.writer) : null,
       comments,
       like: post.like || 0,

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+<script>try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>发布作品</title>
@@ -34,6 +35,11 @@
     </div>
 
     <div class="input-group">
+      <label for="b-type">作品分类</label>
+      <select id="b-type" class="b-type-select"></select>
+    </div>
+
+    <div class="input-group">
       <label for="b-url">游玩链接 (iframe 地址)</label>
       <input type="text" id="b-url" placeholder="https://...">
     </div>
@@ -47,7 +53,7 @@
       <label>封面（从个人图盘选择）</label>
       <div id="cover-preview" class="cover-preview">
         <span id="cover-text" class="cover-text">点击选择封面</span>
-        <img id="cover-img" src="" alt="封面预览" style="display: none;">
+        <img id="cover-img" decoding="async" src="" alt="封面预览" style="display: none;">
       </div>
       <input type="hidden" id="b-cover">
     </div>

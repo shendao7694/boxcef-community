@@ -67,7 +67,7 @@ function renderList() {
     
     item.innerHTML = `
       <div class="message-item-head">
-        ${avatar ? `<img src="${avatar}" alt="">` : ''}
+        ${avatar ? `<img loading="lazy" decoding="async" src="${avatar}" alt="">` : ''}
         <div class="message-item-title">
           <b>${TYPE_LABELS[m.type] || '消息'}</b>
           <span class="message-time">${fmtTime(d.createdAt)}</span>

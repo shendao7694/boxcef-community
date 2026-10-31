@@ -2,8 +2,7 @@
 import { ok, fail } from '../../_libs/response.js';
 import { verifyAdmin } from '../../_libs/admin.js';
 import { getAdvice } from '../../_libs/advice.js';
-import { b64decode } from '../../_libs/works.js';
-import { getUserBySessionId, publicUser } from '../../_libs/works.js';
+import { b64decode, getUsersMap, publicUser } from '../../_libs/works.js';
 
 export async function onRequestGet({ request, env }) {
   if (!verifyAdmin(request, env)) return fail('无权限', 401);
@@ -12,11 +11,11 @@ export async function onRequestGet({ request, env }) {
   const users = env['Community-Users'];
   const list = await getAdvice(service);
 
-  const out = [];
-  for (let i = 0; i < list.length; i++) {
-    const a = list[i];
-    const user = await getUserBySessionId(users, a.from);
-    out.push({
+  const userMap = await getUsersMap(users, list.map(a => a.from));
+
+  const out = list.map((a, i) => {
+    const user = userMap.get(a.from);
+    return {
       idx: i,
       from: a.from,
       author: user ? publicUser(user, a.from) : null,
@@ -24,8 +23,8 @@ export async function onRequestGet({ request, env }) {
       status: a.status || 'pending',
       createdAt: a.createdAt || 0,
       handledAt: a.handledAt || null
-    });
-  }
+    };
+  });
 
   return ok({ advice: out });
 }

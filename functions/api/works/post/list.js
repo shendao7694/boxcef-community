@@ -1,6 +1,7 @@
 // @path: api/works/post/list.js
 import { ok, fail } from '../../_libs/response.js';
-import { getWorks, getUserBySessionId, publicUser, safeDecode } from '../../_libs/works.js';
+import { getWorks, getUserBySessionId, getUsersMap, publicUser, safeDecode, mapLimit } from '../../_libs/works.js';
+import { postTypesOf } from '../../_libs/postIdx.js';
 
 export async function onRequestGet({ request, env }) {
   const url = new URL(request.url);
@@ -30,25 +31,30 @@ export async function onRequestGet({ request, env }) {
     return fail('无效的 type');
   }
 
-  const posts = [];
-  for (const pid of keys) {
+  const posts = (await mapLimit(keys, 10, async (pid) => {
     const raw = await works.get(`post:${pid}`);
-    if (!raw) continue;
+    if (!raw) return null;
     let p;
-    try { p = JSON.parse(raw); } catch { continue; }
-    const writer = await getUserBySessionId(users, p.writer);
-    posts.push({
+    try { p = JSON.parse(raw); } catch { return null; }
+    return {
       id: pid,
       title: p.title || '',
       preview: safeDecode(p.data).slice(0, 120),
       writer: p.writer,
-      writerInfo: writer ? publicUser(writer, p.writer) : null,
+      type: postTypesOf(p),
       like: p.like || 0,
       commentCount: (p.comments || []).length,
       createdAt: p.createdAt || 0
-    });
-  }
+    };
+  })).filter(Boolean);
 
   posts.sort((a, b) => b.createdAt - a.createdAt);
+
+  const writerMap = await getUsersMap(users, posts.map(p => p.writer));
+  for (const p of posts) {
+    const writer = writerMap.get(p.writer);
+    p.writerInfo = writer ? publicUser(writer, p.writer) : null;
+  }
+
   return ok({ posts });
 }

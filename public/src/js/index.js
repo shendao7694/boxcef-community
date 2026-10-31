@@ -3,6 +3,7 @@ import { request, getToken } from '../js/common/api.js';
 import { showToast } from '../js/common/toast.js';
 import { avatarUrl } from '../js/common/auth.js';
 import { getTitles, renderTitleTag } from '../js/common/title.js';
+import { getTagInfo } from '../js/common/tags.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -10,7 +11,12 @@ const SVG_PIN = '<svg viewBox="0 0 24 24" style="width:12px;height:12px;fill:cur
 
 let currentTab = 'recommend';
 let query = '';
-let allData = [];
+let matchMode = 'any';
+let feedSeq = 0;
+const feedCache = new Map();
+const FEED_TTL = 30 * 1000;
+const selectedPostCats = new Set();
+const selectedBoxCats = new Set();
 
 function escapeHtml(str) {
   return String(str ?? '').replace(/[&<>"']/g, c => ({
@@ -53,24 +59,33 @@ function renderCard(item, titles) {
 
   let coverHtml = '';
   if (isBox && item.cover) {
-    coverHtml = `<img class="card-cover" src="/api/data/assets/${encodeURIComponent(item.cover)}" alt="">`;
+    coverHtml = `<img class="card-cover" loading="lazy" decoding="async" src="/api/data/assets/${encodeURIComponent(item.cover)}" alt="">`;
   }
 
   const descText = isBox ? (item.description || '暂无简介') : (item.preview || '');
   const titleText = isBox ? item.title : (item.title || '无标题');
 
-  
-  const pinHtml = item.pinned 
-    ? `<span class="tag pin-tag">${SVG_PIN}置顶</span>` 
+  const pinHtml = item.pinned
+    ? `<span class="tag pin-tag">${SVG_PIN}置顶</span>`
+    : '';
+
+  const typeBadgeHtml = isBox && item.boxType
+    ? `<span class="card-type-badge">${escapeHtml(item.boxType)}</span>`
+    : '';
+
+  const postType = !isBox && Array.isArray(item.postType) ? item.postType : [];
+  const tagsHtml = postType.length
+    ? `<div class="card-tags">${postType.map(t => `<span>#${escapeHtml(t)}</span>`).join('')}</div>`
     : '';
 
   a.innerHTML = `
     ${coverHtml}
     <div class="card-body">
-      <div class="card-title">${pinHtml}${escapeHtml(titleText)}</div>
+      <div class="card-title">${pinHtml}${escapeHtml(titleText)}${typeBadgeHtml}</div>
+      ${tagsHtml}
       <div class="card-desc">${escapeHtml(descText)}</div>
       <div class="card-author">
-        <img src="${avatar}" alt="">
+        <img loading="lazy" decoding="async" src="${avatar}" alt="">
         <span>${authorName}</span>${titleTag}
         <span style="margin-left:auto">${fmtTime(item.createdAt)}</span>
       </div>
@@ -83,63 +98,106 @@ async function loadFeed() {
   const grid = $('feed-grid');
   if (!grid) return;
 
+  const seq = ++feedSeq;
+  const postCats = [...selectedPostCats].join(',');
+  const boxCats = [...selectedBoxCats].join(',');
+  const key = `${currentTab}|${query}|${postCats}|${matchMode}|${boxCats}`;
+  const cached = feedCache.get(key);
+  if (cached && Date.now() - cached.at < FEED_TTL) {
+    renderFeed(grid, cached.items, cached.titles);
+    return;
+  }
+
   grid.innerHTML = '<div class="feed-loading" style="grid-column:1/-1">加载中...</div>';
 
   try {
-    let postData = [], boxData = [];
+    const auth = !!getToken();
+    const tasks = [];
+    let postIndex = -1;
+    let boxIndex = -1;
 
     if (currentTab === 'recommend' || currentTab === 'post') {
-      const res = await request(`/api/works/post/feed?page=1&q=${encodeURIComponent(query)}`, { auth: !!getToken() });
-      postData = (res.posts || []).map(p => ({ ...p, type: 'post' }));
-    }
-    
-    if (currentTab === 'recommend' || currentTab === 'boxplay') {
-      const res = await request(`/api/works/boxplay/list?type=all`, { auth: !!getToken() });
-      let bList = (res.boxplays || []).map(b => ({ ...b, type: 'boxplay', commentCount: (b.comments || []).length }));
-      if (query) {
-        const q = query.toLowerCase();
-        bList = bList.filter(b => 
-          (b.title || '').toLowerCase().includes(q) || 
-          (b.description || '').toLowerCase().includes(q)
-        );
-      }
-      boxData = bList;
+      let postUrl = `/api/works/post/feed?page=1&q=${encodeURIComponent(query)}`;
+      if (postCats) postUrl += `&cats=${encodeURIComponent(postCats)}&match=${matchMode}`;
+      
+      postIndex = tasks.push(
+        request(postUrl, { auth })
+          .then(res => (res.posts || []).map(p => {
+            return {
+              ...p,
+              postType: Array.isArray(p.type) ? p.type : (p.type ? [p.type] : []),
+              type: 'post'
+            };
+          }))
+      ) - 1;
     }
 
-    allData = [...postData, ...boxData];
-    
-    
-    allData.sort((a, b) => {
+    if (currentTab === 'recommend' || currentTab === 'boxplay') {
+      let boxUrl = '/api/works/boxplay/list?type=all';
+      if (boxCats) boxUrl += `&cats=${encodeURIComponent(boxCats)}`;
       
+      boxIndex = tasks.push(
+        request(boxUrl, { auth })
+          .then(res => {
+            let list = (res.boxplays || []).map(b => {
+              return {
+                ...b,
+                boxType: b.type || '其他',
+                type: 'boxplay',
+                commentCount: (b.comments || []).length
+              };
+            });
+            if (query) {
+              const q = query.toLowerCase();
+              list = list.filter(b =>
+                (b.title || '').toLowerCase().includes(q) ||
+                (b.description || '').toLowerCase().includes(q)
+              );
+            }
+            return list;
+          })
+      ) - 1;
+    }
+
+    const results = await Promise.all(tasks);
+    if (seq !== feedSeq) return;
+
+    const postData = postIndex >= 0 ? results[postIndex] : [];
+    const boxData = boxIndex >= 0 ? results[boxIndex] : [];
+    const items = [...postData, ...boxData];
+
+    items.sort((a, b) => {
       const aPin = a.pinned ? 1 : 0;
       const bPin = b.pinned ? 1 : 0;
       if (aPin !== bPin) return bPin - aPin;
-
-      
-      if (currentTab === 'recommend') {
-        return calcScore(b) - calcScore(a);
-      } else {
-        return b.createdAt - a.createdAt;
-      }
+      if (currentTab === 'recommend') return calcScore(b) - calcScore(a);
+      return b.createdAt - a.createdAt;
     });
 
-    if (!allData.length) {
-      grid.innerHTML = `<div style="grid-column:1/-1" class="feed-empty">${query ? '没有找到相关内容' : '这里空空如也'}</div>`;
+    if (!items.length) {
+      const filtered = query || selectedPostCats.size || selectedBoxCats.size;
+      grid.innerHTML = `<div style="grid-column:1/-1" class="feed-empty">${filtered ? '没有找到相关内容' : '这里空空如也'}</div>`;
       return;
     }
 
-    const ids = allData.map(p => p.writerInfo?.title?.choose).filter(Boolean);
+    const ids = items.map(p => p.writerInfo?.title?.choose).filter(Boolean);
     const titles = ids.length ? await getTitles(ids) : {};
+    if (seq !== feedSeq) return;
 
-    grid.innerHTML = '';
-    for (const item of allData) {
-      grid.appendChild(renderCard(item, titles));
-    }
-
+    feedCache.set(key, { at: Date.now(), items, titles });
+    renderFeed(grid, items, titles);
   } catch (err) {
+    if (seq !== feedSeq) return;
     console.error(err);
     grid.innerHTML = '<div style="grid-column:1/-1" class="feed-empty">加载失败</div>';
   }
+}
+
+function renderFeed(grid, items, titles) {
+  const fragment = document.createDocumentFragment();
+  for (const item of items) fragment.appendChild(renderCard(item, titles));
+  grid.innerHTML = '';
+  grid.appendChild(fragment);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -148,6 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       currentTab = btn.dataset.tab;
+      if (window.__updateCatVisibility) window.__updateCatVisibility();
       loadFeed();
     });
   });
@@ -162,6 +221,64 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  async function initCatFilter() {
+    const info = await getTagInfo();
+    if (!info.postTags.length && !info.boxplayTypes.length) return;
+
+    const chipsPost = $('cat-chips-post');
+    const chipsBox = $('cat-chips-box');
+    if (!chipsPost || !chipsBox) return;
+
+    function updateVisibility() {
+      const showPost = currentTab === 'recommend' || currentTab === 'post';
+      const showBox = currentTab === 'recommend' || currentTab === 'boxplay';
+      const postVisible = showPost && info.postTags.length > 0;
+      const boxVisible = showBox && info.boxplayTypes.length > 0;
+      $('cat-group-post').hidden = !postVisible;
+      $('cat-group-box').hidden = !boxVisible;
+      $('cat-match').hidden = !postVisible;
+      $('cat-filter').hidden = !postVisible && !boxVisible;
+    }
+    window.__updateCatVisibility = updateVisibility;
+    updateVisibility();
+
+    function renderChips(container, tags, selected) {
+      container.innerHTML = '';
+      for (const tag of tags) {
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'cat-chip' + (selected.has(tag) ? ' active' : '');
+        chip.textContent = tag;
+        chip.addEventListener('click', () => {
+          if (selected.has(tag)) selected.delete(tag);
+          else selected.add(tag);
+          chip.classList.toggle('active', selected.has(tag));
+          updateVisibility();
+          loadFeed();
+        });
+        container.appendChild(chip);
+      }
+    }
+
+    renderChips(chipsPost, info.postTags, selectedPostCats);
+    renderChips(chipsBox, info.boxplayTypes, selectedBoxCats);
+
+    $('cat-filter-toggle').addEventListener('click', () => {
+      $('cat-filter').classList.toggle('collapsed');
+    });
+
+    $('cat-match').addEventListener('click', (e) => {
+      const btn = e.target.closest('.cat-match-btn');
+      if (!btn || btn.classList.contains('active')) return;
+      matchMode = btn.dataset.match;
+      document.querySelectorAll('.cat-match-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.match === matchMode);
+      });
+      loadFeed();
+    });
+  }
+  initCatFilter();
 
   
   const AD_INTERVAL = 5000;
@@ -246,6 +363,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.ad-dot').forEach((el, k) => el.classList.toggle('active', k === adIndex));
   }
 
+  window.addEventListener('pagehide', () => clearInterval(adTimer));
   loadAds();
   loadFeed();
 });

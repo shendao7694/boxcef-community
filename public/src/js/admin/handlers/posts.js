@@ -1,7 +1,22 @@
 // @path: src/js/admin/handlers/posts.js
 import { $, adminFetch, postsCache, setPostsCache } from '../state.js';
 import { renderPosts } from '../renders/posts.js';
+import { getTagInfo, ensureTagInfo } from './tags.js';
 import { showToast } from '../utils/toast.js';
+
+const peSelected = new Set();
+
+export async function loadPosts() {
+  await ensureTagInfo();
+  try {
+    const data = await adminFetch('/api/admin/post/list');
+    setPostsCache(data.posts || []);
+  } catch {
+    setPostsCache([]);
+  }
+  renderPosts();
+  fillCommentPostSelect();
+}
 
 export async function deletePost(id) {
   if (!confirm('确认删除该帖子？该操作不可恢复')) return;
@@ -26,12 +41,44 @@ export async function togglePin(id, isPinned) {
 
 export async function openPostEdit(pid) {
   try {
+    await ensureTagInfo();
     const data = await adminFetch(`/api/admin/post/edit?id=${encodeURIComponent(pid)}`);
     $('pe-id').value = data.post.id;
     $('pe-title').value = data.post.title || '';
     $('pe-content').value = data.post.content || '';
+    renderPeTags(data.post.type || []);
     $('post-edit-modal').hidden = false;
   } catch {}
+}
+
+function renderPeTags(selected) {
+  peSelected.clear();
+  for (const t of selected) peSelected.add(t);
+  const box = $('pe-tags');
+  box.innerHTML = '';
+  const tags = getTagInfo().postTags;
+  if (!tags.length) {
+    box.innerHTML = '<span style="color:var(--text-soft);font-size:13px">标签字典加载失败</span>';
+    return;
+  }
+  for (const t of tags) {
+    const chip = document.createElement('button');
+    chip.type = 'button';
+    chip.className = 'tag-picker-chip' + (peSelected.has(t) ? ' active' : '');
+    chip.textContent = t;
+    chip.addEventListener('click', () => {
+      if (peSelected.has(t)) {
+        peSelected.delete(t);
+        chip.classList.remove('active');
+      } else if (peSelected.size < 5) {
+        peSelected.add(t);
+        chip.classList.add('active');
+      } else {
+        showToast('最多选择 5 个分类', 'error');
+      }
+    });
+    box.appendChild(chip);
+  }
 }
 
 export function fillCommentPostSelect() {
@@ -49,6 +96,7 @@ export function fillCommentPostSelect() {
 
 export function bindPosts() {
   $('post-search').addEventListener('input', renderPosts);
+  $('post-cat-filter').addEventListener('change', renderPosts);
 
   $('pe-cancel').addEventListener('click', () => {
     $('post-edit-modal').hidden = true;
@@ -61,7 +109,8 @@ export function bindPosts() {
     const payload = {
       id: pid,
       title: $('pe-title').value.trim(),
-      content: $('pe-content').value
+      content: $('pe-content').value,
+      type: [...peSelected]
     };
     if (!payload.content.trim()) { showToast('内容不能为空', 'error'); return; }
     const btn = $('pe-save');

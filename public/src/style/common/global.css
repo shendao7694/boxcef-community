@@ -294,6 +294,7 @@ button { font-family: inherit; }
   .nav {
     padding: 12px 16px;
     gap: 8px;
+    flex-wrap: wrap;
   }
 
   .nav-brand {
@@ -304,15 +305,13 @@ button { font-family: inherit; }
 
   .nav-actions {
     gap: 8px;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    overflow: visible;
     min-width: 0;
-    max-width: calc(100% - 80px);
+    max-width: none;
+    margin-left: auto;
   }
-
-  .nav-actions::-webkit-scrollbar { display: none; }
 
   .nav-actions .btn {
     padding: 8px 12px;
@@ -331,15 +330,10 @@ button { font-family: inherit; }
     flex-shrink: 0;
   }
 
-  
-  .nav-avatar-wrap {
-    position: static;
-  }
-
   .nav-avatar-menu {
-    position: fixed;
-    top: 60px;
-    right: 12px;
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
     left: auto;
     min-width: 200px;
     max-width: calc(100vw - 24px);
@@ -382,8 +376,8 @@ button { font-family: inherit; }
   }
 
   .nav-avatar-menu {
-    top: 54px;
-    right: 10px;
+    top: calc(100% + 8px);
+    right: 0;
     min-width: 180px;
   }
 }

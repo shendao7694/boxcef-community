@@ -6,19 +6,21 @@ import { fmtTime, SVG_PIN } from '../utils/format.js';
 export function renderPosts() {
   const search = $('post-search');
   const q = (search?.value || '').trim().toLowerCase();
-  const filtered = q
-    ? postsCache.filter(p => {
-        const hay = `${p.title || ''} ${p.writerInfo?.name || ''} ${p.writerInfo?.nickname || ''}`.toLowerCase();
-        return hay.includes(q);
-      })
-    : postsCache;
+  const cat = $('post-cat-filter')?.value || '';
+
+  const filtered = postsCache.filter(p => {
+    if (cat && !(Array.isArray(p.type) && p.type.includes(cat))) return false;
+    if (!q) return true;
+    const hay = `${p.title || ''} ${p.writerInfo?.name || ''} ${p.writerInfo?.nickname || ''}`.toLowerCase();
+    return hay.includes(q);
+  });
 
   $('post-count').textContent = filtered.length;
   const tbody = $('posts-table').querySelector('tbody');
   tbody.innerHTML = '';
 
   if (!filtered.length) {
-    tbody.innerHTML = '<tr><td colspan="7" class="empty">暂无帖子</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="8" class="empty">暂无帖子</td></tr>';
     return;
   }
 
@@ -27,10 +29,14 @@ export function renderPosts() {
     const author = w
       ? `<a href="/user.html?id=${p.writer}" target="_blank" rel="noopener">${escapeHtml(w.nickname || w.name)}</a>`
       : '<span style="color:var(--text-soft)">未知</span>';
+    const tagsHtml = (Array.isArray(p.type) && p.type.length)
+      ? p.type.map(t => `<span class="post-tag">#${escapeHtml(t)}</span>`).join(' ')
+      : '<span style="color:var(--text-soft)">-</span>';
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td class="mono">${escapeHtml(p.id)}</td>
       <td>${p.pinned ? `<span class="pin-flag">${SVG_PIN}</span>` : ''}${escapeHtml(p.title || '无标题')}</td>
+      <td>${tagsHtml}</td>
       <td>${author}</td>
       <td>${p.like || 0}</td>
       <td>${p.commentCount || 0}</td>

@@ -1,5 +1,6 @@
 // @path: src/js/common/nav.js
 import { fetchMe, logout, avatarUrl } from './auth.js';
+import { request } from './api.js';
 
 const USER_ICON = '<svg class="icon" viewBox="0 0 24 24"><path d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5z"/></svg>';
 const BELL_ICON = '<svg class="icon" viewBox="0 0 24 24"><path d="M12 22a2.5 2.5 0 002.45-2h-4.9A2.5 2.5 0 0012 22zm7-6V11a7 7 0 00-5.5-6.84V3a1.5 1.5 0 00-3 0v1.16A7 7 0 005 11v5l-2 2v1h18v-1l-2-2z"/></svg>';
@@ -60,14 +61,8 @@ async function initBell(me) {
 
   let unread = 0;
   try {
-    const token = localStorage.getItem('token') || '';
-    const res = await fetch('/api/data/message/list', {
-      headers: token ? { Authorization: `Bearer ${token}` } : {}
-    });
-    if (res.ok) {
-      const data = await res.json();
-      unread = data.unreadCount || 0;
-    }
+    const data = await request('/api/data/message/list', { auth: true, silent: true });
+    unread = data.unreadCount || 0;
   } catch {}
 
   const a = document.createElement('a');

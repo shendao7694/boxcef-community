@@ -5,7 +5,7 @@ export { bindDisc, openUserDisc } from './disc.js';
 export { bindUserTitle, openUserTitle } from './userTitle.js';
 export { bindAssets, deleteAsset } from './assets.js';
 export { bindVerifications, openVerifyEdit, deleteVerify } from './verifications.js';
-export { bindPosts, deletePost, togglePin, openPostEdit, fillCommentPostSelect } from './posts.js';
+export { bindPosts, deletePost, togglePin, openPostEdit, fillCommentPostSelect, loadPosts } from './posts.js';
 export { bindComments, loadComments, toggleCommentPin, deleteCommentAdmin } from './comments.js';
 export { bindAdvice, handleAdviceAction } from './advice.js';
 export { bindSettings } from './settings.js';

@@ -6,7 +6,7 @@
 模组（Modification）是对游戏功能的扩展和修改。Minecraft JS Edition 支持使用 JavaScript 编写模组，通过接口与游戏核心交互。
 
 **资源下载:**  
-[点我下载](../asset/MCUP.zip)  
+[点我下载](/assets/MCUP.zip)  
 解压后将资源放入神岛之内，如果觉得麻烦可以寻找7694为你复制地图使用。
 
 **快速开始**  
