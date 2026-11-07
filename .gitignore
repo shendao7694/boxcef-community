@@ -4,6 +4,7 @@ dist/
 .server/
 wrangler.toml
 CodeStandards.txt
+scripts/stress.js
 
 public/assets/*
 !public/assets/favicon.png
