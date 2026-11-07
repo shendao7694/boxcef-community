@@ -3,6 +3,7 @@ dist/
 .wrangler/
 .server/
 wrangler.toml
+CodeStandards.txt
 
 public/assets/*
 !public/assets/favicon.png

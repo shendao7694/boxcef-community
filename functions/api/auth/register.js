@@ -3,7 +3,7 @@ import { sha256 } from '../_libs/crypto.js';
 import { fail } from '../_libs/response.js';
 import { buildSessionKey } from '../_libs/session.js';
 import { checkCode, consumeCode } from '../_libs/verify.js';
-import { getSettings } from '../_libs/settings.js';
+import { getSettings, isEmailAllowed } from '../_libs/settings.js';
 import { signJwt } from '../_libs/jwt.js';
 import { setCookieHeader } from '../_libs/cookie.js';
 
@@ -20,6 +20,7 @@ export async function onRequestPost({ request, env }) {
   if (password !== confirmPassword) return fail('两次密码不一致');
 
   const settings = await getSettings(env);
+  if (!isEmailAllowed(settings, email)) return fail('不允许的邮箱后缀');
   if (settings.registerNeedEmailVerity) {
     if (!code) return fail('请输入邮箱验证码');
     if (!await checkCode(env, 'register', email, code)) return fail('验证码错误或已过期');

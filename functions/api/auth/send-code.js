@@ -3,6 +3,7 @@ import { ok, fail } from '../_libs/response.js';
 import { sendEmail } from '../_libs/mail.js';
 import { genCode, putCode, verifyKey } from '../_libs/verify.js';
 import { loadSession } from '../_libs/session.js';
+import { getSettings, isEmailAllowed } from '../_libs/settings.js';
 
 export async function onRequestPost({ request, env }) {
   let body = {};
@@ -34,6 +35,8 @@ export async function onRequestPost({ request, env }) {
   }
 
   if (purpose === 'register') {
+    const settings = await getSettings(env);
+    if (!isEmailAllowed(settings, email)) return fail('不允许的邮箱后缀');
     let cursor;
     let exists = false;
     do {

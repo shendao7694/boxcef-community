@@ -27,7 +27,8 @@ export function bindSettings() {
       publishPostCooling: Number($('publishPostCooling').value) || 60,
       publishBoxPlayCooling: Number($('publishBoxPlayCooling').value) || 300,
       boxPlayStatus: $('boxPlayStatus').checked,
-      boxPlayVaildText: $('boxPlayVaildText').value.trim() || 'BoxPlay 服务暂时关闭'
+      boxPlayVaildText: $('boxPlayVaildText').value.trim() || 'BoxPlay 服务暂时关闭',
+      allowedEmail: $('allowedEmail').value.split(/[\s,，;；]+/).map(x => x.trim()).filter(Boolean)
     };
 
     const btn = $('save-settings-btn');

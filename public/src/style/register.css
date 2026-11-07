@@ -46,3 +46,36 @@
 .agree-row a:hover {
   opacity: 0.75;
 }
+.email-hint {
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-soft);
+}
+
+.email-hint-toggle {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--text);
+  font-size: inherit;
+  font-family: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.email-hint-toggle:hover {
+  opacity: 0.75;
+}
+
+.email-hint-detail {
+  margin: 6px 0 0;
+  padding: 10px 12px;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--text-soft);
+  word-break: break-all;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}

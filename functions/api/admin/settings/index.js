@@ -34,6 +34,10 @@ export async function onRequestPost({ request, env }) {
   if (Array.isArray(body.pinnedPosts)) {
     patch.pinnedPosts = body.pinnedPosts.filter(x => typeof x === 'string');
   }
+  if (body.allowedEmail !== undefined) {
+    if (!Array.isArray(body.allowedEmail)) return fail('allowedEmail 无效');
+    patch.allowedEmail = body.allowedEmail.filter(x => typeof x === 'string');
+  }
   
   
   if (body.boxPlayStatus !== undefined) {

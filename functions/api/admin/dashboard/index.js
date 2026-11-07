@@ -1,6 +1,7 @@
 // @path: api/admin/dashboard/index.js
 import { ok, fail } from '../../_libs/response.js';
 import { verifyAdmin } from '../../_libs/admin.js';
+import { getSettings } from '../../_libs/settings.js';
 
 async function collectKeys(kv, prefix, filter) {
   const names = [];
@@ -94,8 +95,8 @@ async function loadAssets(assets) {
   });
 }
 
-function loadSettings(service) {
-  return service.get('globalSettings', { type: 'json' }).then(s => s || {});
+function loadSettings(env) {
+  return getSettings(env);
 }
 
 export async function onRequestGet({ request, env }) {
@@ -126,14 +127,14 @@ export async function onRequestGet({ request, env }) {
   }
   if (section === 'verifications') return ok({ verifications: await loadVerifications(service) });
   if (section === 'assets') return ok({ assets: await loadAssets(assets) });
-  if (section === 'settings') return ok({ settings: await loadSettings(service) });
+  if (section === 'settings') return ok({ settings: await loadSettings(env) });
   if (section) return fail('无效的 section');
 
   const [users, verifications, assetsList, settings] = await Promise.all([
     loadUsers(usersKv),
     loadVerifications(service),
     loadAssets(assets),
-    loadSettings(service)
+    loadSettings(env)
   ]);
 
   return ok({ users, tokens: [], assets: assetsList, settings, verifications });

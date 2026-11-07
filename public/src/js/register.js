@@ -7,9 +7,33 @@ const btn = document.getElementById('submit-btn');
 const sendBtn = document.getElementById('send-code-btn');
 const codeGroup = document.getElementById('code-group');
 const agreeRule = document.getElementById('agree-rule');
+const emailHint = document.getElementById('email-hint');
+const emailHintToggle = document.getElementById('email-hint-toggle');
+const emailHintDetail = document.getElementById('email-hint-detail');
 
 let countdown = 0;
 let timer = null;
+let allowedEmail = [];
+
+function isEmailAllowed(email) {
+  if (!allowedEmail.length) return true;
+  const value = String(email || '').trim().toLowerCase();
+  const at = value.lastIndexOf('@');
+  if (at < 0) return false;
+  const domain = value.slice(at);
+  return allowedEmail.some(suffix => domain === suffix || domain.endsWith('.' + suffix.slice(1)));
+}
+
+function renderEmailHint(list) {
+  allowedEmail = list;
+  if (!list.length || !emailHint || !emailHintDetail) return;
+  emailHint.hidden = false;
+  emailHintDetail.textContent = `允许的邮箱后缀：${list.join('、')}`;
+  emailHintToggle.addEventListener('click', () => {
+    emailHintDetail.hidden = !emailHintDetail.hidden;
+    emailHintToggle.textContent = emailHintDetail.hidden ? '查看详细' : '收起';
+  });
+}
 
 async function loadSettings() {
   try {
@@ -50,6 +74,10 @@ sendBtn.addEventListener('click', async () => {
     showToast('请输入有效邮箱', 'error');
     return;
   }
+  if (!isEmailAllowed(email)) {
+    showToast('不允许的邮箱后缀', 'error');
+    return;
+  }
   try {
     await request('/api/auth/send-code', {
       method: 'POST',
@@ -74,6 +102,8 @@ form.addEventListener('submit', async (e) => {
     return;
   }
   if (name.length < 2 || name.length > 20) { showToast('用户名长度 2-20', 'error'); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showToast('请输入有效邮箱', 'error'); return; }
+  if (!isEmailAllowed(email)) { showToast('不允许的邮箱后缀', 'error'); return; }
   if (password.length < 6) { showToast('密码至少 6 位', 'error'); return; }
   if (password !== confirmPassword) { showToast('两次密码不一致', 'error'); return; }
 
@@ -101,7 +131,9 @@ form.addEventListener('submit', async (e) => {
 
 (async () => {
   const settings = await loadSettings();
-  if (settings && settings.registerNeedEmailVerity === false) {
+  if (!settings) return;
+  renderEmailHint(Array.isArray(settings.allowedEmail) ? settings.allowedEmail : []);
+  if (settings.registerNeedEmailVerity === false) {
     codeGroup.hidden = true;
   }
 })();

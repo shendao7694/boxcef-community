@@ -23,7 +23,8 @@ export async function onRequestGet({ request, env }) {
       maxImageInDisc,
       maxUploadSize,
       boxPlayStatus: !!settings.boxPlayStatus,
-      boxPlayVaildText: settings.boxPlayVaildText
+      boxPlayVaildText: settings.boxPlayVaildText,
+      allowedEmail: settings.allowedEmail
     }
   });
 }

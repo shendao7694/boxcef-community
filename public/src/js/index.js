@@ -87,7 +87,7 @@ async function loadFeed() {
   if (!grid) return;
 
   const seq = ++feedSeq;
-  grid.innerHTML = `<div class="feed-loading" style="grid-column:1/-1">${t('加载中...')}</div>`;
+  grid.innerHTML = `<div class="feed-loading" style="column-span:all">${t('加载中...')}</div>`;
 
   try {
     const auth = !!getToken();
@@ -118,7 +118,7 @@ async function loadFeed() {
     });
 
     if (!items.length) {
-      grid.innerHTML = `<div style="grid-column:1/-1" class="feed-empty">${t('这里空空如也')}</div>`;
+      grid.innerHTML = `<div style="column-span:all" class="feed-empty">${t('这里空空如也')}</div>`;
       return;
     }
 
@@ -132,7 +132,7 @@ async function loadFeed() {
     grid.appendChild(fragment);
   } catch (err) {
     if (seq !== feedSeq) return;
-    grid.innerHTML = `<div style="grid-column:1/-1" class="feed-empty">${t('加载失败')}</div>`;
+    grid.innerHTML = `<div style="column-span:all" class="feed-empty">${t('加载失败')}</div>`;
   }
 }
 

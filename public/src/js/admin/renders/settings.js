@@ -34,4 +34,7 @@ export function renderSettings() {
   if ($('boxPlayVaildText')) {
     $('boxPlayVaildText').value = state.settings.boxPlayVaildText ?? 'BoxPlay 服务暂时关闭';
   }
+  if ($('allowedEmail')) {
+    $('allowedEmail').value = Array.isArray(state.settings.allowedEmail) ? state.settings.allowedEmail.join(', ') : '';
+  }
 }
