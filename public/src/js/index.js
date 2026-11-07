@@ -1,22 +1,14 @@
 // @path: src/js/index.js
 import { request, getToken } from '../js/common/api.js';
-import { showToast } from '../js/common/toast.js';
-import { avatarUrl } from '../js/common/auth.js';
 import { getTitles, renderTitleTag } from '../js/common/title.js';
-import { getTagInfo } from '../js/common/tags.js';
+import { avatarUrl } from '../js/common/auth.js';
+import { t } from '../js/common/i18n.js';
 
 const $ = (id) => document.getElementById(id);
 
 const SVG_PIN = '<svg viewBox="0 0 24 24" style="width:12px;height:12px;fill:currentColor;vertical-align:middle;margin-right:2px;"><path d="M14.5 3.5l6 6-3.5 1.2-3.7 3.7 1.2 5.1-1.4 1.4-4.6-4.6-5.8 5.8-1.4-1.4 5.8-5.8-4.6-4.6L3.9 9.3l5.1 1.2L12.7 7 14.5 3.5z"/></svg>';
 
-let currentTab = 'recommend';
-let query = '';
-let matchMode = 'any';
 let feedSeq = 0;
-const feedCache = new Map();
-const FEED_TTL = 30 * 1000;
-const selectedPostCats = new Set();
-const selectedBoxCats = new Set();
 
 function escapeHtml(str) {
   return String(str ?? '').replace(/[&<>"']/g, c => ({
@@ -24,17 +16,17 @@ function escapeHtml(str) {
   }[c]));
 }
 
-function fmtTime(t) {
-  if (!t) return '';
-  const diff = Date.now() - t;
+function fmtTime(time) {
+  if (!time) return '';
+  const diff = Date.now() - time;
   const min = 60 * 1000;
   const hour = 60 * min;
   const day = 24 * hour;
-  if (diff < min) return '刚刚';
-  if (diff < hour) return `${Math.floor(diff / min)} 分钟前`;
-  if (diff < day) return `${Math.floor(diff / hour)} 小时前`;
-  if (diff < 7 * day) return `${Math.floor(diff / day)} 天前`;
-  return new Date(t).toLocaleDateString();
+  if (diff < min) return t('刚刚');
+  if (diff < hour) return `${Math.floor(diff / min)} ${t('分钟前')}`;
+  if (diff < day) return `${Math.floor(diff / hour)} ${t('小时前')}`;
+  if (diff < 7 * day) return `${Math.floor(diff / day)} ${t('天前')}`;
+  return new Date(time).toLocaleDateString();
 }
 
 function calcScore(item) {
@@ -49,33 +41,29 @@ function renderCard(item, titles) {
   const a = document.createElement('a');
   a.className = 'card-item';
   const isBox = item.type === 'boxplay';
-  
   a.href = isBox ? `/boxview.html?id=${item.id}` : `/post.html?id=${item.id}`;
+  a.setAttribute('data-no-i18n', '');
 
   const w = item.writerInfo;
-  const authorName = w ? escapeHtml(w.nickname || w.name) : '未知';
+  const authorName = w ? escapeHtml(w.nickname || w.name) : t('未知');
   const avatar = avatarUrl(w?.avatar || 'COMMON:normal_avatar');
   const titleTag = w ? renderTitleTag(w.title, titles) : '';
 
-  let coverHtml = '';
-  if (isBox && item.cover) {
-    coverHtml = `<img class="card-cover" loading="lazy" decoding="async" src="/api/data/assets/${encodeURIComponent(item.cover)}" alt="">`;
-  }
-
-  const descText = isBox ? (item.description || '暂无简介') : (item.preview || '');
-  const titleText = isBox ? item.title : (item.title || '无标题');
-
-  const pinHtml = item.pinned
-    ? `<span class="tag pin-tag">${SVG_PIN}置顶</span>`
+  const coverHtml = isBox && item.cover
+    ? `<img class="card-cover" loading="lazy" decoding="async" src="/api/data/assets/${encodeURIComponent(item.cover)}" alt="">`
     : '';
 
+  const descText = isBox ? (item.description || t('暂无简介')) : (item.preview || '');
+  const titleText = isBox ? item.title : (item.title || t('无标题'));
+
+  const pinHtml = item.pinned ? `<span class="tag pin-tag">${SVG_PIN}${t('置顶')}</span>` : '';
   const typeBadgeHtml = isBox && item.boxType
     ? `<span class="card-type-badge">${escapeHtml(item.boxType)}</span>`
     : '';
 
   const postType = !isBox && Array.isArray(item.postType) ? item.postType : [];
   const tagsHtml = postType.length
-    ? `<div class="card-tags">${postType.map(t => `<span>#${escapeHtml(t)}</span>`).join('')}</div>`
+    ? `<div class="card-tags">${postType.map(tag => `<span>#${escapeHtml(tag)}</span>`).join('')}</div>`
     : '';
 
   a.innerHTML = `
@@ -99,268 +87,152 @@ async function loadFeed() {
   if (!grid) return;
 
   const seq = ++feedSeq;
-  const postCats = [...selectedPostCats].join(',');
-  const boxCats = [...selectedBoxCats].join(',');
-  const key = `${currentTab}|${query}|${postCats}|${matchMode}|${boxCats}`;
-  const cached = feedCache.get(key);
-  if (cached && Date.now() - cached.at < FEED_TTL) {
-    renderFeed(grid, cached.items, cached.titles);
-    return;
-  }
-
-  grid.innerHTML = '<div class="feed-loading" style="grid-column:1/-1">加载中...</div>';
+  grid.innerHTML = `<div class="feed-loading" style="grid-column:1/-1">${t('加载中...')}</div>`;
 
   try {
     const auth = !!getToken();
-    const tasks = [];
-    let postIndex = -1;
-    let boxIndex = -1;
-
-    if (currentTab === 'recommend' || currentTab === 'post') {
-      let postUrl = `/api/works/post/feed?page=1&q=${encodeURIComponent(query)}`;
-      if (postCats) postUrl += `&cats=${encodeURIComponent(postCats)}&match=${matchMode}`;
-      
-      postIndex = tasks.push(
-        request(postUrl, { auth })
-          .then(res => (res.posts || []).map(p => {
-            return {
-              ...p,
-              postType: Array.isArray(p.type) ? p.type : (p.type ? [p.type] : []),
-              type: 'post'
-            };
-          }))
-      ) - 1;
-    }
-
-    if (currentTab === 'recommend' || currentTab === 'boxplay') {
-      let boxUrl = '/api/works/boxplay/list?type=all';
-      if (boxCats) boxUrl += `&cats=${encodeURIComponent(boxCats)}`;
-      
-      boxIndex = tasks.push(
-        request(boxUrl, { auth })
-          .then(res => {
-            let list = (res.boxplays || []).map(b => {
-              return {
-                ...b,
-                boxType: b.type || '其他',
-                type: 'boxplay',
-                commentCount: (b.comments || []).length
-              };
-            });
-            if (query) {
-              const q = query.toLowerCase();
-              list = list.filter(b =>
-                (b.title || '').toLowerCase().includes(q) ||
-                (b.description || '').toLowerCase().includes(q)
-              );
-            }
-            return list;
-          })
-      ) - 1;
-    }
-
-    const results = await Promise.all(tasks);
+    const [postRes, boxRes] = await Promise.all([
+      request('/api/works/post/feed?page=1', { auth }).catch(() => ({ posts: [] })),
+      request('/api/works/boxplay/list?type=all', { auth }).catch(() => ({ boxplays: [] }))
+    ]);
     if (seq !== feedSeq) return;
 
-    const postData = postIndex >= 0 ? results[postIndex] : [];
-    const boxData = boxIndex >= 0 ? results[boxIndex] : [];
-    const items = [...postData, ...boxData];
+    const posts = (postRes.posts || []).map(post => ({
+      ...post,
+      postType: Array.isArray(post.type) ? post.type : (post.type ? [post.type] : []),
+      type: 'post'
+    }));
 
-    items.sort((a, b) => {
+    const boxplays = (boxRes.boxplays || []).map(box => ({
+      ...box,
+      boxType: box.type || '其他',
+      type: 'boxplay',
+      commentCount: (box.comments || []).length
+    }));
+
+    const items = [...posts, ...boxplays].sort((a, b) => {
       const aPin = a.pinned ? 1 : 0;
       const bPin = b.pinned ? 1 : 0;
       if (aPin !== bPin) return bPin - aPin;
-      if (currentTab === 'recommend') return calcScore(b) - calcScore(a);
-      return b.createdAt - a.createdAt;
+      return calcScore(b) - calcScore(a);
     });
 
     if (!items.length) {
-      const filtered = query || selectedPostCats.size || selectedBoxCats.size;
-      grid.innerHTML = `<div style="grid-column:1/-1" class="feed-empty">${filtered ? '没有找到相关内容' : '这里空空如也'}</div>`;
+      grid.innerHTML = `<div style="grid-column:1/-1" class="feed-empty">${t('这里空空如也')}</div>`;
       return;
     }
 
-    const ids = items.map(p => p.writerInfo?.title?.choose).filter(Boolean);
+    const ids = items.map(item => item.writerInfo?.title?.choose).filter(Boolean);
     const titles = ids.length ? await getTitles(ids) : {};
     if (seq !== feedSeq) return;
 
-    feedCache.set(key, { at: Date.now(), items, titles });
-    renderFeed(grid, items, titles);
+    const fragment = document.createDocumentFragment();
+    for (const item of items) fragment.appendChild(renderCard(item, titles));
+    grid.innerHTML = '';
+    grid.appendChild(fragment);
   } catch (err) {
     if (seq !== feedSeq) return;
-    console.error(err);
-    grid.innerHTML = '<div style="grid-column:1/-1" class="feed-empty">加载失败</div>';
+    grid.innerHTML = `<div style="grid-column:1/-1" class="feed-empty">${t('加载失败')}</div>`;
   }
 }
 
-function renderFeed(grid, items, titles) {
-  const fragment = document.createDocumentFragment();
-  for (const item of items) fragment.appendChild(renderCard(item, titles));
-  grid.innerHTML = '';
-  grid.appendChild(fragment);
+function goSearch(keyword) {
+  const content = String(keyword || '').trim();
+  location.href = `/search.html?content=${encodeURIComponent(content)}`;
+}
+
+const AD_INTERVAL = 5000;
+let adTimer = null;
+let adIndex = 0;
+let adCount = 0;
+
+async function loadAds() {
+  let data;
+  try {
+    const res = await fetch('/api/data/ad/get');
+    if (!res.ok) return;
+    data = await res.json();
+  } catch { return; }
+  const ads = (data.ads || []).filter(ad => ad.image || ad.text);
+  if (!ads.length) return;
+
+  const banner = $('ad-banner');
+  const slides = $('ad-slides');
+  const dots = $('ad-dots');
+  if (!banner || !slides || !dots) return;
+
+  slides.innerHTML = '';
+  dots.innerHTML = '';
+  banner.hidden = false;
+  adCount = ads.length;
+
+  ads.forEach((ad, i) => {
+    const slide = document.createElement('div');
+    slide.className = 'ad-slide' + (i === 0 ? ' active' : '');
+    slide.setAttribute('data-no-i18n', '');
+    if (ad.image) {
+      slide.style.backgroundImage = `url('/api/data/assets/${encodeURIComponent(ad.image)}')`;
+    } else {
+      slide.style.background = 'linear-gradient(135deg, #2a2a2a, #0a0a0a)';
+    }
+    const overlay = document.createElement('div');
+    overlay.className = 'ad-slide-overlay';
+    slide.appendChild(overlay);
+
+    if (ad.text) {
+      const body = document.createElement('div');
+      body.className = 'ad-slide-body';
+      const md = document.createElement('div');
+      md.className = 'markdown-body';
+      if (typeof marked !== 'undefined') {
+        marked.setOptions({ breaks: true, gfm: true });
+        md.innerHTML = marked.parse(ad.text);
+      } else {
+        md.textContent = ad.text;
+      }
+      body.appendChild(md);
+      slide.appendChild(body);
+    }
+
+    if (ad.link) {
+      let url = String(ad.link).trim();
+      if (url && !/^https?:\/\//i.test(url)) url = 'https://' + url;
+      slide.style.cursor = 'pointer';
+      slide.addEventListener('click', (e) => {
+        if (e.target.closest('a')) return;
+        window.open(url, '_blank', 'noopener');
+      });
+    }
+
+    slides.appendChild(slide);
+
+    const dot = document.createElement('button');
+    dot.className = 'ad-dot' + (i === 0 ? ' active' : '');
+    dot.addEventListener('click', (e) => { e.stopPropagation(); goAd(i); });
+    dots.appendChild(dot);
+  });
+
+  if (adCount > 1) {
+    clearInterval(adTimer);
+    adTimer = setInterval(() => goAd(adIndex + 1), AD_INTERVAL);
+  }
+}
+
+function goAd(i) {
+  if (!adCount) return;
+  adIndex = ((i % adCount) + adCount) % adCount;
+  document.querySelectorAll('.ad-slide').forEach((el, k) => el.classList.toggle('active', k === adIndex));
+  document.querySelectorAll('.ad-dot').forEach((el, k) => el.classList.toggle('active', k === adIndex));
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('.nav-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      currentTab = btn.dataset.tab;
-      if (window.__updateCatVisibility) window.__updateCatVisibility();
-      loadFeed();
+  const form = $('home-search-form');
+  const input = $('home-search-input');
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      goSearch(input ? input.value : '');
     });
-  });
-
-  const searchInput = $('search-input');
-  if (searchInput) {
-    searchInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        query = searchInput.value.trim();
-        loadFeed();
-      }
-    });
-  }
-
-  async function initCatFilter() {
-    const info = await getTagInfo();
-    if (!info.postTags.length && !info.boxplayTypes.length) return;
-
-    const chipsPost = $('cat-chips-post');
-    const chipsBox = $('cat-chips-box');
-    if (!chipsPost || !chipsBox) return;
-
-    function updateVisibility() {
-      const showPost = currentTab === 'recommend' || currentTab === 'post';
-      const showBox = currentTab === 'recommend' || currentTab === 'boxplay';
-      const postVisible = showPost && info.postTags.length > 0;
-      const boxVisible = showBox && info.boxplayTypes.length > 0;
-      $('cat-group-post').hidden = !postVisible;
-      $('cat-group-box').hidden = !boxVisible;
-      $('cat-match').hidden = !postVisible;
-      $('cat-filter').hidden = !postVisible && !boxVisible;
-    }
-    window.__updateCatVisibility = updateVisibility;
-    updateVisibility();
-
-    function renderChips(container, tags, selected) {
-      container.innerHTML = '';
-      for (const tag of tags) {
-        const chip = document.createElement('button');
-        chip.type = 'button';
-        chip.className = 'cat-chip' + (selected.has(tag) ? ' active' : '');
-        chip.textContent = tag;
-        chip.addEventListener('click', () => {
-          if (selected.has(tag)) selected.delete(tag);
-          else selected.add(tag);
-          chip.classList.toggle('active', selected.has(tag));
-          updateVisibility();
-          loadFeed();
-        });
-        container.appendChild(chip);
-      }
-    }
-
-    renderChips(chipsPost, info.postTags, selectedPostCats);
-    renderChips(chipsBox, info.boxplayTypes, selectedBoxCats);
-
-    $('cat-filter-toggle').addEventListener('click', () => {
-      $('cat-filter').classList.toggle('collapsed');
-    });
-
-    $('cat-match').addEventListener('click', (e) => {
-      const btn = e.target.closest('.cat-match-btn');
-      if (!btn || btn.classList.contains('active')) return;
-      matchMode = btn.dataset.match;
-      document.querySelectorAll('.cat-match-btn').forEach(b => {
-        b.classList.toggle('active', b.dataset.match === matchMode);
-      });
-      loadFeed();
-    });
-  }
-  initCatFilter();
-
-  
-  const AD_INTERVAL = 5000;
-  let adTimer = null;
-  let adIndex = 0;
-  let adCount = 0;
-
-  async function loadAds() {
-    let data;
-    try {
-      const res = await fetch('/api/data/ad/get');
-      if (!res.ok) return;
-      data = await res.json();
-    } catch { return; }
-    const ads = (data.ads || []).filter(a => a.image || a.text);
-    if (!ads.length) return;
-
-    const banner = $('ad-banner');
-    const slides = $('ad-slides');
-    const dots = $('ad-dots');
-    if (!banner || !slides || !dots) return;
-
-    slides.innerHTML = ''; dots.innerHTML = '';
-    banner.hidden = false;
-    adCount = ads.length;
-
-    ads.forEach((ad, i) => {
-      const slide = document.createElement('div');
-      slide.className = 'ad-slide' + (i === 0 ? ' active' : '');
-      if (ad.image) {
-        slide.style.backgroundImage = `url('/api/data/assets/${encodeURIComponent(ad.image)}')`;
-      } else {
-        slide.style.background = 'linear-gradient(135deg, #2a2a2a, #0a0a0a)';
-      }
-      const overlay = document.createElement('div');
-      overlay.className = 'ad-slide-overlay';
-      slide.appendChild(overlay);
-
-      if (ad.text) {
-        const body = document.createElement('div');
-        body.className = 'ad-slide-body';
-        const md = document.createElement('div');
-        md.className = 'markdown-body';
-        if (typeof marked !== 'undefined') {
-          marked.setOptions({ breaks: true, gfm: true });
-          md.innerHTML = marked.parse(ad.text);
-        } else {
-          md.textContent = ad.text;
-        }
-        body.appendChild(md);
-        slide.appendChild(body);
-      }
-
-      if (ad.link) {
-        let url = String(ad.link).trim();
-        if (url && !/^https?:\/\//i.test(url)) url = 'https://' + url;
-        slide.style.cursor = 'pointer';
-        slide.addEventListener('click', (e) => {
-          if (e.target.closest('a')) return;
-          window.open(url, '_blank', 'noopener');
-        });
-      }
-
-      slides.appendChild(slide);
-
-      const dot = document.createElement('button');
-      dot.className = 'ad-dot' + (i === 0 ? ' active' : '');
-      dot.addEventListener('click', (e) => { e.stopPropagation(); goAd(i); });
-      dots.appendChild(dot);
-    });
-
-    if (adCount > 1) {
-      clearInterval(adTimer);
-      adTimer = setInterval(() => goAd(adIndex + 1), AD_INTERVAL);
-    }
-  }
-
-  function goAd(i) {
-    if (!adCount) return;
-    adIndex = ((i % adCount) + adCount) % adCount;
-    document.querySelectorAll('.ad-slide').forEach((el, k) => el.classList.toggle('active', k === adIndex));
-    document.querySelectorAll('.ad-dot').forEach((el, k) => el.classList.toggle('active', k === adIndex));
   }
 
   window.addEventListener('pagehide', () => clearInterval(adTimer));

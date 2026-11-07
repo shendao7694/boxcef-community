@@ -74,6 +74,7 @@ $('publish-btn').addEventListener('click', async () => {
   const description = $('b-desc').value.trim();
   const cover = $('b-cover').value;
   const type = $('b-type').value || '其他';
+  const isInIframe = $('b-iframe').value === '1';
 
   if (!title) { showToast('请填写作品名称', 'error'); return; }
   if (!playurl) { showToast('请填写游玩链接', 'error'); return; }
@@ -87,7 +88,7 @@ $('publish-btn').addEventListener('click', async () => {
     await request('/api/works/boxplay/create', {
       method: 'POST',
       auth: true,
-      body: { title, playurl, description, cover, type }
+      body: { title, playurl, description, cover, type, isInIframe }
     });
     showToast('提交成功，请等待审核');
     setTimeout(() => { location.href = '/'; }, 1000);

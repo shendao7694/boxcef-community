@@ -1,6 +1,7 @@
 // @path: src/js/admin/handlers/disc.js
 import { $, state, adminFetch } from '../state.js';
 import { showToast } from '../utils/toast.js';
+import { confirm } from '../../common/dialog.js';
 
 let adminSelectedDisc = new Set();
 
@@ -75,7 +76,8 @@ export function bindDisc() {
 
   $('disc-admin-delete-btn').addEventListener('click', async () => {
     if (!adminSelectedDisc.size) return;
-    if (!confirm(`确认删除选中的 ${adminSelectedDisc.size} 张图片？此操作不可恢复。`)) return;
+    const ok = await confirm(`确认删除选中的 ${adminSelectedDisc.size} 张图片？此操作不可恢复。`, { danger: true });
+    if (!ok) return;
 
     const key = $('disc-user-key').value;
     const hashes = Array.from(adminSelectedDisc);

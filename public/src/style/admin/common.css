@@ -128,3 +128,30 @@
   max-height: 88vh;
   overflow-y: auto;
 }
+
+.card-head-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.card-head-actions .search-input {
+  min-width: 150px;
+  width: auto;
+}
+
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 14px;
+}
+
+.pager-info {
+  font-size: 13px;
+  color: var(--text-soft);
+  min-width: 64px;
+  text-align: center;
+}

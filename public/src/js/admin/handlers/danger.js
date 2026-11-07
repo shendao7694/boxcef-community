@@ -1,10 +1,12 @@
 ﻿// @path: src/js/admin/handlers/danger.js
 import { $, adminFetch } from '../state.js';
 import { showToast } from '../utils/toast.js';
+import { confirm } from '../../common/dialog.js';
 
 export function bindDanger() {
   $('reset-btn').addEventListener('click', async () => {
-    if (!confirm('重置 globalSettings 与默认头像（保留用户）？')) return;
+    const ok = await confirm('重置 globalSettings 与默认头像（保留用户）？', { danger: true });
+    if (!ok) return;
     try {
       await adminFetch('/api/admin/kv/reset', { method: 'POST', body: {} });
       showToast('已重置');
@@ -14,7 +16,8 @@ export function bindDanger() {
   });
 
   $('purge-btn').addEventListener('click', async () => {
-    if (!confirm('确认清空所有用户数据？此操作不可恢复！')) return;
+    const ok = await confirm('确认清空所有用户数据？此操作不可恢复！', { danger: true });
+    if (!ok) return;
     try {
       await adminFetch('/api/admin/kv/reset', { method: 'POST', body: { purge: true } });
       showToast('已清空');
@@ -28,7 +31,8 @@ export function bindUserIdxRebuild() {
   const btn = $('rebuild-idx-btn');
   if (!btn) return;
   btn.addEventListener('click', async () => {
-    if (!confirm('确认重新构建用户索引？')) return;
+    const ok = await confirm('确认重新构建用户索引？');
+    if (!ok) return;
     btn.disabled = true;
     btn.textContent = '构建中...';
     try {
@@ -42,7 +46,8 @@ export function bindUserIdxRebuild() {
   const postBtn = $('rebuild-postidx-btn');
   if (!postBtn) return;
   postBtn.addEventListener('click', async () => {
-    if (!confirm('确认重建帖子/作品分类索引？旧作品将自动归入「其他」')) return;
+    const ok = await confirm('确认重建帖子/作品分类索引？旧作品将自动归入「其他」');
+    if (!ok) return;
     postBtn.disabled = true;
     postBtn.textContent = '构建中...';
     try {

@@ -2,6 +2,7 @@
 import { request, getToken } from '../js/common/api.js';
 import { showToast } from '../js/common/toast.js';
 import { avatarUrl } from '../js/common/auth.js';
+import { confirm } from '../js/common/dialog.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -146,7 +147,8 @@ async function load() {
 $('detail-close').addEventListener('click', () => { $('detail-modal').hidden = true; });
 
 $('delete-all-btn').addEventListener('click', async () => {
-  if (!confirm('确认删除全部消息？此操作不可恢复。')) return;
+  const ok = await confirm('确认删除全部消息？此操作不可恢复。', { danger: true });
+  if (!ok) return;
   try {
     await request('/api/data/message/delete', { method: 'POST', auth: true });
     messages = [];

@@ -2,6 +2,7 @@
 import { request, getToken } from '../js/common/api.js';
 import { showToast } from '../js/common/toast.js';
 import { fetchMe } from '../js/common/auth.js';
+import { confirm } from '../js/common/dialog.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -94,7 +95,8 @@ async function loadMine() {
 }
 
 async function deleteMine(index) {
-  if (!confirm('确认删除这条建议？')) return;
+  const ok = await confirm('确认删除这条建议？', { danger: true });
+  if (!ok) return;
   try {
     await request('/api/data/advice/delete', {
       method: 'POST', auth: true, body: { index }

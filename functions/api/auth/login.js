@@ -22,6 +22,9 @@ export async function onRequestPost({ request, env }) {
   if (session.password !== await sha256(password)) {
     return fail('用户名、邮箱或密码错误', 401);
   }
+  if (session.isban) {
+    return fail('你已被封禁', 403);
+  }
 
   session.lastLoginTime = Date.now();
   session.lastLoginIp = request.headers.get('CF-Connecting-IP') || 'unknown';

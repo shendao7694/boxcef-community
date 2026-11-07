@@ -7,7 +7,7 @@ import {
   bindVerifications, bindPosts, bindComments, bindAdvice,
   bindSettings, bindDanger, bindUserIdxRebuild, bindAds, bindTitles,
   loadComments, loadPosts,
-  openEdit, deleteUser, openUserTitle, openUserDisc
+  openEdit, deleteUser, openUserTitle, openUserDisc, toggleBan
 } from './handlers/main.js';
 import { switchView, reloadView, invalidateAll } from './handlers/nav.js';
 import { showToast } from './utils/toast.js';
@@ -91,10 +91,12 @@ async function initAdmin() {
     const del = e.target.closest('button[data-del]');
     const t = e.target.closest('button[data-title]');
     const disc = e.target.closest('button[data-disc]');
+    const ban = e.target.closest('button[data-ban]');
     if (edit) openEdit(edit.dataset.edit);
     if (del) deleteUser(del.dataset.del);
     if (t) openUserTitle(t.dataset.title);
     if (disc) openUserDisc(disc.dataset.disc);
+    if (ban) toggleBan(ban.dataset.ban, ban.dataset.banned === '1');
   });
 
   $('admin-login-btn').addEventListener('click', async () => {

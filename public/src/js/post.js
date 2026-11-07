@@ -4,6 +4,7 @@ import { showToast } from '../js/common/toast.js';
 import { avatarUrl, fetchMe } from '../js/common/auth.js';
 import { getTitle, renderTitleTag } from '../js/common/title.js';
 import { createCommentSection } from '../js/common/comments.js';
+import { confirm } from '../js/common/dialog.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -129,7 +130,8 @@ $('like-btn').addEventListener('click', async () => {
 });
 
 $('delete-btn').addEventListener('click', async () => {
-  if (!confirm('确认删除该帖子？此操作不可恢复')) return;
+  const ok = await confirm('确认删除该帖子？此操作不可恢复', { danger: true });
+  if (!ok) return;
   try {
     await request('/api/works/post/delete', {
       method: 'POST', auth: true, body: { id: postId }

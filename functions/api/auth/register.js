@@ -52,6 +52,7 @@ export async function onRequestPost({ request, env }) {
     email,
     password: await sha256(password),
     group: 'user',
+    isban: false,
     avatar: 'COMMON:normal_avatar',
     description: '',
     posts: [],

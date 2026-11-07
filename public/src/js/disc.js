@@ -2,6 +2,7 @@
 import { request } from '../js/common/api.js';
 import { showToast } from '../js/common/toast.js';
 import { fetchMe } from '../js/common/auth.js';
+import { confirm } from '../js/common/dialog.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -204,7 +205,8 @@ $('disc-file-input').addEventListener('change', async (e) => {
 
 $('disc-delete-btn').addEventListener('click', async () => {
   if (!selectedDisc.size) return;
-  if (!confirm(`确认删除选中的 ${selectedDisc.size} 张图片？此操作不可恢复。`)) return;
+  const ok = await confirm(`确认删除选中的 ${selectedDisc.size} 张图片？此操作不可恢复。`, { danger: true });
+  if (!ok) return;
 
   const hashes = Array.from(selectedDisc);
   const btn = $('disc-delete-btn');

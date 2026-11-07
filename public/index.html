@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="BOXCEF 是一个社区平台，你可以在这里发布帖子、分享作品，并与他人交流。">
 <meta name="keywords" content="BOXCEF">
- <title>Boxcef Community - 分享作品与交流</title>
+<title>Boxcef Community - 分享作品与交流</title>
 <link rel="stylesheet" href="./src/style/common/global.css">
 <link rel="stylesheet" href="./src/style/common/toast.css">
 <link rel="stylesheet" href="./src/style/index.css">
@@ -16,8 +16,6 @@
 <nav class="nav">
   <a class="nav-brand" href="/">BOXCEF</a>
   <div class="nav-actions">
-    <a id="nav-publish-post" class="btn btn-ghost" href="/publish-post.html">发布帖子</a>
-    <a id="nav-publish-box" class="btn btn-ghost" href="/publish-boxplay.html">发布作品</a>
     <a class="btn btn-ghost" href="/advice.html">提出建议</a>
     <a class="btn btn-ghost" href="/resource.html">资源导航</a>
     <button id="theme-toggle" class="theme-toggle" aria-label="切换主题">
@@ -27,55 +25,30 @@
   </div>
 </nav>
 
+<main class="home-layout">
+  <section class="home-feed">
+    <div class="grid-cards" id="feed-grid"></div>
+    <div class="feed-sentinel" id="feed-sentinel"></div>
+    <div class="feed-end" id="feed-end" hidden>没有更多了</div>
+  </section>
 
-<div class="home-layout">
-  
-  <aside class="sidebar-left">
-    <div class="nav-menu">
-      <button class="nav-btn active" data-tab="recommend">推荐</button>
-      <button class="nav-btn" data-tab="boxplay">作品</button>
-      <button class="nav-btn" data-tab="post">帖子</button>
+  <aside class="home-side">
+    <div class="home-side-actions">
+      <a class="btn home-side-btn" href="/publish-post.html">去发帖</a>
+      <a class="btn home-side-btn" href="/publish-boxplay.html">去发作品</a>
     </div>
-    <div class="search-wrap">
-      <input type="text" id="search-input" class="search-input" placeholder="搜索当前分类...">
-    </div>
-    <div class="cat-filter" id="cat-filter" hidden>
-      <button type="button" class="cat-filter-toggle" id="cat-filter-toggle">
-        <span>分类筛选</span>
-        <svg class="cat-filter-chevron" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
-      </button>
-      <div class="cat-filter-body" id="cat-filter-body">
-        <div class="cat-group" id="cat-group-post" hidden>
-          <div class="cat-label">帖子分类</div>
-          <div class="cat-chips" id="cat-chips-post"></div>
-          <div class="cat-match" id="cat-match" hidden>
-            <button type="button" class="cat-match-btn active" data-match="any">任一匹配</button>
-            <button type="button" class="cat-match-btn" data-match="all">全部匹配</button>
-          </div>
-        </div>
-        <div class="cat-group" id="cat-group-box" hidden>
-          <div class="cat-label">作品分类</div>
-          <div class="cat-chips" id="cat-chips-box"></div>
-        </div>
-      </div>
-    </div>
-  </aside>
 
-  
-  <main class="main-content">
-    
+    <form class="home-search" id="home-search-form" role="search">
+      <input type="text" id="home-search-input" class="search-input" placeholder="在这里搜索帖子、作品或用户" autocomplete="off">
+      <button type="submit" class="btn home-search-btn">搜索</button>
+    </form>
+
     <div class="ad-banner-top" id="ad-banner" hidden>
       <div class="ad-slides" id="ad-slides"></div>
       <div class="ad-dots" id="ad-dots"></div>
     </div>
-
-    
-    <div class="grid-cards" id="feed-grid"></div>
-    
-    <div class="feed-sentinel" id="feed-sentinel"></div>
-    <div class="feed-end" id="feed-end" hidden>没有更多了</div>
-  </main>
-</div>
+  </aside>
+</main>
 
 <script defer src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
 <script type="module" src="./src/js/common/theme.js"></script>

@@ -3,28 +3,52 @@ import { $, adminFetch, postsCache, setPostsCache } from '../state.js';
 import { renderPosts } from '../renders/posts.js';
 import { getTagInfo, ensureTagInfo } from './tags.js';
 import { showToast } from '../utils/toast.js';
+import { confirm } from '../../common/dialog.js';
+import { t } from '../../common/i18n.js';
 
 const peSelected = new Set();
+let page = 1;
+let pageSize = 10;
+let query = '';
+let cat = '';
+let total = 0;
+let searchTimer = null;
 
-export async function loadPosts() {
+function updatePager() {
+  const pages = Math.max(1, Math.ceil(total / pageSize));
+  $('post-page-info').textContent = `${page} / ${pages}`;
+  $('post-page-prev').disabled = page <= 1;
+  $('post-page-next').disabled = page >= pages;
+}
+
+export async function loadPosts(reset = false) {
   await ensureTagInfo();
+  if (reset) page = 1;
   try {
-    const data = await adminFetch('/api/admin/post/list');
+    const url = `/api/admin/post/list?page=${page}&pageSize=${pageSize}&q=${encodeURIComponent(query)}&cat=${encodeURIComponent(cat)}`;
+    const data = await adminFetch(url);
     setPostsCache(data.posts || []);
+    total = Number(data.total) || (data.posts || []).length;
   } catch {
     setPostsCache([]);
+    total = 0;
   }
-  renderPosts();
+  renderPosts(total);
+  updatePager();
   fillCommentPostSelect();
 }
 
 export async function deletePost(id) {
-  if (!confirm('确认删除该帖子？该操作不可恢复')) return;
+  const ok = await confirm(t('确认删除该帖子？该操作不可恢复'), { danger: true });
+  if (!ok) return;
   try {
     await adminFetch('/api/admin/post/delete', { method: 'POST', body: { id } });
-    showToast('已删除');
-    setPostsCache(postsCache.filter(p => p.id !== id));
-    renderPosts();
+    showToast(t('已删除'));
+    await loadPosts(false);
+    if (!postsCache.length && page > 1) {
+      page -= 1;
+      await loadPosts(false);
+    }
   } catch {}
 }
 
@@ -34,8 +58,8 @@ export async function togglePin(id, isPinned) {
       method: 'POST',
       body: { id, action: isPinned ? 'unpin' : 'pin' }
     });
-    showToast(isPinned ? '已取消置顶' : '已置顶');
-    await window.__loadPosts();
+    showToast(isPinned ? t('已取消置顶') : t('已置顶'));
+    await loadPosts(false);
   } catch {}
 }
 
@@ -53,28 +77,28 @@ export async function openPostEdit(pid) {
 
 function renderPeTags(selected) {
   peSelected.clear();
-  for (const t of selected) peSelected.add(t);
+  for (const tag of selected) peSelected.add(tag);
   const box = $('pe-tags');
   box.innerHTML = '';
   const tags = getTagInfo().postTags;
   if (!tags.length) {
-    box.innerHTML = '<span style="color:var(--text-soft);font-size:13px">标签字典加载失败</span>';
+    box.innerHTML = `<span style="color:var(--text-soft);font-size:13px">${t('标签字典加载失败')}</span>`;
     return;
   }
-  for (const t of tags) {
+  for (const tag of tags) {
     const chip = document.createElement('button');
     chip.type = 'button';
-    chip.className = 'tag-picker-chip' + (peSelected.has(t) ? ' active' : '');
-    chip.textContent = t;
+    chip.className = 'tag-picker-chip' + (peSelected.has(tag) ? ' active' : '');
+    chip.textContent = tag;
     chip.addEventListener('click', () => {
-      if (peSelected.has(t)) {
-        peSelected.delete(t);
+      if (peSelected.has(tag)) {
+        peSelected.delete(tag);
         chip.classList.remove('active');
       } else if (peSelected.size < 5) {
-        peSelected.add(t);
+        peSelected.add(tag);
         chip.classList.add('active');
       } else {
-        showToast('最多选择 5 个分类', 'error');
+        showToast(t('最多选择 5 个分类'), 'error');
       }
     });
     box.appendChild(chip);
@@ -83,11 +107,11 @@ function renderPeTags(selected) {
 
 export function fillCommentPostSelect() {
   const sel = $('comment-post-select');
-  sel.innerHTML = '<option value="">选择帖子…</option>';
+  sel.innerHTML = `<option value="">${t('选择帖子…')}</option>`;
   for (const p of postsCache) {
     const opt = document.createElement('option');
     opt.value = p.id;
-    const title = (p.title || '无标题').slice(0, 30);
+    const title = (p.title || t('无标题')).slice(0, 30);
     const who = p.writerInfo ? (p.writerInfo.nickname || p.writerInfo.name) : '';
     opt.textContent = who ? `${title} · ${who}` : title;
     sel.appendChild(opt);
@@ -95,8 +119,35 @@ export function fillCommentPostSelect() {
 }
 
 export function bindPosts() {
-  $('post-search').addEventListener('input', renderPosts);
-  $('post-cat-filter').addEventListener('change', renderPosts);
+  const search = $('post-search');
+  if (search) {
+    search.addEventListener('input', () => {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(() => {
+        query = search.value.trim();
+        loadPosts(true);
+      }, 300);
+    });
+  }
+
+  $('post-cat-filter').addEventListener('change', () => {
+    cat = $('post-cat-filter').value;
+    loadPosts(true);
+  });
+
+  $('post-page-size').addEventListener('change', () => {
+    pageSize = Number($('post-page-size').value) || 10;
+    loadPosts(true);
+  });
+  $('post-page-prev').addEventListener('click', () => {
+    if (page <= 1) return;
+    page -= 1;
+    loadPosts(false);
+  });
+  $('post-page-next').addEventListener('click', () => {
+    page += 1;
+    loadPosts(false);
+  });
 
   $('pe-cancel').addEventListener('click', () => {
     $('post-edit-modal').hidden = true;
@@ -112,18 +163,18 @@ export function bindPosts() {
       content: $('pe-content').value,
       type: [...peSelected]
     };
-    if (!payload.content.trim()) { showToast('内容不能为空', 'error'); return; }
+    if (!payload.content.trim()) { showToast(t('内容不能为空'), 'error'); return; }
     const btn = $('pe-save');
     btn.disabled = true;
-    btn.textContent = '保存中...';
+    btn.textContent = t('保存中...');
     try {
       await adminFetch('/api/admin/post/edit', { method: 'POST', body: payload });
-      showToast('帖子已更新');
+      showToast(t('帖子已更新'));
       $('post-edit-modal').hidden = true;
-      await window.__loadPosts();
+      await loadPosts(false);
     } catch {}
     btn.disabled = false;
-    btn.textContent = '保存修改';
+    btn.textContent = t('保存修改');
   });
 
   $('posts-table').querySelector('tbody').addEventListener('click', (e) => {

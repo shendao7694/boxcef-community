@@ -4,6 +4,7 @@ import {
 } from '../state.js';
 import { renderVerifications } from '../renders/verifications.js';
 import { showToast } from '../utils/toast.js';
+import { confirm } from '../../common/dialog.js';
 
 export async function loadVerifications() {
   try {
@@ -27,7 +28,8 @@ export function openVerifyEdit(key) {
 }
 
 export async function deleteVerify(key) {
-  if (!confirm('确认删除该验证码？')) return;
+  const ok = await confirm('确认删除该验证码？', { danger: true });
+  if (!ok) return;
   try {
     await adminFetch('/api/admin/verification/update', { method: 'POST', body: { key, action: 'delete' } });
     showToast('已删除');

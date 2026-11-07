@@ -29,7 +29,9 @@ const InputHandles = {
   kvadmin: 'kvadmin.html',
   rule: 'rule.html',
   disc: 'disc.html',
-  message: 'message.html'
+  message: 'message.html',
+  search: 'search.html',
+  settings: 'settings.html'
 };
 
 for(let idx in InputHandles) {

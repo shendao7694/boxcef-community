@@ -3,6 +3,7 @@ import { request } from './api.js';
 import { showToast } from './toast.js';
 import { avatarUrl } from './auth.js';
 import { getTitles, renderTitleTag } from './title.js';
+import { confirm } from './dialog.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -227,7 +228,8 @@ export function createCommentSection(ctx) {
   }
 
   async function deleteComment(idx) {
-    if (!confirm('确认删除该评论？')) return;
+    const ok = await confirm('确认删除该评论？', { danger: true });
+    if (!ok) return;
     try {
       await apply(await send('delete', { index: idx }));
       showToast('已删除');
@@ -235,7 +237,8 @@ export function createCommentSection(ctx) {
   }
 
   async function deleteReply(cidx, ridx) {
-    if (!confirm('确认删除该回复？')) return;
+    const ok = await confirm('确认删除该回复？', { danger: true });
+    if (!ok) return;
     try {
       await apply(await send('deleteReply', { index: cidx, replyIndex: ridx }));
       showToast('已删除');

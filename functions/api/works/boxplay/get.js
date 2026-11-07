@@ -69,6 +69,7 @@ export async function onRequestGet({ request, env }) {
       playurl: p.playurl,
       writer: p.writer,
       type: boxplayTypeOf(p),
+      isInIframe: !!p.isInIframe,
       writerInfo: writer ? publicUser(writer, p.writer) : null,
       status: p.status,
       createdAt: p.createdAt,

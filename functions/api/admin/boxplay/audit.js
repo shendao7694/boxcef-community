@@ -12,7 +12,7 @@ export async function onRequestPost({ request, env }) {
   try { body = await request.json(); } catch {}
 
   const { id, action, text } = body;
-  if (!id || !['approve', 'reject', 'delete'].includes(action)) return fail('参数错误');
+  if (!id || !['approve', 'reject', 'pending', 'delete'].includes(action)) return fail('参数错误');
 
   const works = getWorks(env);
   const p = await readBoxplay(works, id);
@@ -30,6 +30,9 @@ export async function onRequestPost({ request, env }) {
       u.boxplays = (u.boxplays || []).filter(x => x !== id);
       await env['Community-Users'].put(p.writer, JSON.stringify(u));
     }
+  } else if (action === 'pending') {
+    p.status = 'pending';
+    await writeBoxplay(works, id, p);
   } else {
     p.status = action === 'approve' ? 'approved' : 'rejected';
     await writeBoxplay(works, id, p);

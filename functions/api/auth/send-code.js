@@ -2,6 +2,7 @@
 import { ok, fail } from '../_libs/response.js';
 import { sendEmail } from '../_libs/mail.js';
 import { genCode, putCode, verifyKey } from '../_libs/verify.js';
+import { loadSession } from '../_libs/session.js';
 
 export async function onRequestPost({ request, env }) {
   let body = {};
@@ -10,11 +11,17 @@ export async function onRequestPost({ request, env }) {
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return fail('邮箱格式错误');
   }
-  if (!purpose || !['register', 'reset'].includes(purpose)) {
+  if (!purpose || !['register', 'reset', 'delete'].includes(purpose)) {
     return fail('purpose 无效');
   }
 
   const kv = env['Community-Service'];
+
+  if (purpose === 'delete') {
+    const self = await loadSession(env, request);
+    if (!self) return fail('需要登录后才能注销账号', 401);
+    if (self.session.email !== email) return fail('邮箱不匹配');
+  }
 
   const existing = await kv.get(verifyKey(purpose, email));
   if (existing) {

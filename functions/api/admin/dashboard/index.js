@@ -45,6 +45,7 @@ async function loadUsers(usersKv) {
         group: s.group,
         avatar: s.avatar,
         description: s.description,
+        isban: !!s.isban,
         limit: s.limit || null,
         lastLoginTime: s.lastLoginTime,
         lastLoginIp: s.lastLoginIp,
@@ -104,9 +105,25 @@ export async function onRequestGet({ request, env }) {
   const assets = env['Community-Assets'];
   const usersKv = env['Community-Users'];
 
-  const section = new URL(request.url).searchParams.get('section');
+  const url = new URL(request.url);
+  const section = url.searchParams.get('section');
 
-  if (section === 'users') return ok({ users: await loadUsers(usersKv) });
+  if (section === 'users') {
+    const q = (url.searchParams.get('q') || '').trim().toLowerCase();
+    const page = Math.max(1, Number(url.searchParams.get('page')) || 1);
+    const rawSize = Number(url.searchParams.get('pageSize')) || 10;
+    const pageSize = [10, 30, 50, 100].includes(rawSize) ? rawSize : 10;
+
+    let users = await loadUsers(usersKv);
+    if (q) {
+      users = users.filter(u => `${u.name || ''} ${u.nickname || ''} ${u.email || ''}`.toLowerCase().includes(q));
+    }
+    users.sort((a, b) => (b.lastLoginTime || 0) - (a.lastLoginTime || 0));
+
+    const total = users.length;
+    const start = (page - 1) * pageSize;
+    return ok({ users: users.slice(start, start + pageSize), total, page, pageSize });
+  }
   if (section === 'verifications') return ok({ verifications: await loadVerifications(service) });
   if (section === 'assets') return ok({ assets: await loadAssets(assets) });
   if (section === 'settings') return ok({ settings: await loadSettings(service) });

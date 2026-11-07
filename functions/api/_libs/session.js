@@ -27,5 +27,6 @@ export async function loadSession(env, request) {
   if (!raw) return null;
   let session;
   try { session = JSON.parse(raw); } catch { return null; }
+  if (session.isban) return null;
   return { key: payload.sessionId, session, token };
 }

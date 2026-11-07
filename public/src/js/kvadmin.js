@@ -1,5 +1,6 @@
 // @path: src/js/kvadmin.js
 import { showToast } from './common/toast.js';
+import { confirm } from './common/dialog.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -197,7 +198,8 @@ $('save-btn').addEventListener('click', async () => {
 $('delete-btn').addEventListener('click', async () => {
   const key = $('edit-key').value.trim();
   if (!key) { showToast('请填写 key', 'error'); return; }
-  if (!confirm(`确认删除 ${currentBinding} / ${key} ？`)) return;
+  const ok = await confirm(`确认删除 ${currentBinding} / ${key} ？`, { danger: true });
+  if (!ok) return;
 
   try {
     await api('/api/admin/kv/delete', { binding: currentBinding, key });

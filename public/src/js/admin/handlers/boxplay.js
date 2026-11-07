@@ -3,92 +3,157 @@ import { $, adminFetch } from '../state.js';
 import { showToast } from '../utils/toast.js';
 import { renderBoxplayList } from '../renders/boxplay.js';
 import { getTagInfo, ensureTagInfo } from './tags.js';
+import { confirm } from '../../common/dialog.js';
+import { t } from '../../common/i18n.js';
 
 let boxplayItems = [];
+let page = 1;
+let pageSize = 10;
+let query = '';
+let status = '';
+let cat = '';
+let total = 0;
+let searchTimer = null;
 
-function filterBoxplay() {
-  const cat = $('bp-cat-filter')?.value || '';
-  return cat ? boxplayItems.filter(b => (b.type || '其他') === cat) : boxplayItems;
+function updatePager() {
+  const pages = Math.max(1, Math.ceil(total / pageSize));
+  $('bp-page-info').textContent = `${page} / ${pages}`;
+  $('bp-page-prev').disabled = page <= 1;
+  $('bp-page-next').disabled = page >= pages;
 }
 
-export async function loadBoxplayList() {
+export async function loadBoxplayList(reset = false) {
   await ensureTagInfo();
+  if (reset) page = 1;
   try {
-    const data = await adminFetch('/api/admin/boxplay/list');
+    const url = `/api/admin/boxplay/list?page=${page}&pageSize=${pageSize}&q=${encodeURIComponent(query)}&status=${encodeURIComponent(status)}&cat=${encodeURIComponent(cat)}`;
+    const data = await adminFetch(url);
     boxplayItems = data.boxplays || [];
+    total = Number(data.total) || boxplayItems.length;
   } catch (err) {
     console.error('加载作品列表失败', err);
     boxplayItems = [];
+    total = 0;
   }
-  renderBoxplayList(filterBoxplay());
+  renderBoxplayList(boxplayItems, total);
+  updatePager();
 }
 
 function openReplyBoxplay(id) {
   $('reply-target-type').value = 'boxplay';
   $('reply-target-id').value = id;
-  $('reply-modal-title').textContent = '回复作品作者';
+  $('reply-modal-title').textContent = t('回复作品作者');
   $('reply-text').value = '';
   $('reply-modal').hidden = false;
 }
 
-function openBpType(id) {
+function openBpEdit(id) {
   const item = boxplayItems.find(b => b.id === id);
   if (!item) return;
   $('bpt-id').value = id;
   $('bpt-name').textContent = item.title || id;
+  $('bpt-title').value = item.title || '';
+  $('bpt-desc').value = item.description || '';
+  $('bpt-url').value = item.playurl || '';
+  $('bpt-iframe').value = item.isInIframe ? '1' : '0';
 
   const box = $('bpt-list');
   box.innerHTML = '';
   const current = item.type || '其他';
-  for (const t of getTagInfo().boxplayTypes) {
+  for (const type of getTagInfo().boxplayTypes) {
     const label = document.createElement('label');
     label.className = 'bpt-row';
     const radio = document.createElement('input');
     radio.type = 'radio';
     radio.name = 'bpt-type';
-    radio.value = t;
-    if (t === current) radio.checked = true;
+    radio.value = type;
+    if (type === current) radio.checked = true;
     const span = document.createElement('span');
-    span.textContent = t;
+    span.textContent = type;
     label.append(radio, span);
     box.appendChild(label);
   }
-  $('bp-type-modal').hidden = false;
+  $('bp-edit-modal').hidden = false;
 }
 
 export function bindBoxplay() {
-  $('bp-cat-filter').addEventListener('change', () => renderBoxplayList(filterBoxplay()));
+  const search = $('bp-search');
+  if (search) {
+    search.addEventListener('input', () => {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(() => {
+        query = search.value.trim();
+        loadBoxplayList(true);
+      }, 300);
+    });
+  }
+
+  $('bp-status-filter').addEventListener('change', () => {
+    status = $('bp-status-filter').value;
+    loadBoxplayList(true);
+  });
+
+  $('bp-cat-filter').addEventListener('change', () => {
+    cat = $('bp-cat-filter').value;
+    loadBoxplayList(true);
+  });
+
+  $('bp-page-size').addEventListener('change', () => {
+    pageSize = Number($('bp-page-size').value) || 10;
+    loadBoxplayList(true);
+  });
+  $('bp-page-prev').addEventListener('click', () => {
+    if (page <= 1) return;
+    page -= 1;
+    loadBoxplayList(false);
+  });
+  $('bp-page-next').addEventListener('click', () => {
+    page += 1;
+    loadBoxplayList(false);
+  });
 
   $('bpt-cancel').addEventListener('click', () => {
-    $('bp-type-modal').hidden = true;
+    $('bp-edit-modal').hidden = true;
   });
 
   $('bpt-save').addEventListener('click', async () => {
     const id = $('bpt-id').value;
     const checked = document.querySelector('input[name="bpt-type"]:checked');
-    if (!id || !checked) return;
+    const title = $('bpt-title').value.trim();
+    const playurl = $('bpt-url').value.trim();
+    if (!id) return;
+    if (!title) { showToast(t('请填写作品名称'), 'error'); return; }
+    if (!playurl) { showToast(t('请填写游玩链接'), 'error'); return; }
+
     const btn = $('bpt-save');
     btn.disabled = true;
-    btn.textContent = '保存中...';
+    btn.textContent = t('保存中...');
     try {
       await adminFetch('/api/admin/boxplay/edit', {
         method: 'POST',
-        body: { id, type: checked.value }
+        body: {
+          id,
+          title,
+          description: $('bpt-desc').value,
+          playurl,
+          type: checked ? checked.value : undefined,
+          isInIframe: $('bpt-iframe').value === '1'
+        }
       });
-      showToast('已保存');
-      $('bp-type-modal').hidden = true;
-      await loadBoxplayList();
+      showToast(t('已保存'));
+      $('bp-edit-modal').hidden = true;
+      await loadBoxplayList(false);
     } catch {}
     btn.disabled = false;
-    btn.textContent = '保存';
+    btn.textContent = t('保存');
   });
 
   $('boxplay-table').querySelector('tbody').addEventListener('click', async (e) => {
-    const typeBtn = e.target.closest('button[data-bp-type]');
-    const btn = e.target.closest('button[data-bp-id]');
+    const editBtn = e.target.closest('button[data-bp-edit]');
     const reply = e.target.closest('button[data-bp-reply]');
-    if (typeBtn) {
-      openBpType(typeBtn.dataset.bpType);
+    const btn = e.target.closest('button[data-bp-id]');
+    if (editBtn) {
+      openBpEdit(editBtn.dataset.bpEdit);
       return;
     }
     if (reply && !reply.disabled) {
@@ -99,15 +164,22 @@ export function bindBoxplay() {
     const id = btn.dataset.bpId;
     const act = btn.dataset.bpAct;
 
-    if (act === 'delete' && !confirm('确认彻底删除该作品？该操作不可恢复。')) return;
+    if (act === 'delete') {
+      const ok = await confirm(t('确认彻底删除该作品？该操作不可恢复。'), { danger: true });
+      if (!ok) return;
+    }
 
     try {
       await adminFetch('/api/admin/boxplay/audit', {
         method: 'POST',
         body: { id, action: act }
       });
-      showToast('已操作');
-      await loadBoxplayList();
+      showToast(t('已操作'));
+      await loadBoxplayList(false);
+      if (!boxplayItems.length && page > 1) {
+        page -= 1;
+        await loadBoxplayList(false);
+      }
     } catch {}
   });
 }

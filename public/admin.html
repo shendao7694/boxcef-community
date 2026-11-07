@@ -51,7 +51,7 @@
       <div class="admin-group-body">
         <button type="button" class="admin-nav-item active" data-view="posts">帖子管理</button>
         <button type="button" class="admin-nav-item" data-view="comments">评论管理</button>
-        <button type="button" class="admin-nav-item" data-view="boxplay">作品审核</button>
+        <button type="button" class="admin-nav-item" data-view="boxplay">作品管理</button>
         <button type="button" class="admin-nav-item" data-view="tags">标签管理</button>
         <button type="button" class="admin-nav-item" data-view="ads">广告管理</button>
         <button type="button" class="admin-nav-item" data-view="titles">头衔管理</button>
@@ -104,10 +104,23 @@
   <div class="admin-main">
     <section class="admin-card" data-panel="boxplay">
       <div class="card-head">
-        <h2>作品审核 <span id="boxplay-count" class="count">0</span></h2>
+        <h2>作品管理 <span id="boxplay-count" class="count">0</span></h2>
         <div class="card-head-actions">
+          <input type="text" id="bp-search" class="search-input" placeholder="搜索标题 / 作者 / 简介">
+          <select id="bp-status-filter" class="search-input">
+            <option value="">全部状态</option>
+            <option value="rejected">未通过</option>
+            <option value="pending">审核中</option>
+            <option value="approved">已通过</option>
+          </select>
           <select id="bp-cat-filter" class="search-input">
             <option value="">全部分类</option>
+          </select>
+          <select id="bp-page-size" class="search-input">
+            <option value="10">10 / 页</option>
+            <option value="30">30 / 页</option>
+            <option value="50">50 / 页</option>
+            <option value="100">100 / 页</option>
           </select>
         </div>
       </div>
@@ -120,12 +133,18 @@
               <th>分类</th>
               <th>作者</th>
               <th>游玩链接</th>
+              <th>加载方式</th>
               <th>状态</th>
               <th>操作</th>
             </tr>
           </thead>
           <tbody></tbody>
         </table>
+      </div>
+      <div class="pager">
+        <button type="button" class="btn btn-ghost btn-sm" id="bp-page-prev">上一页</button>
+        <span class="pager-info" id="bp-page-info">1 / 1</span>
+        <button type="button" class="btn btn-ghost btn-sm" id="bp-page-next">下一页</button>
       </div>
     </section>
 
@@ -147,6 +166,12 @@
             <option value="">全部分类</option>
           </select>
           <input type="text" id="post-search" class="search-input" placeholder="搜索标题 / 作者">
+          <select id="post-page-size" class="search-input">
+            <option value="10">10 / 页</option>
+            <option value="30">30 / 页</option>
+            <option value="50">50 / 页</option>
+            <option value="100">100 / 页</option>
+          </select>
         </div>
       </div>
       <div class="table-wrap">
@@ -165,6 +190,11 @@
           </thead>
           <tbody></tbody>
         </table>
+      </div>
+      <div class="pager">
+        <button type="button" class="btn btn-ghost btn-sm" id="post-page-prev">上一页</button>
+        <span class="pager-info" id="post-page-info">1 / 1</span>
+        <button type="button" class="btn btn-ghost btn-sm" id="post-page-next">下一页</button>
       </div>
     </section>
 
@@ -201,6 +231,12 @@
             <option value="accepted">已接受</option>
             <option value="rejected">已拒绝</option>
           </select>
+          <select id="advice-page-size" class="search-input">
+            <option value="10">10 / 页</option>
+            <option value="30">30 / 页</option>
+            <option value="50">50 / 页</option>
+            <option value="100">100 / 页</option>
+          </select>
         </div>
       </div>
       <div class="table-wrap">
@@ -217,6 +253,11 @@
           </thead>
           <tbody></tbody>
         </table>
+      </div>
+      <div class="pager">
+        <button type="button" class="btn btn-ghost btn-sm" id="advice-page-prev">上一页</button>
+        <span class="pager-info" id="advice-page-info">1 / 1</span>
+        <button type="button" class="btn btn-ghost btn-sm" id="advice-page-next">下一页</button>
       </div>
     </section>
 
@@ -261,6 +302,13 @@
       <div class="card-head">
         <h2>用户 <span id="user-count" class="count">0</span></h2>
         <div class="card-head-actions">
+          <input type="text" id="user-search" class="search-input" placeholder="搜索用户名 / 昵称 / 邮箱">
+          <select id="user-page-size" class="search-input">
+            <option value="10">10 / 页</option>
+            <option value="30">30 / 页</option>
+            <option value="50">50 / 页</option>
+            <option value="100">100 / 页</option>
+          </select>
           <button class="btn btn-ghost" id="add-user-btn">添加用户</button>
         </div>
       </div>
@@ -276,11 +324,17 @@
               <th>limit</th>
               <th>lastLogin</th>
               <th>IP</th>
+              <th>状态</th>
               <th>操作</th>
             </tr>
           </thead>
           <tbody></tbody>
         </table>
+      </div>
+      <div class="pager">
+        <button type="button" class="btn btn-ghost btn-sm" id="user-page-prev">上一页</button>
+        <span class="pager-info" id="user-page-info">1 / 1</span>
+        <button type="button" class="btn btn-ghost btn-sm" id="user-page-next">下一页</button>
       </div>
     </section>
 
@@ -681,11 +735,33 @@
   </div>
 </div>
 
-<div id="bp-type-modal" class="modal" hidden>
-  <div class="modal-card">
-    <h2>修改作品分类 · <span id="bpt-name"></span></h2>
+<div id="bp-edit-modal" class="modal" hidden>
+  <div class="modal-card modal-lg">
+    <h2>编辑作品 · <span id="bpt-name"></span></h2>
     <input type="hidden" id="bpt-id">
-    <div id="bpt-list" class="bpt-list"></div>
+    <div class="input-group">
+      <label for="bpt-title">标题</label>
+      <input type="text" id="bpt-title" maxlength="50">
+    </div>
+    <div class="input-group">
+      <label for="bpt-desc">简介</label>
+      <textarea id="bpt-desc" rows="5" maxlength="2000"></textarea>
+    </div>
+    <div class="input-group">
+      <label for="bpt-url">游玩链接</label>
+      <input type="text" id="bpt-url" placeholder="https://...">
+    </div>
+    <div class="input-group">
+      <label for="bpt-iframe">加载方式</label>
+      <select id="bpt-iframe" class="search-input">
+        <option value="0">直接跳转到链接</option>
+        <option value="1">在 iframe 中加载链接</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <label>作品分类</label>
+      <div id="bpt-list" class="bpt-list"></div>
+    </div>
     <div class="modal-actions">
       <button type="button" class="btn btn-ghost" id="bpt-cancel">取消</button>
       <button type="button" class="btn" id="bpt-save">保存</button>

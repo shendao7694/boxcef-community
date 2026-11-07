@@ -2,6 +2,7 @@
 import { $, state, setState, adminFetch } from '../state.js';
 import { renderAssets } from '../renders/assets.js';
 import { showToast } from '../utils/toast.js';
+import { confirm } from '../../common/dialog.js';
 
 export async function loadAssets() {
   try {
@@ -14,7 +15,8 @@ export async function loadAssets() {
 }
 
 export async function deleteAsset(key) {
-  if (!confirm(`确认删除资源 ${key}？`)) return;
+  const ok = await confirm(`确认删除资源 ${key}？`, { danger: true });
+  if (!ok) return;
   try {
     await adminFetch('/api/admin/asset/delete', { method: 'POST', body: { key } });
     showToast('已删除');

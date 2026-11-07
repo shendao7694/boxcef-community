@@ -1,4 +1,6 @@
 // @path: src/js/common/theme.js
+import './i18n.js';
+
 const toggle = document.getElementById('theme-toggle');
 const sun = document.getElementById('sun-icon');
 const moon = document.getElementById('moon-icon');

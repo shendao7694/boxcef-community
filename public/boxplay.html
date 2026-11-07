@@ -7,47 +7,7 @@
 <title>作品游玩</title>
 <link rel="icon" type="image/png" href="./assets/favicon.png">
 <link rel="stylesheet" href="./src/style/common/global.css">
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { height: 100vh; display: flex; flex-direction: column; overflow: hidden; background: var(--bg); }
-  
-  .main-container { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; }
-  
-  .error-layer {
-    display: none; 
-    color: var(--text);
-    font-size: 24px; font-weight: 800;
-    text-align: center; padding: 20px;
-    z-index: 5;
-  }
-
-  .loading-layer {
-    display: flex; 
-    color: var(--text-soft);
-    font-size: 16px;
-    z-index: 5;
-  }
-
-  /* 悬浮侧边栏 */
-  .sidebar {
-    position: absolute; left: 0; top: 0; bottom: 0; width: 60px;
-    background: var(--card); backdrop-filter: blur(8px);
-    display: flex; flex-direction: column; gap: 10px; padding-top: 20px; align-items: center;
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s;
-    transform: translateX(-56px); z-index: 100;
-    border-right: 1px solid var(--border); box-shadow: 4px 0 12px rgba(0,0,0,0.1);
-  }
-  .sidebar:hover { transform: translateX(0); }
-  .sidebar::after { content: ''; position: absolute; right: -8px; top: 0; bottom: 0; width: 8px; }
-  
-  .sidebar-btn {
-    width: 40px; height: 40px; border-radius: 8px;
-    background: transparent; border: none; color: var(--text-soft);
-    font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center;
-    transition: background 0.2s, color 0.2s;
-  }
-  .sidebar-btn:hover { background: var(--bg-soft); color: var(--text); }
-</style>
+<link rel="stylesheet" href="./src/style/boxplay.css">
 </head>
 <body>
   <nav class="nav">
@@ -61,83 +21,23 @@
   </nav>
 
   <div class="main-container">
-    <div class="sidebar">
-      <button class="sidebar-btn" onclick="exitGame()" title="返回详情">
+    <aside class="sidebar">
+      <button class="sidebar-btn" id="exit-btn" title="返回详情">
         <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
       </button>
-      <button class="sidebar-btn" onclick="toggleFullscreen()" title="全屏">
+      <button class="sidebar-btn" id="fullscreen-btn" title="全屏">
         <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
       </button>
-    </div>
+    </aside>
 
-    <div id="error-layer" class="error-layer"></div>
-    <div id="loading-layer" class="loading-layer">正在跳转...</div>
+    <div class="game-area" id="game-area">
+      <div id="error-layer" class="error-layer"></div>
+      <div id="loading-layer" class="loading-layer">正在跳转...</div>
+    </div>
   </div>
 
   <script type="module" src="./src/js/common/theme.js"></script>
   <script type="module" src="./src/js/common/nav.js"></script>
-  <script>
-    const boxId = new URLSearchParams(location.search).get('id');
-    const errorLayer = document.getElementById('error-layer');
-    const loadingLayer = document.getElementById('loading-layer');
-
-    async function init() {
-      if (!boxId) {
-        errorLayer.textContent = '缺少作品 ID';
-        errorLayer.style.display = 'block';
-        loadingLayer.style.display = 'none';
-        return;
-      }
-
-      try {
-        const resSettings = await fetch('/api/settings');
-        const dataSettings = await resSettings.json();
-        
-        if (dataSettings.success && dataSettings.settings) {
-          if (dataSettings.settings.boxPlayStatus === false) {
-            const text = dataSettings.settings.boxPlayVaildText || 'BoxPlay 服务暂时关闭';
-            errorLayer.textContent = text;
-            errorLayer.style.display = 'block';
-            loadingLayer.style.display = 'none';
-            return; 
-          }
-        }
-
-        const resPlay = await fetch(`/api/works/boxplay/get?id=${boxId}`);
-        const dataPlay = await resPlay.json();
-        
-        if (dataPlay.success && dataPlay.boxplay && dataPlay.boxplay.playurl) {
-          location.href = dataPlay.boxplay.playurl;
-        } else {
-          errorLayer.textContent = '获取游玩链接失败';
-          errorLayer.style.display = 'block';
-          loadingLayer.style.display = 'none';
-        }
-      } catch (err) {
-        errorLayer.textContent = '网络错误';
-        errorLayer.style.display = 'block';
-        loadingLayer.style.display = 'none';
-      }
-    }
-
-    function exitGame() {
-      if (boxId) location.href = `/boxview.html?id=${boxId}`;
-      else location.href = '/';
-    }
-
-    function toggleFullscreen() {
-      if (!document.fullscreenElement) {
-        const el = document.documentElement;
-        if (el.requestFullscreen) el.requestFullscreen();
-        else if (el.mozRequestFullScreen) el.mozRequestFullScreen();
-        else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-        else if (el.msRequestFullscreen) el.msRequestFullscreen();
-      } else {
-        if (document.exitFullscreen) document.exitFullscreen();
-      }
-    }
-
-    init();
-  </script>
+  <script type="module" src="./src/js/boxplay.js"></script>
 </body>
 </html>

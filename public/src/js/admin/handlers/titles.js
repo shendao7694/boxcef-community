@@ -2,6 +2,7 @@
 import { $, adminFetch } from '../state.js';
 import { renderTitles, getTitlesCache, setTitlesCache } from '../renders/titles.js';
 import { showToast } from '../utils/toast.js';
+import { confirm } from '../../common/dialog.js';
 
 export async function loadTitles() {
   try {
@@ -24,7 +25,8 @@ function openTitleEdit(id) {
 }
 
 async function deleteTitle(id) {
-  if (!confirm('确认删除该头衔？')) return;
+  const ok = await confirm('确认删除该头衔？', { danger: true });
+  if (!ok) return;
   try {
     await adminFetch('/api/admin/title/update', {
       method: 'POST',

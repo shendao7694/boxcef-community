@@ -2,6 +2,7 @@
 import { $, adminFetch } from '../state.js';
 import { renderComments } from '../renders/comments.js';
 import { showToast } from '../utils/toast.js';
+import { confirm } from '../../common/dialog.js';
 
 export async function loadComments(pid) {
   const tbody = $('comments-table').querySelector('tbody');
@@ -43,7 +44,8 @@ export async function toggleCommentPin(pid, index, isPinned) {
 }
 
 export async function deleteCommentAdmin(pid, index) {
-  if (!confirm('确认删除该评论？该操作不可恢复')) return;
+  const ok = await confirm('确认删除该评论？该操作不可恢复', { danger: true });
+  if (!ok) return;
   try {
     await adminFetch('/api/admin/comment/delete', { method: 'POST', body: { id: pid, index } });
     showToast('已删除');

@@ -1,6 +1,6 @@
 // @path: src/js/admin/handlers/main.js
 export { bindNav } from './nav.js';
-export { bindUsers, openEdit, deleteUser } from './users.js';
+export { bindUsers, openEdit, deleteUser, toggleBan } from './users.js';
 export { bindDisc, openUserDisc } from './disc.js';
 export { bindUserTitle, openUserTitle } from './userTitle.js';
 export { bindAssets, deleteAsset } from './assets.js';

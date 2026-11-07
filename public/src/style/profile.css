@@ -407,3 +407,60 @@
   .profile-side { border-right: none; border-bottom: 1px solid var(--border); }
   .profile-main { padding: 24px 20px; }
 }
+
+.friends-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 300;
+  animation: friendsFadeIn 0.18s ease;
+}
+
+.friends-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 380px;
+  max-width: 100vw;
+  background: var(--card);
+  border-left: 1px solid var(--border);
+  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.12);
+  z-index: 310;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  animation: friendsSlideIn 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.friends-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.friends-head h2 {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.friends-panel .tabs {
+  margin-bottom: 14px;
+}
+
+.friends-panel .friend-list {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+@keyframes friendsSlideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes friendsFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

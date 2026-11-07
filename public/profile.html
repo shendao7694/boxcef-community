@@ -47,13 +47,11 @@
     </div>
 
     <div class="profile-main">
-      
       <h2 class="posts-title">我的帖子</h2>
       <div class="posts-box" id="posts-box">
         <div class="empty-text">加载中...</div>
       </div>
 
-      
       <h2 class="posts-title" style="margin-top: 32px;">我的作品</h2>
       <div class="posts-box" id="boxplays-box">
         <div class="empty-text">加载中...</div>
@@ -62,69 +60,19 @@
   </section>
 </main>
 
-
-<div id="edit-modal" class="modal" hidden>
-  <div class="modal-card">
-    <div class="modal-head">
-      <h2>编辑资料</h2>
-      <button type="button" class="btn btn-ghost" id="edit-close">关闭</button>
-    </div>
-
-    <div class="edit-avatar-row">
-      <div class="edit-avatar-box">
-        <img id="edit-avatar-preview" decoding="async" alt="avatar">
-      </div>
-      <div class="edit-avatar-actions">
-        <button type="button" class="btn btn-ghost" id="edit-upload-btn">更换头像</button>
-        <input type="file" id="edit-avatar-input" accept="image/*" hidden>
-      </div>
-    </div>
-
-    <form id="edit-form" novalidate>
-      <div class="input-group">
-        <label for="edit-nickname">昵称</label>
-        <input type="text" id="edit-nickname" maxlength="20" required>
-      </div>
-      <div class="input-group">
-        <label for="edit-description">简介</label>
-        <textarea id="edit-description" rows="4" maxlength="200"></textarea>
-      </div>
-      <div class="side-title">
-        <div class="side-desc-title">我的头衔</div>
-        <div class="title-picker" id="title-picker"></div>
-      </div>
-      <div class="input-group">
-        <label>邮箱（不可修改）</label>
-        <input type="email" id="edit-email" disabled>
-      </div>
-      <div class="modal-actions">
-        <button type="button" class="btn btn-ghost" id="edit-cancel">取消</button>
-        <button type="submit" class="btn" id="edit-save">保存修改</button>
-      </div>
-    </form>
+<div class="friends-overlay" id="friends-overlay" hidden></div>
+<aside class="friends-panel" id="friends-panel" hidden>
+  <div class="friends-head">
+    <h2>好友</h2>
+    <button type="button" class="btn btn-ghost btn-sm" id="f-close">关闭</button>
   </div>
-</div>
-
-
-<div id="friends-modal" class="modal" hidden>
-  <div class="modal-card modal-wide">
-    <div class="modal-head">
-      <h2>好友</h2>
-      <button type="button" class="btn btn-ghost" id="f-close">关闭</button>
-    </div>
-    <div class="tabs">
-      <button class="tab active" data-tab="mutual">好友</button>
-      <button class="tab" data-tab="followers">粉丝</button>
-      <button class="tab" data-tab="following">关注</button>
-      <button class="tab" data-tab="search">搜索</button>
-    </div>
-    <div id="f-search-row" class="search-row" hidden>
-      <input type="text" id="f-search-input" placeholder="搜索名字或昵称">
-      <button class="btn" id="f-search-btn">搜索</button>
-    </div>
-    <div id="f-list" class="friend-list"></div>
+  <div class="tabs">
+    <button class="tab active" data-tab="mutual">好友</button>
+    <button class="tab" data-tab="followers">粉丝</button>
+    <button class="tab" data-tab="following">关注</button>
   </div>
-</div>
+  <div id="f-list" class="friend-list"></div>
+</aside>
 
 <script type="module" src="./src/js/common/theme.js"></script>
 <script type="module" src="./src/js/common/nav.js"></script>

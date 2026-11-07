@@ -2,6 +2,7 @@
 import { $, adminFetch } from '../state.js';
 import { renderAds, getAdsCache, setAdsCache } from '../renders/ads.js';
 import { showToast } from '../utils/toast.js';
+import { confirm } from '../../common/dialog.js';
 
 export async function loadAds() {
   try {
@@ -35,7 +36,8 @@ async function moveAd(idx, direction) {
 }
 
 async function deleteAd(idx) {
-  if (!confirm('确认删除该广告？')) return;
+  const ok = await confirm('确认删除该广告？', { danger: true });
+  if (!ok) return;
   try {
     await adminFetch('/api/admin/ad/update', {
       method: 'POST',

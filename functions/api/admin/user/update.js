@@ -48,6 +48,9 @@ export async function onRequestPost({ request, env }) {
   if (patch.group !== undefined) {
     next.group = String(patch.group).trim() || 'user';
   }
+  if (patch.isban !== undefined) {
+    next.isban = !!patch.isban;
+  }
   if (patch.description !== undefined) {
     const d = String(patch.description);
     if (d.length > 200) return fail('简介最多 200 字');

@@ -30,7 +30,7 @@ export async function onRequestPost({ request, env }) {
 
   let body = {};
   try { body = await request.json(); } catch {}
-  const { title, description, cover, playurl, type } = body || {};
+  const { title, description, cover, playurl, type, isInIframe } = body || {};
 
   if (!title || !cover || !playurl) return fail('标题、封面和链接不能为空');
   if (!/^https?:\/\//.test(playurl)) return fail('游玩链接格式不正确');
@@ -47,6 +47,7 @@ export async function onRequestPost({ request, env }) {
     playurl,
     writer: self.key,
     type: boxType,
+    isInIframe: !!isInIframe,
     status: 'pending',
     comments: [],
     createdAt: now

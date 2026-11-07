@@ -9,7 +9,9 @@ const DATA = [
     name: '官方',
     children: [
       { name: '首页', href: '/' },
+      { name: '社区规范', href: '/rule.html' },
       { name: '发布帖子', href: '/publish-post.html' },
+      { name: '发布 BoxPlay', href: '/publish-boxplay.html' }
     ]
   },
   {
@@ -18,7 +20,16 @@ const DATA = [
       { name: '登录', href: '/login.html' },
       { name: '注册', href: '/register.html' },
       { name: '重置密码', href: '/reset.html' },
-      { name: '个人主页', href: '/profile.html' }
+      { name: '个人主页', href: '/profile.html' },
+      { name: '个人图盘', href: '/disc.html' },
+      { name: '消息', href: '/message.html' }
+    ]
+  },
+  {
+    name: '交流',
+    children: [
+      { name: '改进建议', href: '/advice.html' },
+      
     ]
   },
   {
@@ -29,7 +40,8 @@ const DATA = [
       { name: 'Box Local Play', href: 'http://box-play.boxcef.top' },
       { name: 'ID Tool', href: '/assets/idTool' },
       { name: 'Mite Equilibrium Extension', href: '/assets/mite-equilibrium-extension' },
-      { name: 'Wordle', href: '/assets/wordle' }
+      { name: 'Wordle', href: '/assets/wordle' },
+      { name: 'OAuth 授权', href: '/oauth.html' }
     ]
   },
 ];

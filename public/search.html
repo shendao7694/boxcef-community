@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<script>try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="BOXCEF 是一个社区平台，你可以在这里发布帖子、分享作品，并与他人交流。">
+<meta name="keywords" content="BOXCEF">
+<title>搜索</title>
+<link rel="stylesheet" href="./src/style/common/global.css">
+<link rel="stylesheet" href="./src/style/common/toast.css">
+<link rel="stylesheet" href="./src/style/index.css">
+<link rel="stylesheet" href="./src/style/search.css">
+<link rel="icon" type="image/png" href="./assets/favicon.png">
+</head>
+<body>
+<nav class="nav">
+  <a class="nav-brand" href="/">BOXCEF</a>
+  <div class="nav-actions">
+    <a class="btn btn-ghost" href="/publish-post.html">发布帖子</a>
+    <a class="btn btn-ghost" href="/publish-boxplay.html">发布作品</a>
+    <a class="btn btn-ghost" href="/advice.html">提出建议</a>
+    <a class="btn btn-ghost" href="/resource.html">资源导航</a>
+    <button id="theme-toggle" class="theme-toggle" aria-label="切换主题">
+      <svg id="sun-icon" class="icon" viewBox="0 0 24 24"><path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z"/></svg>
+      <svg id="moon-icon" class="icon" viewBox="0 0 24 24" style="display:none"><path d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.7-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z"/></svg>
+    </button>
+  </div>
+</nav>
+
+<main class="search-main">
+  <form class="home-search" id="search-form" role="search">
+    <input type="text" id="search-input" class="search-input" placeholder="在这里搜索帖子、作品或用户" autocomplete="off">
+    <button type="submit" class="btn home-search-btn">搜索</button>
+  </form>
+
+  <div class="search-tabs" id="search-tabs">
+    <button type="button" class="search-tab active" data-tab="post">帖子</button>
+    <button type="button" class="search-tab" data-tab="boxplay">作品</button>
+    <button type="button" class="search-tab" data-tab="user">用户</button>
+  </div>
+
+  <div class="cat-filter search-filter" id="cat-filter">
+    <button type="button" class="cat-filter-toggle" id="cat-filter-toggle">
+      <span>分类筛选</span>
+      <svg class="cat-filter-chevron" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+    </button>
+    <div class="cat-filter-body" id="cat-filter-body">
+      <div class="cat-group" id="cat-group-post" hidden>
+        <div class="cat-label">帖子分类</div>
+        <div class="cat-chips" id="cat-chips-post"></div>
+        <div class="cat-match" id="cat-match" hidden>
+          <button type="button" class="cat-match-btn active" data-match="any">任一匹配</button>
+          <button type="button" class="cat-match-btn" data-match="all">全部匹配</button>
+        </div>
+      </div>
+      <div class="cat-group" id="cat-group-box" hidden>
+        <div class="cat-label">作品分类</div>
+        <div class="cat-chips" id="cat-chips-box"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-cards" id="search-grid"></div>
+  <div class="user-results" id="user-results" hidden></div>
+  <div class="search-status" id="search-status"></div>
+  <div class="search-more" id="search-more" hidden>
+    <button type="button" class="btn btn-ghost" id="load-more-btn">加载更多</button>
+  </div>
+</main>
+
+<script type="module" src="./src/js/common/theme.js"></script>
+<script type="module" src="./src/js/common/nav.js"></script>
+<script type="module" src="./src/js/search.js"></script>
+</body>
+</html>

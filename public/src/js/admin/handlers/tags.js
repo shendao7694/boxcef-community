@@ -1,6 +1,7 @@
 // @path: src/js/admin/handlers/tags.js
 import { $, adminFetch } from '../state.js';
 import { showToast } from '../utils/toast.js';
+import { confirm } from '../../common/dialog.js';
 
 let tagInfo = { postTags: [], boxplayTypes: [] };
 let tagInfoLoaded = false;
@@ -104,7 +105,8 @@ function renderTagDict(fixed, custom) {
     del.textContent = '×';
     del.title = '删除';
     del.addEventListener('click', async () => {
-      if (!confirm(`删除自定义标签「${t}」？已有帖子仍会保留该标签显示`)) return;
+      const ok = await confirm(`删除自定义标签「${t}」？已有帖子仍会保留该标签显示`, { danger: true });
+      if (!ok) return;
       try {
         await adminFetch('/api/admin/tag/update', { method: 'POST', body: { action: 'remove', tag: t } });
         showToast('已删除');

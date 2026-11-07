@@ -7,6 +7,13 @@ import { mapLimit, getUsersMap } from '../../_libs/works.js';
 export async function onRequestGet({ request, env }) {
   if (!verifyAdmin(request, env)) return fail('无权限', 401);
 
+  const url = new URL(request.url);
+  const q = (url.searchParams.get('q') || '').trim().toLowerCase();
+  const cat = (url.searchParams.get('cat') || '').trim();
+  const page = Math.max(1, Number(url.searchParams.get('page')) || 1);
+  const rawSize = Number(url.searchParams.get('pageSize')) || 10;
+  const pageSize = [10, 30, 50, 100].includes(rawSize) ? rawSize : 10;
+
   const works = env['Community-Works'];
   const users = env['Community-Users'];
 
@@ -24,7 +31,7 @@ export async function onRequestGet({ request, env }) {
     if (list.list_complete) break;
   } while (cursor);
 
-  const posts = (await mapLimit(ids, 10, async (id) => {
+  let posts = (await mapLimit(ids, 10, async (id) => {
     const raw = await works.get(`post:${id}`);
     if (!raw) return null;
     let p;
@@ -32,6 +39,7 @@ export async function onRequestGet({ request, env }) {
     return {
       id,
       title: p.title || '',
+      type: Array.isArray(p.type) ? p.type : (p.type ? [p.type] : []),
       writer: p.writer,
       like: p.like || 0,
       commentCount: (p.comments || []).length,
@@ -53,5 +61,21 @@ export async function onRequestGet({ request, env }) {
     p.writerInfo = w ? { key: p.writer, name: w.name, nickname: w.nickname, avatar: w.avatar } : null;
   }
 
-  return ok({ posts });
+  if (cat) posts = posts.filter(p => p.type.includes(cat));
+  if (q) {
+    posts = posts.filter(p => {
+      const hay = `${p.title || ''} ${p.writerInfo?.name || ''} ${p.writerInfo?.nickname || ''}`.toLowerCase();
+      return hay.includes(q);
+    });
+  }
+
+  const total = posts.length;
+  const start = (page - 1) * pageSize;
+
+  return ok({
+    posts: posts.slice(start, start + pageSize),
+    total,
+    page,
+    pageSize
+  });
 }
