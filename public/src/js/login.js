@@ -1,5 +1,6 @@
 // @path: src/js/login.js
 import { request, setToken } from '../js/common/api.js';
+import { invalidateMe } from './common/auth.js';
 import { showToast } from '../js/common/toast.js';
 
 const form = document.getElementById('login-form');
@@ -31,6 +32,7 @@ form.addEventListener('submit', async (e) => {
       body: { name, email, password }
     });
     setToken(token);
+    invalidateMe();
     showToast('登录成功');
     setTimeout(() => { location.href = redirectTarget(); }, 600);
   } catch {

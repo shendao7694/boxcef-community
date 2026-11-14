@@ -1,5 +1,5 @@
 // @path: src/js/common/auth.js
-import { request, clearToken, getToken } from './api.js';
+import { request, clearToken } from './api.js';
 
 const ME_TTL = 60 * 1000;
 
@@ -8,11 +8,6 @@ let _meAt = 0;
 
 export async function fetchMe({ force = false } = {}) {
   if (!force && _mePromise && Date.now() - _meAt < ME_TTL) return _mePromise;
-  if (!getToken()) {
-    _mePromise = null;
-    _meAt = 0;
-    return null;
-  }
   _meAt = Date.now();
   _mePromise = (async () => {
     try {

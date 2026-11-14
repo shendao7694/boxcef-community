@@ -38,7 +38,7 @@ export async function onRequestPost({ request, env }) {
     status: 200,
     headers: {
       'Content-Type': 'application/json',
-      'Set-Cookie': setCookieHeader('token', token, { maxAge: ttl })
+      'Set-Cookie': setCookieHeader('token', token, { maxAge: ttl, domain: env.COOKIE_DOMAIN })
     }
   });
 }

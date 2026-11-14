@@ -1,4 +1,3 @@
-// @path: src/js/settings.js
 import { request, clearToken } from '../js/common/api.js';
 import { showToast } from '../js/common/toast.js';
 import { fetchMe, avatarUrl, invalidateMe } from '../js/common/auth.js';
@@ -7,6 +6,12 @@ import { confirm, prompt } from '../js/common/dialog.js';
 import { t, listLangs, getLang, setLang } from '../js/common/i18n.js';
 
 const $ = (id) => document.getElementById(id);
+
+const LANG_HOSTS = {
+  'zh-CN': 'shequ.boxcef.top',
+  'zh-TW': 'shequ-tw.boxcef.top',
+  en: 'community.boxcef.top'
+};
 
 let current = null;
 
@@ -82,6 +87,14 @@ async function chooseTitle(id) {
   } catch {}
 }
 
+function switchLangAndHost(lang) {
+  setLang(lang);
+  const targetHost = LANG_HOSTS[lang];
+  if (!targetHost) return;
+  if (targetHost === location.hostname) return;
+  location.hostname = targetHost;
+}
+
 function initPreferences() {
   const langSelect = $('lang-select');
   langSelect.innerHTML = '';
@@ -93,9 +106,7 @@ function initPreferences() {
   }
   langSelect.value = getLang();
   langSelect.addEventListener('change', () => {
-    setLang(langSelect.value);
-    const theme = $('theme-select').value;
-    applyTheme(theme);
+    switchLangAndHost(langSelect.value);
   });
 
   const themeSelect = $('theme-select');

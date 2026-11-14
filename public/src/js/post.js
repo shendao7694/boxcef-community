@@ -50,7 +50,7 @@ async function load() {
     $('post-empty').querySelector('.empty-text').textContent = '无效的帖子 id';
     return;
   }
-  if (getToken()) me = await fetchMe();
+  me = await fetchMe();
 
   let data;
   try {

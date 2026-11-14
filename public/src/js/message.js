@@ -1,5 +1,5 @@
 // @path: src/js/message.js
-import { request, getToken } from '../js/common/api.js';
+import { request } from '../js/common/api.js';
 import { showToast } from '../js/common/toast.js';
 import { avatarUrl } from '../js/common/auth.js';
 import { confirm } from '../js/common/dialog.js';
@@ -131,7 +131,6 @@ async function markAllRead() {
 }
 
 async function load() {
-  if (!getToken()) { location.href = '/login.html'; return; }
   let data;
   try {
     data = await request('/api/data/message/list', { auth: true });

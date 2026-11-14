@@ -61,7 +61,7 @@ export async function request(path, { method = 'GET', body, auth = false, isForm
     if (!response.ok) {
       const msg = data.error || '请求失败';
       if (!silent) showToast(msg, 'error');
-      if (response.status === 401 && auth) {
+      if (response.status === 401 && auth && !silent) {
         clearToken();
         setTimeout(() => { location.href = '/login.html'; }, 800);
       }

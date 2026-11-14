@@ -79,7 +79,7 @@ export async function onRequestPost({ request, env }) {
     status: 200,
     headers: {
       'Content-Type': 'application/json',
-      'Set-Cookie': clearCookieHeader('token')
+      'Set-Cookie': clearCookieHeader('token', { domain: env.COOKIE_DOMAIN })
     }
   });
 }

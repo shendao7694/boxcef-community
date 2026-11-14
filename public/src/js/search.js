@@ -303,7 +303,7 @@ async function init() {
   state.query = (params.get('content') || '').trim();
   $('search-input').value = state.query;
 
-  if (getToken()) state.me = await fetchMe();
+  state.me = await fetchMe();
 
   state.tags = await getTagInfo();
   renderChips($('cat-chips-post'), state.tags.postTags, state.postCats);

@@ -1,5 +1,5 @@
 // @path: src/js/publish-boxplay.js
-import { request, getToken } from '../js/common/api.js';
+import { request } from '../js/common/api.js';
 import { showToast } from '../js/common/toast.js';
 import { fetchMe } from '../js/common/auth.js';
 import { getTagInfo } from '../js/common/tags.js';
@@ -22,7 +22,6 @@ async function initTypeSelect() {
 }
 
 async function init() {
-  if (!getToken()) { location.href = '/login.html'; return; }
   me = await fetchMe();
   if (!me) { location.href = '/login.html'; return; }
   initTypeSelect();

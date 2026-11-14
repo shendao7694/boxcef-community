@@ -33,7 +33,7 @@ async function load() {
   boxId = new URLSearchParams(location.search).get('id');
   if (!boxId) { showToast('缺少 id', 'error'); return; }
   
-  if (getToken()) me = await fetchMe();
+  me = await fetchMe();
 
   let data;
   try {

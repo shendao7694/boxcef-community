@@ -8,6 +8,7 @@ import { createD1 } from './d1.js';
 import { createStatic } from './static.js';
 import { loadRoutes, matchRoute, pickHandler, watchRoutes } from './router.js';
 import { buildRequest, jsonResponse, notFound } from './request.js';
+import { corsHeaders } from '../../functions/api/_libs/cors.js';
 import {
   info, warn, error as logError, ok, visit,
   colorStatus, colorMethod, formatStatusText, colorText
@@ -100,18 +101,26 @@ export async function startServer(config) {
     });
 
     if (pathname.startsWith('/api/')) {
+      const request = await buildRequest(req, url);
+      const cors = corsHeaders(request, env);
+
+      if (method === 'OPTIONS') {
+        res.writeHead(204, cors);
+        return res.end();
+      }
+
       const matched = await matchRoute(routes, pathname);
       if (!matched) return staticHandler.serve404(res);
 
       const { handler, params } = matched;
       const fn = pickHandler(handler, method);
       if (!fn) {
-        res.writeHead(405, { 'Content-Type': 'application/json' });
+        res.writeHead(405, { 'Content-Type': 'application/json', ...cors });
         return res.end(JSON.stringify({ error: 'Method Not Allowed' }));
       }
 
       const context = {
-        request: await buildRequest(req, url),
+        request,
         env,
         params,
         waitUntil: () => {},
@@ -121,7 +130,7 @@ export async function startServer(config) {
       try {
         const response = await fn(context);
         if (!response) return staticHandler.serve404(res);
-        res.writeHead(response.status, Object.fromEntries(response.headers));
+        res.writeHead(response.status, { ...Object.fromEntries(response.headers), ...cors });
         res.end(Buffer.from(await response.arrayBuffer()));
       } catch (err) {
         logError('fn', `${pathname} ${err && err.message ? err.message : err}`);
@@ -133,13 +142,21 @@ export async function startServer(config) {
 
     if (staticHandler.tryServe(res, pathname)) return;
 
+    const request = await buildRequest(req, url);
+    const cors = corsHeaders(request, env);
+
+    if (method === 'OPTIONS') {
+      res.writeHead(204, cors);
+      return res.end();
+    }
+
     const matched = await matchRoute(routes, pathname);
     if (matched) {
       const { handler, params } = matched;
       const fn = pickHandler(handler, method);
       if (fn) {
         const context = {
-          request: await buildRequest(req, url),
+          request,
           env,
           params,
           waitUntil: () => {},
@@ -147,7 +164,7 @@ export async function startServer(config) {
         };
         try {
           const response = await fn(context);
-          res.writeHead(response.status, Object.fromEntries(response.headers));
+          res.writeHead(response.status, { ...Object.fromEntries(response.headers), ...cors });
           return res.end(Buffer.from(await response.arrayBuffer()));
         } catch (err) {
           logError('fn', `${pathname} ${err && err.message ? err.message : err}`);

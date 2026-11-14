@@ -31,7 +31,8 @@ const InputHandles = {
   disc: 'disc.html',
   message: 'message.html',
   search: 'search.html',
-  settings: 'settings.html'
+  settings: 'settings.html',
+  intro: 'intro.html'
 };
 
 for(let idx in InputHandles) {

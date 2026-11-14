@@ -1,5 +1,5 @@
 // @path: src/js/publish.js
-import { request, getToken } from './common/api.js';
+import { request } from './common/api.js';
 import { showToast } from './common/toast.js';
 import { fetchMe } from './common/auth.js';
 import { getTagInfo } from './common/tags.js';
@@ -301,7 +301,6 @@ $('publish-btn').addEventListener('click', async () => {
 });
 
 (async () => {
-  if (!getToken()) { location.href = '/login.html'; return; }
   me = await fetchMe();
   if (!me) { location.href = '/login.html'; }
   initTagPicker();

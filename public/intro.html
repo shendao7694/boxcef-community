@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<script>try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BOXCEF 社区</title>
+<link rel="icon" type="image/png" href="./assets/favicon.png">
+<link rel="stylesheet" href="./src/style/intro.css">
+</head>
+<body>
+<nav class="intro-nav">
+  <a class="intro-brand">
+    <img class="intro-brand-logo" src="./assets/favicon.png" alt="BOXCEF">
+    <span>BOXCEF</span>
+  </a>
+  <div class="intro-nav-actions">
+    <div class="intro-lang" id="lang-switch">
+      <button type="button" class="intro-lang-btn" data-lang="zh-CN" data-host="shequ.boxcef.top">简</button>
+      <button type="button" class="intro-lang-btn" data-lang="zh-TW" data-host="shequ-tw.boxcef.top">繁</button>
+      <button type="button" class="intro-lang-btn" data-lang="en" data-host="community.boxcef.top">EN</button>
+    </div>
+    <button id="theme-toggle" class="intro-theme" aria-label="切换主题">
+      <svg id="sun-icon" class="intro-icon" viewBox="0 0 24 24"><path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z"/></svg>
+      <svg id="moon-icon" class="intro-icon" viewBox="0 0 24 24" style="display:none"><path d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.7-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z"/></svg>
+    </button>
+  </div>
+</nav>
+
+<main class="intro-wrap">
+  <header class="intro-hero">
+    <span class="intro-badge" data-i18n="badge">欢迎来到 BOXCEF</span>
+    <h1 data-i18n="heroTitle">在这里，<br>分享你的创造</h1>
+    <p data-i18n="heroDesc">一个轻量、专注的分享社区。发帖、发作品、互动，就这么简单。</p>
+    <div class="intro-hero-cta">
+      <button type="button" class="intro-cta-btn intro-cta-btn-primary" id="enter-btn" data-i18n="enter">进入社区</button>
+      <a class="intro-cta-btn intro-cta-btn-ghost" href="/rule.html" data-route="/rule.html" data-i18n="readRule">社区规范</a>
+    </div>
+  </header>
+
+  <div class="intro-features">
+    <div class="intro-feature">
+      <div class="intro-feature-icon">
+        <svg viewBox="0 0 24 24"><path d="M4 4h16v2H4V4zm0 4h10v2H4V8zm0 4h16v2H4v-2zm0 4h10v2H4v-2z"/></svg>
+      </div>
+      <h3 data-i18n="feat1Title">帖子</h3>
+      <p data-i18n="feat1Desc">Markdown 排版，代码、图片、嵌入，随手记录</p>
+    </div>
+    <div class="intro-feature">
+      <div class="intro-feature-icon">
+        <svg viewBox="0 0 24 24"><path d="M21 3H3v18h18V3zm-2 16H5V5h14v14zM7 7h10v2H7V7zm0 4h10v2H7v-2zm0 4h6v2H7v-2z"/></svg>
+      </div>
+      <h3 data-i18n="feat2Title">作品</h3>
+      <p data-i18n="feat2Desc">发布可玩的互动作品，让别人直接体验</p>
+    </div>
+    <div class="intro-feature">
+      <div class="intro-feature-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+      </div>
+      <h3 data-i18n="feat3Title">互动</h3>
+      <p data-i18n="feat3Desc">评论、点赞、关注，找到同好</p>
+    </div>
+    <div class="intro-feature">
+      <div class="intro-feature-icon">
+        <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+      </div>
+      <h3 data-i18n="feat4Title">图盘</h3>
+      <p data-i18n="feat4Desc">个人图片空间，随手引用</p>
+    </div>
+    <div class="intro-feature">
+      <div class="intro-feature-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      </div>
+      <h3 data-i18n="feat5Title">头衔</h3>
+      <p data-i18n="feat5Desc">展示你的独特身份</p>
+    </div>
+    <div class="intro-feature">
+      <div class="intro-feature-icon">
+        <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+      </div>
+      <h3 data-i18n="feat6Title">社交</h3>
+      <p data-i18n="feat6Desc">关注、好友，保持联系</p>
+    </div>
+  </div>
+
+  <div class="intro-cta">
+    <div class="intro-cta-text">
+      <h2 data-i18n="ctaTitle">准备好了吗？</h2>
+      <p data-i18n="ctaDesc">注册账号，开始分享你的第一条内容。</p>
+    </div>
+    <div class="intro-cta-actions">
+      <a class="intro-cta-btn intro-cta-btn-primary" href="/register.html" data-route="/register.html" data-i18n="ctaRegister">注册</a>
+      <a class="intro-cta-btn intro-cta-btn-ghost" href="/rule.html" data-route="/rule.html" data-i18n="ctaRule">社区规范</a>
+    </div>
+  </div>
+</main>
+
+<footer class="intro-footer">
+  BOXCEF Community
+</footer>
+
+<script type="module" src="./src/js/intro.js"></script>
+<script type="module" src="./src/js/common/host.js"></script>
+</body>
+</html>

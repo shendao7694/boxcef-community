@@ -1,5 +1,6 @@
 // @path: src/js/register.js
 import { request, setToken } from '../js/common/api.js';
+import { invalidateMe } from './common/auth.js';
 import { showToast } from '../js/common/toast.js';
 
 const form = document.getElementById('register-form');
@@ -121,6 +122,7 @@ form.addEventListener('submit', async (e) => {
       body: { name, nickname, email, password, confirmPassword, code }
     });
     setToken(token);
+    invalidateMe();
     showToast('注册成功，欢迎加入');
     setTimeout(() => { location.href = redirectTarget(); }, 700);
   } catch {

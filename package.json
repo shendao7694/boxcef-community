@@ -8,6 +8,7 @@
     "build": "node ./scripts/build.js",
     "build:vite": "vite build",
     "build:dev": "vite",
+    "build:self": "node ./scripts/pack.mjs",
     "server": "node ./server/cli.js",
     "server2": "npx wrangler pages dev ./dist/ --local",
     "archive": "node ./scripts/archive.js",
